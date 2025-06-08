@@ -1,4 +1,5 @@
 "use client";
+import { Link } from 'lucide-react';
 import React, { useEffect } from 'react'
 
 function Header() {
@@ -97,7 +98,7 @@ function Header() {
                             </div>
 
                             {/* Send Inquiry Button */}
-                            <a href="#" className="btn btn-primary d-flex align-items-center gap-1">
+                            <a href="/inquiry" className="btn btn-primary d-flex align-items-center gap-1">
                                 Send Inquiry <i className="bi bi-arrow-right"></i>
                             </a>
                         </div>
@@ -174,7 +175,7 @@ function Header() {
                         <a className="nav-link custom-hover text-dark fw-semibold  py-1 rounded hover-bg" href="#">
                             Teams
                         </a>
-                        <a className="nav-link custom-hover text-dark fw-semibold  py-1 rounded hover-bg" href="#">
+                        <a className="nav-link custom-hover text-dark fw-semibold  py-1 rounded hover-bg" href="/inquiry">
                             Contact
                         </a>
                          <a className="nav-link custom-hover text-dark fw-semibold  py-1 rounded hover-bg" href="#">
