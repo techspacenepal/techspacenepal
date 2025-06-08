@@ -59,10 +59,10 @@ const ContactSection = () => {
         throw new Error(data.error || 'Something went wrong');
       }
 
-      toast.success(data.message || 'Successfully sent inquiry!');
+      toast.success(data.message || 'Successfully sent contact!');
       setFormData({ name: '', email: '', mobile: '', course: '', message: '' });
     } catch (error: any) {
-      toast.error(error.message || 'Failed to send inquiry');
+      toast.error(error.message || 'Failed to send contact');
     } finally {
       setLoading(false);
     }
