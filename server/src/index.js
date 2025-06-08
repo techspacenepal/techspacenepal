@@ -8,7 +8,7 @@ import cookieParser from 'cookie-parser';
 import errorMiddleware from './middlewares/errorMiddleware.js';
 import authRoutes from './routes/authRoutes.js';
 import Auth from './models/Auth.js';
-
+import contactRoutes from './routes/contactRoutes.js';
 
 const app = express();
 dotenv.config();
@@ -25,6 +25,7 @@ app.use("/api/inquiry", submitInquiry)
 
 
 app.use('/api/auth', authRoutes);
+app.use('/api', contactRoutes);
 
 
 // Test route (optional)

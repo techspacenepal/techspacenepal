@@ -1,6 +1,9 @@
+'use client'
+
 import Courses from '@/pages/Courses'
 import HeroSection from '@/pages/HeroSection'
 import React from 'react'
+import Footer from './Component/Footer'
 
 
 function page() {
@@ -8,6 +11,7 @@ function page() {
     <>
         <HeroSection/>   
          <Courses/>
+         <Footer/>
     </>
   )
 }

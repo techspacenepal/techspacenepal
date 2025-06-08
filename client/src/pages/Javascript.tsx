@@ -1,213 +1,164 @@
-export let Coding = [
+export const coursesData = [
     {
-        category: "Popular in Coding",
         "id": 1,
-        "title": "MERN Stack Development Training",
-        "duration": "2.5 Months",
-        "image": "https://broadwayinfosys.com/uploads/courses/89431733317283.jpg",
-
+        "title": "AI for Everyone",
+        "category": "AI",
+        "duration": "1 Month",
+        "image": "https://broadwayinfosys.com/uploads/courses/76531733822241.jpg"
     },
     {
-
         "id": 2,
-        "title": "Python & Django Training",
-        "duration": "2.5 Months",
-        "image": "https://broadwayinfosys.com/uploads/courses/47821733317634.jpg",
-
+        "title": "Prompt Engineering Training",
+        "category": "AI",
+        "duration": "1 Month",
+        "image": "/images/prompt-engineering.png"
     },
     {
-
         "id": 3,
-        "title": "Java Training Package",
+        "title": "AI with Python: Machine Learning, Deep Learning & Generative AI (LLMs)",
+        "category": "AI",
         "duration": "2.5 Months",
-        "image": "https://broadwayinfosys.com/uploads/courses/13661733813320.jpg",
-
+        "image": "/images/ai-with-python.png"
     },
     {
-
         "id": 4,
-        "title": "ASP.NET Core Training",
-        "duration": "2.5 Months",
-        "image": "https://broadwayinfosys.com/uploads/courses/80051733727977.jpg",
-
-    },
-];
-
-
-export let Designing = [
-    {
-        category: "Popular in Coding",
-        "id": 1,
-        "title": "Web Design Training",
-        "duration": "2.5 Months",
-        "image": "https://broadwayinfosys.com/uploads/courses/76531733822241.jpg",
-
-    },
-    {
-
-        "id": 2,
-        "title": "UI UX Design Training",
-        "duration": "2.5 Months",
-        "image": "https://broadwayinfosys.com/uploads/courses/16131664434907.png",
-
-    },
-    {
-
-        "id": 3,
-        "title": "Graphics Design Training",
-        "duration": "2.5 Months",
-        "image": "https://broadwayinfosys.com/uploads/courses/80651733891208.jpg",
-
-    },
-    {
-
-        "id": 4,
-        "title": "Motion Graphics Training",
-        "duration": "2.5 Months",
-        "image": "https://broadwayinfosys.com/uploads/courses/90221733727354.jpg",
-
-    },
-];
-
-
-export let Data = [
-    {
-        category: "Data Science & ML with Python",
-        "id": 1,
         "title": "Data Science & ML with Python",
+        "category": "AI",
+        "duration": "2.5 Months",
+        "image": "/images/data-science-ml.png"
+    },
+    {
+        "id": 5,
+        "title": "Web Design Training",
+        "category": "Web",
+        "duration": "2.5 Months",
+        "image": "/images/web-design.png"
+    },
+    {
+        "id": 6,
+        "title": "Digital Marketing 360°",
+        "category": "Marketing",
         "duration": "3 Months",
-        "image": "https://broadwayinfosys.com/uploads/courses/68281733727891.jpg",
-
+        "image": "/images/digital-marketing.png"
     },
     {
-
-        "id": 2,
-        "title": "Machine Learning with Python Training",
-        "duration": "10 Weeks",
-        "image": "https://broadwayinfosys.com/uploads/courses/47991733728237.jpg",
-
-    },
-    {
-
-        "id": 3,
-        "title": "Python with Artificial Intelligence (AI) Training",
-        "duration": "3.5 Months",
-        "image": "https://broadwayinfosys.com/uploads/courses/17701733727674.jpg",
-
-    },
-    {
-
-        "id": 4,
-        "title": "Python & Django Training",
+        "id": 7,
+        "title": "Advanced Cybersecurity Course",
+        "category": "Security",
         "duration": "2.5 Months",
-        "image": "https://broadwayinfosys.com/uploads/courses/47821733317634.jpg",
-
+        "image": "/images/cybersecurity.png"
     },
-];
-
-export let Cloud = [
     {
-        category: "Popular in Coding",
-        "id": 1,
+        "id": 8,
+        "title": "MERN Stack Development Training",
+        "category": "Web",
+        "duration": "3 Months",
+        "image": "/images/mern-stack.png"
+    },
+    {
+        "id": 9,
         "title": "DevOps Training",
+        "category": "DevOps",
         "duration": "2.5 Months",
-        "image": "https://broadwayinfosys.com/uploads/courses/69171735711384.jpg",
-
+        "image": "/images/devops.png"
     },
     {
-
-        "id": 2,
-        "title": "AWS Cloud Practitioner Training",
-        "duration": "40 Hours",
-        "image": "https://broadwayinfosys.com/uploads/courses/73631733742328.jpg",
-
+        "id": 10,
+        "title": "Python & Django Training",
+        "category": "Programming",
+        "duration": "2.5 Months",
+        "image": "/images/python-django.png"
     },
     {
-
-        "id": 3,
+        "id": 11,
         "title": "CCNA Training",
+        "category": "Networking",
         "duration": "2 Months",
-        "image": "https://broadwayinfosys.com/uploads/courses/82421733727737.jpg",
-
+        "image": "/images/ccna.png"
     },
     {
-
-        "id": 4,
+        "id": 12,
         "title": "Ethical Hacking Training",
+        "category": "Security",
         "duration": "2 Months",
-        "image": "https://broadwayinfosys.com/uploads/courses/19471733727768.jpg",
-
+        "image": "/images/ethical-hacking.png"
     },
-];
-
-export let AutoCAD = [
     {
-        category: "AutoCAD 2D & 3D, SketchUp, Estimating & Costing",
-        "id": 1,
-        "title": "Auto-CAD Training",
+        "id": 13,
+        "title": "Graphics Design Training",
+        "category": "Design",
         "duration": "1.5 Months",
-        "image": "https://broadwayinfosys.com/uploads/courses/41951733728294.jpg",
-
+        "image": "/images/graphics-design.png"
     },
     {
-
-        "id": 2,
-        "title": "ETABS Training",
-        "duration": "1 Month",
-        "image": "https://broadwayinfosys.com/uploads/courses/67071735793969.jpg",
-
+        "id": 14,
+        "title": "UI/UX Design Training",
+        "category": "Design",
+        "duration": "2.5 Months",
+        "image": "/images/uiux-design.png"
     },
     {
-
-        "id": 3,
-        "title": "SAP Training",
-        "duration": "1 Month",
-        "image": "https://broadwayinfosys.com/uploads/courses/28831733917998.jpg",
-
-    },
-    {
-
-        "id": 4,
-        "title": "Sketchup Training",
-        "duration": "1 Month",
-        "image": "https://broadwayinfosys.com/uploads/courses/38411733918234.jpg",
-
-    },
-];
-
-export let Other = [
-    {
-        category: "Popular in Coding",
-        "id": 1,
-        "title": "Video Editing Training",
-        "duration": "1 Months",
-        "image": "//broadwayinfosys.com/uploads/courses/89121733728025.jpg",
-
-    },
-    {
-
-        "id": 2,
-        "title": "Accounting Training",
-        "duration": "2 Months",
-        "image": "https://broadwayinfosys.com/uploads/courses/17701733728065.jpg",
-
-    },
-    {
-
-        "id": 3,
-        "title": "Advanced Excel",
-        "duration": "1 Months",
-        "image": "https://broadwayinfosys.com/uploads/courses/49041733728208.jpg",
-
-    },
-    {
-
-        "id": 4,
+        "id": 15,
         "title": "C & C++ Programming Training",
+        "category": "Programming",
         "duration": "1.5 Months",
-        "image": "https://broadwayinfosys.com/uploads/courses/15581733727955.jpg",
-
+        "image": "/images/c-cpp.png"
     },
-];
+    {
+        "id": 16,
+        "title": "Auto-CAD Training",
+        "category": "Engineering",
+        "duration": "1.5 Months",
+        "image": "/images/auto-cad.png"
+    },
+    {
+        "id": 17,
+        "title": "AWS Cloud Practitioner Training",
+        "category": "Cloud",
+        "duration": "30 Hours",
+        "image": "/images/aws-cloud.png"
+    },
+    {
+        "id": 18,
+        "title": "Video Editing Training",
+        "category": "Multimedia",
+        "duration": "2 Months",
+        "image": "/images/video-editing.png"
+    },
+    {
+        "id": 19,
+        "title": "Accounting Training",
+        "category": "Finance",
+        "duration": "2 Months",
+        "image": "/images/accounting.png"
+    },
+  {
+        "id": 20,
+        "title": "Accounting Training",
+        "category": "Finance",
+        "duration": "2 Months",
+        "image": "/images/accounting-training.png"
+    },
+    {
+        "id": 21,
+        "title": "Advanced Excel",
+        "category": "Finance",
+        "duration": "1 Month",
+        "image": "/images/advanced-excel.png"
+    },
+    {
+        "id": 22,
+        "title": "Tally Training",
+        "category": "Finance",
+        "duration": "1 Month",
+        "image": "/images/tally-training.png"
+    },
+    {
+        "id": 23,
+        "title": "Income Tax Vat Training",
+        "category": "Finance",
+        "duration": "7 Days",
+        "image": "/images/tax-vat-training.png"
+    }
 
-
+]
