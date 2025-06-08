@@ -63,7 +63,7 @@ export const loginAdmin = async (req, res) => {
 
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "Invalid Password" });
     }
 
     // ✅ user लाई active बनाउने (online देखाउन)

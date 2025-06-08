@@ -28,6 +28,8 @@ export const admin = (req, res, next) => {
     res.status(403).json({ message: 'Admin access required' });
   }
 };
+
+
  export const authenticateToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
@@ -43,5 +45,17 @@ export const admin = (req, res, next) => {
     next();
   } catch (error) {
     return res.status(403).json({ message: 'Invalid token' });
+  }
+};
+
+
+
+
+
+export const adminOnly = (req, res, next) => {
+  if (req.user && req.user.isAdmin) {
+    next();
+  } else {
+    res.status(403).json({ message: 'Admin access only' });
   }
 };

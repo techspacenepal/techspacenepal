@@ -1,20 +1,40 @@
-// controllers/contactController.js
 import Contact from '../models/Contact.js';
 
-export const createContact = async (req, res) => {
+// @desc    Get all inquiries
+export const getContacts = async (req, res) => {
   try {
-    const { name, email, mobile, course, message } = req.body;
+    const inquiries = await Contact.find().sort({ createdAt: -1 });
+    res.status(200).json(inquiries);
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
 
-    if (!name || !email || !mobile || !course) {
-      return res.status(400).json({ error: 'Please fill all required fields' });
-    }
+// @desc    Create new inquiry
+export const createContact = async (req, res) => {
+  const { fullName, email, mobile, course, message } = req.body;
 
-    const contact = new Contact({ name, email, mobile, course, message });
-    await contact.save();
+  if (!fullName || !email || !mobile || !course) {
+    return res.status(400).json({ error: 'All required fields must be filled' });
+  }
 
-    res.status(201).json({ message: 'Contact inquiry submitted successfully' });
-  } catch (error) {
-    console.error('Error creating contact:', error);
+  try {
+    const newContact = new Contact({ fullName, email, mobile, course, message });
+    await newContact.save();
+    res.status(201).json({ message: 'Inquiry submitted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+// @desc    Delete inquiry
+export const deleteContact = async (req, res) => {
+  try {
+    const contact = await Contact.findByIdAndDelete(req.params.id);
+    if (!contact) return res.status(404).json({ error: 'Inquiry not found' });
+
+    res.status(200).json({ message: 'Contact deleted successfully' });
+  } catch (err) {
     res.status(500).json({ error: 'Server error' });
   }
 };

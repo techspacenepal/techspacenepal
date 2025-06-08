@@ -38,7 +38,7 @@ const AdminLoginPage: React.FC = () => {
       );
 
       toast.success("Login successful! Redirecting...");
-      setTimeout(() => router.push("/dashboard"), 1500);
+      setTimeout(() => router.push("/"), 1500);
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Login failed!");
     } finally {

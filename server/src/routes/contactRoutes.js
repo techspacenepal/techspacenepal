@@ -1,9 +1,14 @@
-// routes/contactRoutes.js
 import express from 'express';
-import { createContact } from '../controllers/contactController.js';
+import {
+  getContacts,
+  createContact,
+  deleteContact,
+} from '../controllers/contactController.js';
 
 const router = express.Router();
 
-router.post('/contact', createContact);
+router.get('/', getContacts);
+router.post('/', createContact);
+router.delete('/:id', deleteContact);
 
 export default router;

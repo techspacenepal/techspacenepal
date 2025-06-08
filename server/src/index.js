@@ -3,7 +3,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from "cors"
 import dbConnect from './db/connection.js';
-import { submitInquiry } from './controllers/inquiryController.js';
+import inquiryRoutes from './routes/inquiryRoute.js'
 import cookieParser from 'cookie-parser';
 import errorMiddleware from './middlewares/errorMiddleware.js';
 import authRoutes from './routes/authRoutes.js';
@@ -21,11 +21,11 @@ app.use(cookieParser());
 app.use(express.json());
 
 
-app.use("/api/inquiry", submitInquiry)
+app.use('/api/inquiry', inquiryRoutes);
 
 
 app.use('/api/auth', authRoutes);
-app.use('/api', contactRoutes);
+app.use('/api/contact', contactRoutes);
 
 
 // Test route (optional)
