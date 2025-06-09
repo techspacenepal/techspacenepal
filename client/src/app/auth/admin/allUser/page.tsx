@@ -35,15 +35,21 @@ const UserTable = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this user?')) return;
-    try {
-      await axios.delete(`http://localhost:5000/api/auth/${id}`);
-      setUsers((prev) => prev.filter((user) => user._id !== id));
-      toast.success('User deleted');
-    } catch {
-      toast.error('Delete failed');
-    }
-  };
+  if (!window.confirm('Are you sure you want to delete this user?')) return;
+  try {
+    const token = localStorage.getItem('adminToken'); // or from context
+    await axios.delete(`http://localhost:5000/api/auth/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setUsers((prev) => prev.filter((user) => user._id !== id));
+    toast.success('User deleted');
+  } catch (error: any) {
+    toast.error(error.response?.data?.message || 'Delete failed');
+  }
+};
+
 
   const filteredUsers = users.filter((user) =>
     [user.username, user.email, user.role]

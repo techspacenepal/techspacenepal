@@ -158,4 +158,3 @@ const AdminRegisterPage: React.FC = () => {
 };
 
 export default AdminRegisterPage;
-
