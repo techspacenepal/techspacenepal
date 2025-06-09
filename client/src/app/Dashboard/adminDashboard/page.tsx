@@ -33,26 +33,38 @@ interface Contact {
   createdAt: string;
 }
 
+interface UserType {
+  _id: string;
+  username: string;
+  email: string;
+  role: string;
+  createdAt: string;
+}
+
 const Dashboard = () => {
   const [inquiryCount, setInquiryCount] = useState(0);
   const [contactCount, setContactCount] = useState(0);
+  const [userCount, setUserCount] = useState(0);    // <-- new state for user count
   const [recentInquiries, setRecentInquiries] = useState<Inquiry[]>([]);
   const [recentContacts, setRecentContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
 
+
   // Fetch contact and inquiry counts
-  useEffect(() => {
+useEffect(() => {
     const fetchData = async () => {
       try {
-        const [inquiryRes, contactRes] = await Promise.all([
+        const [inquiryRes, contactRes, userRes] = await Promise.all([
           axios.get("http://localhost:5000/api/inquiry"),
           axios.get("http://localhost:5000/api/contact"),
+          axios.get("http://localhost:5000/api/auth/users"),  // <-- fetch users
         ]);
 
         const inquiries: Inquiry[] =
           inquiryRes.data.inquiries || inquiryRes.data;
         const contacts: Contact[] =
           contactRes.data.inquiries || contactRes.data;
+        const users: UserType[] = userRes.data.users || userRes.data;  // <-- users data
 
         const sortedInquiries = inquiries.sort(
           (a, b) =>
@@ -65,6 +77,7 @@ const Dashboard = () => {
 
         setInquiryCount(sortedInquiries.length);
         setContactCount(sortedContacts.length);
+        setUserCount(users.length);   // <-- set user count here
         setRecentInquiries(sortedInquiries.slice(0, 3));
         setRecentContacts(sortedContacts.slice(0, 3));
       } catch (err) {
@@ -90,7 +103,7 @@ const Dashboard = () => {
             <LayoutDashboard size={18} /> Dashboard
           </Link>
           <Link
-            href="/auth/admin/users"
+            href="/auth/admin/allUser"
             className="nav-link text-white d-flex align-items-center gap-2"
           >
             <User size={18} /> Users
@@ -135,23 +148,22 @@ const Dashboard = () => {
 
         {/* Stats Cards */}
         <div className="row g-3 mb-4">
-          {[
-            { title: "Total Users", value: 120 }, // Replace with dynamic value later if needed
-            { title: "Contacts", value: contactCount },
-            { title: "Inquiries", value: inquiryCount },
-            { title: "Services", value: 12 }, // Replace with dynamic value later if needed
-          ].map((stat, i) => (
-            <div className="col-md-3" key={i}>
-              <div className="card shadow-sm">
-                <div className="card-body">
-                  <h6 className="text-muted">{stat.title}</h6>
-                  <h4>{stat.value}</h4>
-                </div>
+        {[
+          { title: "Total Users", value: userCount },  
+          { title: "Contacts", value: contactCount },
+          { title: "Inquiries", value: inquiryCount },
+          { title: "Services", value: 12 }, // keep static for now
+        ].map((stat, i) => (
+          <div className="col-md-3" key={i}>
+            <div className="card shadow-sm">
+              <div className="card-body">
+                <h6 className="text-muted">{stat.title}</h6>
+                <h4>{stat.value}</h4>
               </div>
             </div>
-          ))}
-        </div>
-
+          </div>
+        ))}
+      </div>
         {/* Panels */}
         <div className="row g-4">
           {/* Inquiries Table */}

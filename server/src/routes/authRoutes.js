@@ -1,6 +1,7 @@
 import express from 'express';
 import { registerAdmin, loginAdmin, logoutAdmin, getAdminById, getUserById, getAllUsers, deleteUserByEmail, updateUserByEmail, login, logout, forgotPassword, resetPassword } from '../controllers/authController.js';
 import { authenticateToken } from '../middlewares/authMiddleware.js';
+import Auth from '../models/Auth.js';
 // import { protectSuperAdmin } from '../middlewares/protectSuperAdmin.js';
 
 const router = express.Router();
@@ -20,14 +21,16 @@ router.post('/reset-password/:token', resetPassword);
 
 // In authRoutes.js or similar
 
-router.get('/users', async (req, res) => {
+// GET /api/users - fetch all users or just user count
+router.get("/", async (req, res) => {
   try {
-    const users = await Auth.find({ role: 'user' }); // या सबै चाहिएको भए {}
-    res.status(200).json({ users });
+    const users = await Auth.find(); // fetch all users
+    res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ message: 'Failed to fetch users' });
+    res.status(500).json({ message: "Server error fetching users" });
   }
 });
+
 
 
  
