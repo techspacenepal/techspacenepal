@@ -33,6 +33,7 @@ interface Contact {
   createdAt: string;
 }
 
+
 const Dashboard = () => {
   const [inquiryCount, setInquiryCount] = useState(0);
   const [contactCount, setContactCount] = useState(0);
@@ -94,7 +95,7 @@ const Dashboard = () => {
               <span className="sidebar-text">Dashboard</span>
             </Link>
             <Link
-              href="/auth/admin/users"
+              href="/auth/admin/allUser"
               className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
             >
               <User size={18} />

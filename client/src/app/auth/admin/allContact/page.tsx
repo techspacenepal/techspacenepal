@@ -85,7 +85,7 @@ const ContactTable = () => {
         <p className="text-muted">No contact found.</p>
       ) : (
         <div className="table-responsive bg-white rounded shadow-sm">
-          <table className="table table-bordered table-hover align-middle">
+          <table className="table table-bordered table-hover align-middle table_INquiry">
             <thead className="table-primary text-center">
               <tr>
                 <th>#</th>
