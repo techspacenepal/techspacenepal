@@ -170,29 +170,32 @@ header.sticky.animated-sticky {
 
 
 /* header skills */
- .nav-item.dropdown:hover .dropdown-menu {
-    display: block;
-    animation: fadeIn 0.3s ease-in-out;
-    top: 100% !important; /* aligns dropdown to bottom of nav item */
-    margin-top: 0px !important; /* no spacing */
+.nav-item.dropdown:hover .dropdown-menu {
+  display: block;
+  animation: fadeIn 0.3s ease-in-out;
+  top: 100% !important;
+  /* aligns dropdown to bottom of nav item */
+  margin-top: 0px !important;
+  /* no spacing */
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
 
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  /* Slide-in collapse from right */
+}
+
+/* Slide-in collapse from right */
 
 
 @media (max-width: 767.98px) {
-  header > :first-child {
+  header> :first-child {
     display: none !important;
   }
 }
@@ -249,7 +252,8 @@ body:not(.right-menu-open) .custom-backdrop {
 .navbar-nav {
   padding-left: 1rem;
   padding-right: 1rem;
-  gap: 1.5rem; /* nice spacing between menu items */
+  gap: 1.5rem;
+  /* nice spacing between menu items */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-weight: 600;
   font-size: 1.05rem;
@@ -273,7 +277,8 @@ body:not(.right-menu-open) .custom-backdrop {
 .navbar-nav .nav-link.active,
 .navbar-nav .nav-link:hover,
 .navbar-nav .nav-link:focus {
-  color: #0d6efd; /* Bootstrap primary blue */
+  color: #0d6efd;
+  /* Bootstrap primary blue */
   outline: none;
 }
 
@@ -291,7 +296,8 @@ body:not(.right-menu-open) .custom-backdrop {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1050; /* Bootstrap nav high z-index */
+  z-index: 1050;
+  /* Bootstrap nav high z-index */
   background-color: white;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   animation: slideDown 0.4s ease forwards;
@@ -303,6 +309,7 @@ body:not(.right-menu-open) .custom-backdrop {
     transform: translateY(-100%);
     opacity: 0;
   }
+
   100% {
     transform: translateY(0);
     opacity: 1;
@@ -317,25 +324,31 @@ body:not(.right-menu-open) .custom-backdrop {
   .navbar-nav.d-none.d-lg-flex {
     display: none !important;
   }
+
   nav.navbar .container.d-flex {
     justify-content: space-between;
     position: relative;
   }
+
   .nav-item.dropdown {
     order: 2;
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    z-index: 1050; /* Bootstrap dropdown default z-index */
+    z-index: 1050;
+    /* Bootstrap dropdown default z-index */
   }
+
   .navbar-brand {
     order: 1;
   }
+
   .navbar-toggler {
     order: 3;
   }
-  .nav-item.dropdown > a.nav-link {
+
+  .nav-item.dropdown>a.nav-link {
     font-size: 1.1rem;
   }
 }
@@ -346,3 +359,96 @@ footer i {
   transition: all 0.3s ease;
   cursor: pointer;
 }
+
+
+
+.sidebar {
+  width: 70px;
+  min-height: 100vh;
+  transition: width 0.3s ease;
+  overflow-x: hidden;
+  white-space: nowrap;
+  position: relative;
+}
+
+.sidebar:hover {
+  width: 250px;
+}
+
+.sidebar-text {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.sidebar:hover .sidebar-text {
+  opacity: 1;
+}
+
+.sidebar-title {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  font-size: 1.25rem;
+}
+
+.sidebar:hover .sidebar-title {
+  opacity: 1;
+}
+
+.sidebar-toggle-btn {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1200;
+  background-color: #343a40;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.sidebar-wrapper {
+  transition: transform 0.3s ease;
+}
+
+@media (max-width: 767px) {
+  .sidebar-wrapper.closed {
+    transform: translateX(-100%);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 250px;
+    background: #212529;
+    z-index: 1100;
+    overflow-y: auto;
+  }
+
+  .sidebar-wrapper.open {
+    transform: translateX(0);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 250px;
+    background: #212529;
+    z-index: 1100;
+    overflow-y: auto;
+  }
+}
+
+@media (min-width: 768px) {
+  .sidebar-toggle-btn {
+    display: none;
+  }
+
+  .sidebar-wrapper {
+    transform: none !important;
+    position: relative !important;
+    width: 250px;
+  }
+}
+
+
+

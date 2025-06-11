@@ -51,38 +51,29 @@ export const registerAdmin = async (req, res) => {
 
 
 
-// ✅ Login Admin or User
 export const loginAdmin = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await Auth.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    const admin = await Auth.findOne({ email });
+
+    if (!admin || !(await admin.comparePassword(password))) {
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const isMatch = await user.matchPassword(password);
-    if (!isMatch) {
-      return res.status(401).json({ message: "Invalid Password" });
-    }
-
-    // ✅ user लाई active बनाउने (online देखाउन)
-    user.active = true;
-    await user.save();
-
-    const token = generateToken(user._id, user.role);
+    const token = jwt.sign(
+      { id: admin._id, role: admin.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
 
     res.status(200).json({
       token,
-      admin: {
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-        active: user.active, 
-      },
+      username: admin.username, // or name, whatever you use
+      role: admin.role,         // << send this!
     });
-  } catch (error) {
+  } catch (err) {
+    console.error("Login error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -151,16 +142,19 @@ export const getAllUsers = async (req, res) => {
 };
 
 
-// DELETE user by email
-export const deleteUserByEmail = async (req, res) => {
+
+// ✅ Delete by ID
+export const deleteUserById = async (req, res) => {
   try {
-    const user = await Auth.findOneAndDelete({ email: req.params.email });
+    const user = await Auth.findByIdAndDelete(req.params.id);
     if (!user) return res.status(404).json({ message: "User not found" });
+
     res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
 
 // UPDATE user by email
 export const updateUserByEmail = async (req, res) => {
@@ -204,6 +198,9 @@ export const login = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+
+
 
 export const logout = async (req, res) => {
   try {
@@ -277,5 +274,48 @@ export const resetPassword = async (req, res) => {
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+
+
+
+//// google login -------------------
+
+export const googleLogin = async (req, res) => {
+  const { email, googleId, username } = req.body;
+
+  try {
+    let user = await Auth.findOne({ email });
+
+    if (user) {
+      // यदि user पहिले नै छ भने, check googleId
+      if (!user.googleId) {
+        user.googleId = googleId;
+        await user.save();
+      }
+    } else {
+      // नयाँ प्रयोगकर्ता create गर्नुहोस्
+      user = await Auth.create({
+        username,
+        email,
+        googleId,
+        role: 'user',
+        active: true,
+      });
+    }
+
+    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
+      expiresIn: '7d',
+    });
+
+    res.status(200).json({
+      token,
+      role: user.role,
+      username: user.username,
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Google login failed', error });
   }
 };
