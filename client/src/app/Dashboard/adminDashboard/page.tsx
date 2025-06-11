@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Cookies from "js-cookie";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   Bell,
@@ -12,6 +13,8 @@ import {
   LogOut,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 
 interface Inquiry {
   _id: string;
@@ -33,27 +36,51 @@ interface Contact {
   createdAt: string;
 }
 
+interface UserType {
+  _id: string;
+  username: string;
+  email: string;
+  role: string;
+  createdAt: string;
+}
 
 const Dashboard = () => {
   const [inquiryCount, setInquiryCount] = useState(0);
   const [contactCount, setContactCount] = useState(0);
+  const [userCount, setUserCount] = useState(0);
   const [recentInquiries, setRecentInquiries] = useState<Inquiry[]>([]);
   const [recentContacts, setRecentContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch contact and inquiry counts
+
+
+  const router = useRouter();
+
   useEffect(() => {
+    const token = Cookies.get("adminToken");
+    if (!token) {
+      router.push("/auth/adminLogin");
+    }
+  }, [router]);
+
+
+
+
+  // Fetch contact and inquiry counts
+   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [inquiryRes, contactRes] = await Promise.all([
+        const [inquiryRes, contactRes, userRes] = await Promise.all([
           axios.get("http://localhost:5000/api/inquiry"),
           axios.get("http://localhost:5000/api/contact"),
+          axios.get("http://localhost:5000/api/auth/users"),
         ]);
 
         const inquiries: Inquiry[] =
           inquiryRes.data.inquiries || inquiryRes.data;
         const contacts: Contact[] =
           contactRes.data.inquiries || contactRes.data;
+        const users: UserType[] = userRes.data.users || userRes.data;
 
         const sortedInquiries = inquiries.sort(
           (a, b) =>
@@ -66,6 +93,7 @@ const Dashboard = () => {
 
         setInquiryCount(sortedInquiries.length);
         setContactCount(sortedContacts.length);
+        setUserCount(users.length);
         setRecentInquiries(sortedInquiries.slice(0, 3));
         setRecentContacts(sortedContacts.slice(0, 3));
       } catch (err) {
@@ -77,6 +105,12 @@ const Dashboard = () => {
 
     fetchData();
   }, []);
+
+  const handleLogout = () => {
+    Cookies.remove("adminToken");
+    router.push("/auth/adminLogin");
+  };
+
 
   return (
     <>
@@ -151,7 +185,7 @@ const Dashboard = () => {
             {/* Stats Cards */}
             <div className="row g-3 mb-4">
               {[
-                { title: "Total Users", value: 120 },
+                { title: "Total Users", value: userCount },
                 { title: "Contacts", value: contactCount },
                 { title: "Inquiries", value: inquiryCount },
                 { title: "Services", value: 12 },

@@ -151,16 +151,19 @@ export const getAllUsers = async (req, res) => {
 };
 
 
-// DELETE user by email
-export const deleteUserByEmail = async (req, res) => {
+
+// ✅ Delete by ID
+export const deleteUserById = async (req, res) => {
   try {
-    const user = await Auth.findOneAndDelete({ email: req.params.email });
+    const user = await Auth.findByIdAndDelete(req.params.id);
     if (!user) return res.status(404).json({ message: "User not found" });
+
     res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
 
 // UPDATE user by email
 export const updateUserByEmail = async (req, res) => {
@@ -204,6 +207,9 @@ export const login = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+
+
 
 export const logout = async (req, res) => {
   try {
