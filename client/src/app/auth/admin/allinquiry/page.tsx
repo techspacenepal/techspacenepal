@@ -13,6 +13,12 @@ interface Inquiry {
   message?: string;
   createdAt: string;
 }
+const cellStyle = {
+  border: "1px solid #dee2e6",
+  verticalAlign: "middle",
+  padding: "0.75rem",
+  backgroundColor: "#fff",
+};
 
 const InquiryTable = () => {
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
@@ -62,65 +68,101 @@ const InquiryTable = () => {
   return (
     <div className="container py-5">
       <Toaster />
-      <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
-        <h2 className="text-primary fw-bold"> All Courses Inquiries</h2>
+      <div className="row align-items-center mb-4 g-3">
+        {/* Title */}
+        <div className="col-12 col-md-6">
+          <h2 className="text-primary fw-bold m-0">All Courses Inquiries</h2>
+        </div>
 
-        <div className="input-group w-100 w-md-50">
-          <span className="input-group-text bg-white">
-            <i className="bi bi-search" />
-          </span>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Search by name, mobile, email, course..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+        {/* Search Input */}
+        <div className="col-12 col-md-6">
+          <div className="input-group">
+            <span className="input-group-text bg-white">
+              <i className="bi bi-search" />
+            </span>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Search by name, mobile, email, course..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
         </div>
       </div>
+
 
       {loading ? (
         <p>Loading...</p>
       ) : filteredInquiries.length === 0 ? (
         <p className="text-muted">No inquiries found.</p>
       ) : (
-        <div className="table-responsive bg-white rounded shadow-sm">
-          <table className="table table-bordered table-hover align-middle">
-            <thead className="table-primary text-center">
-              <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Mobile</th>
-                <th>Email</th>
-                <th>Course</th>
-                <th>Message</th>
-                <th>Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredInquiries.map((inq, idx) => (
-                <tr key={inq._id} className="text-center">
-                  <td>{idx + 1}</td>
-                  <td>{inq.fullName}</td>
-                  <td>{inq.mobile}</td>
-                  <td>{inq.email}</td>
-                  <td>{inq.course}</td>
-                  <td>{inq.message || '-'}</td>
-                  <td>{new Date(inq.createdAt).toLocaleDateString()}</td>
-                  <td>
-                    <button
-                      onClick={() => handleDelete(inq._id)}
-                      className="btn btn-sm btn-danger"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+       <div className="bg-white rounded-4 shadow border border-2 overflow-hidden">
+  <table
+    className="table table-striped table-hover align-middle mb-0 w-100"
+    style={{
+      borderCollapse: "separate",
+      borderSpacing: 0,
+      tableLayout: "fixed", // fixes column widths
+      wordWrap: "break-word",
+    }}
+  >
+    <thead className="bg-primary text-white text-center">
+      <tr>
+        <th scope="col" style={cellStyle}>#</th>
+        <th scope="col" style={cellStyle}>Name</th>
+        <th scope="col" style={cellStyle}>Mobile</th>
+        <th scope="col" style={cellStyle}>Email</th>
+        <th scope="col" style={cellStyle}>Course</th>
+        <th scope="col" style={cellStyle}>Message</th>
+        <th scope="col" style={cellStyle}>Date</th>
+        <th scope="col" style={cellStyle}>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {filteredInquiries.map((inq, idx) => (
+        <tr key={inq._id} className="text-center">
+          <td style={cellStyle}>{idx + 1}</td>
+          <td style={cellStyle} className="text-capitalize">{inq.fullName}</td>
+          <td style={cellStyle}>{inq.mobile}</td>
+          <td style={cellStyle} className="text-lowercase">{inq.email}</td>
+          <td style={cellStyle}>{inq.course}</td>
+          <td style={cellStyle}>{inq.message || '-'}</td>
+          <td style={cellStyle}>
+            {new Date(inq.createdAt).toLocaleDateString()}
+          </td>
+          <td style={cellStyle}>
+            <button
+              onClick={() => handleDelete(inq._id)}
+              className="btn btn-sm btn-outline-danger"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  {/* Responsive style for mobile */}
+  <style jsx>{`
+    @media (max-width: 768px) {
+      table {
+        font-size: 13px;
+      }
+
+      th,
+      td {
+        white-space: normal !important;
+        word-break: break-word;
+      }
+    }
+  `}</style>
+</div>
+
+
+
+
       )}
     </div>
   );
