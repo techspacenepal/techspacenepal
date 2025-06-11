@@ -13,6 +13,8 @@ import session from 'express-session';
 import jwt from "jsonwebtoken";
 import './utils/passport.js';
 import passport from 'passport';
+import path from "path";
+import galleryRoutes from "./routes/galleryRoutes.js";
 
 const app = express();
 dotenv.config();
@@ -23,13 +25,22 @@ dbConnect();
 app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/inquiry', inquiryRoutes);
 
 
 app.use('/api/auth', authRoutes);
 app.use('/api/contact', contactRoutes);
+
+
+
+
+// Serve image files from uploads
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+
+// API route
+app.use("/api/gallery", galleryRoutes);;
 
 
 // Test route (optional)

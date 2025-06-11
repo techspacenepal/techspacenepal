@@ -35,20 +35,20 @@ const UserTable = () => {
   };
 
   const handleDelete = async (id: string) => {
-  if (!window.confirm('Are you sure you want to delete this user?')) return;
-  try {
-    const token = localStorage.getItem('adminToken'); // or from context
-    await axios.delete(`http://localhost:5000/api/auth/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    setUsers((prev) => prev.filter((user) => user._id !== id));
-    toast.success('User deleted');
-  } catch (error: any) {
-    toast.error(error.response?.data?.message || 'Delete failed');
-  }
-};
+    if (!window.confirm('Are you sure you want to delete this user?')) return;
+    try {
+      const token = localStorage.getItem('adminToken'); // or from context
+      await axios.delete(`http://localhost:5000/api/auth/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUsers((prev) => prev.filter((user) => user._id !== id));
+      toast.success('User deleted');
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Delete failed');
+    }
+  };
 
 
   const filteredUsers = users.filter((user) =>
@@ -65,22 +65,29 @@ const UserTable = () => {
   return (
     <div className="container py-5">
       <Toaster />
-      <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
-        <h2 className="text-primary fw-bold">All Registered Users</h2>
+      <div className="row align-items-center mb-4 g-3">
+        {/* Heading: col-12 on mobile, col-6 on md+ */}
+        <div className="col-12 col-md-6">
+          <h2 className="text-primary fw-bold m-0">All Registered Users</h2>
+        </div>
 
-        <div className="input-group w-100 w-md-50">
-          <span className="input-group-text bg-white">
-            <i className="bi bi-search" />
-          </span>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Search by username, email, role..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+        {/* Input: col-12 on mobile, col-6 on md+ */}
+        <div className="col-12 col-md-6">
+          <div className="input-group w-100">
+            <span className="input-group-text bg-white">
+              <i className="bi bi-search" />
+            </span>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Search by username, email, role..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
         </div>
       </div>
+
 
       {loading ? (
         <p>Loading...</p>
@@ -88,7 +95,7 @@ const UserTable = () => {
         <p className="text-muted">No users found.</p>
       ) : (
         <div className="table-responsive bg-white rounded shadow-sm">
-          <table className="table table-bordered table-hover align-middle">
+          <table className="table table-bordered table-hover align-middle  mb-0">
             <thead className="table-primary text-center">
               <tr>
                 <th>#</th>
