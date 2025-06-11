@@ -9,13 +9,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/app/context/AuthContext";
 
-// import { signInWithPopup } from "firebase/auth";
-// import { auth, googleProvider } from "@/firebaseconfigurations/config";
+import { signInWithPopup } from "firebase/auth";
+import { auth, githubProvider, googleProvider } from "@/firebaseconfigurations/config";
+import { GithubIcon } from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
 
 
 
 
 const AdminLoginPage: React.FC = () => {
+
+  
  
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -53,28 +57,61 @@ const AdminLoginPage: React.FC = () => {
   };
 
 
-  /// -----google login in user --------
+  // -----google login in user --------
 
-//   const handleFirebaseGoogleLogin = async () => {
-//   try {
-//     const result = await signInWithPopup(auth, googleProvider);
+  const handleFirebaseGoogleLogin = async () => {
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
    
-//     const user = result.user;
+    const user = result.user;
 
-//     console.log("User info:", user);
+    console.log("User info:", user);
 
-//     // Add user info to localStorage / redirect as needed
-//     toast.success("Firebase Google login successful!");
+    // Add user info to localStorage / redirect as needed
+    toast.success("Firebase Google login successful!");
 
-//     setTimeout(() => {
-//       router.push("/Dashboard/adminDashboard"); // ✅ Use Next.js router here
-//     }, 1500);
+    setTimeout(() => {
+      router.push("/Dashboard/adminDashboard"); // ✅ Use Next.js router here
+    }, 1500);
 
-//   } catch (error) {
-//     console.error("Firebase error:", error);
-//     toast.error("Firebase Google login failed!");
-//   }
-// };
+  } catch (error) {
+    console.error("Firebase error:", error);
+    toast.error("Firebase Google login failed!");
+  }
+};
+
+
+
+  //-----Github login
+  const handleFirebaseGithubLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, githubProvider);
+      const user = result.user;
+
+      toast.success(" GitHub login successful!");
+
+      // Send to backend to get user role
+      const { data } = await axios.post(
+        "http://localhost:5000/api/auth/google-login",
+        {
+          email: user.email,
+          name: user.displayName,
+        }
+      );
+
+      const userRole = data.role;
+
+      if (userRole === "admin") {
+        router.push("/Dashboard/adminDashboard");
+      } else {
+        router.push("/Dashboard/userDashboard");
+      }
+    } catch (error) {
+      console.error("Firebase error:", error);
+      toast.error("Firebase Google login failed!");
+    }
+  };
+
 
 
 
@@ -142,12 +179,23 @@ const AdminLoginPage: React.FC = () => {
             </Link>
           </div>
 
-          {/* <div className="d-grid gap-2 mb-3">
-           
-            <button className="btn btn-outline-danger" onClick={handleFirebaseGoogleLogin} type="button">
-              Sign in with Google 
-            </button>
-          </div> */}
+          <div className="d-flex gap-3 my-3 justify-content-center align-items-center">
+          <button
+            className="btn btn-outline-danger d-flex justify-content-center align-items-center"
+            onClick={handleFirebaseGoogleLogin}
+            type="button"
+          >
+            <FcGoogle size={24} />
+          </button>
+
+          <button
+            className="btn btn-outline-danger d-flex justify-content-center align-items-center"
+            onClick={handleFirebaseGithubLogin}
+            type="button"
+          >
+            <GithubIcon size={22} />
+          </button>
+        </div>
 
           <p className="text-center">
             <Link href="/" className="text-primary text-decoration-none">← Back to Home</Link>

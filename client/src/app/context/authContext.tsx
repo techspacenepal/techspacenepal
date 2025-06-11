@@ -19,6 +19,10 @@ interface AuthContextType {
   isLoading: boolean;
 }
 
+
+
+
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -27,6 +31,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+
+////---------------------------------------------login and display header part in Dashboard
+   const [role, setRole] = useState("");
+
+
+    useEffect(() => {
+    // LocalStorage मा token भएमा login भएको मान्ने
+    const token = localStorage.getItem("adminToken");
+    if (token) {
+      setIsAuthenticated(true);
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      setRole(user?.role || "");
+    }
+  }, []);
+
+
+
+   // Login function: login पछि token र role सेट गर्ने
+  const Login = (token: string, userRole: string) => {
+    setIsAuthenticated(true);
+    setRole(userRole);
+  };
+
+  //-----------------------------------
+
 
   useEffect(() => {
     const storedToken = Cookies.get('adminToken') || localStorage.getItem('adminToken');
@@ -65,7 +94,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     Cookies.remove('adminToken');
     localStorage.removeItem('adminToken');
     localStorage.removeItem('user');
-    router.push('/login');
+    router.push('/auth/adminLogin');
   };
 
   return (
