@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from "react";
@@ -8,6 +7,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { HomeIcon } from "lucide-react";
+import { signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "@/firebaseconfigurations/config";
 
 const AdminRegisterPage: React.FC = () => {
   const router = useRouter();
@@ -33,9 +34,7 @@ const AdminRegisterPage: React.FC = () => {
     }
 
     if (!isStrongPassword(password)) {
-      toast.error(
-        "Password must be 8+ chars with uppercase, lowercase, number, and symbol"
-      );
+      toast.error("Password must be 8+ chars with uppercase, lowercase, number, and symbol");
       setLoading(false);
       return;
     }
@@ -57,88 +56,100 @@ const AdminRegisterPage: React.FC = () => {
     }
   };
 
+  // const handleFirebaseGoogleLogin = async () => {
+  //   try {
+  //     const result = await signInWithPopup(auth, googleProvider);
+  //     const user = result.user;
+  //     console.log("User info:", user);
+  //     toast.success("Firebase Google login successful!");
+
+  //     // You might want to send `user.email` to your backend as well for registration/login
+  //     setTimeout(() => {
+  //       router.push("/Dashboard/adminDashboard");
+  //     }, 1500);
+  //   } catch (error) {
+  //     console.error("Firebase error:", error);
+  //     toast.error("Firebase Google login failed!");
+  //   }
+  // };
+
+
+
+///----------------------------new code
+  const handleFirebaseGoogleLogin = async () => {
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    const user = result.user;
+
+    toast.success("Firebase Google login successful!");
+
+    // Send to backend to get user role
+    const { data } = await axios.post("http://localhost:5000/api/auth/google-login", {
+      email: user.email,
+      name: user.displayName,
+    });
+
+    const userRole = data.role;
+
+    if (userRole === "admin") {
+      router.push("/Dashboard/adminDashboard");
+    } else {
+      router.push("/Dashboard/userDashboard");
+    }
+  } catch (error) {
+    console.error("Firebase error:", error);
+    toast.error("Firebase Google login failed!");
+  }
+};
+
+//--------------------------
+
+
   return (
     <div className="container d-flex align-items-center justify-content-center min-vh-100 bg-light">
       <Toaster position="top-right" />
       <div className="card shadow p-4" style={{ maxWidth: "500px", width: "100%" }}>
         <div className="text-center mb-3">
-          <Image
-            src="/logo.jpg"
-            alt="Krisha Logo"
-            width={90}
-            height={80}
-            className="img-fluid"
-          />
+          <Image src="/logo.jpg" alt="Logo" width={90} height={80} />
           <p className="fw-bold text-muted mt-2">Please sign in to access your account</p>
         </div>
 
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label className="form-label">Username</label>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="admin123"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
+            <input type="text" className="form-control" value={username} onChange={(e) => setUsername(e.target.value)} required />
           </div>
 
           <div className="mb-3">
             <label className="form-label">Email</label>
-            <input
-              type="email"
-              className="form-control"
-              placeholder="admin@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+            <input type="email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} required />
           </div>
 
           <div className="mb-3">
             <label className="form-label">Password</label>
-            <input
-              type="password"
-              className="form-control"
-              placeholder="********"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <input type="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} required />
           </div>
 
           <div className="mb-4">
             <label className="form-label">Role</label>
-            <select
-              className="form-select"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              required
-            >
+            <select className="form-select" value={role} onChange={(e) => setRole(e.target.value)} required>
               <option value="admin">Admin</option>
               <option value="user">User</option>
             </select>
           </div>
 
-          <button
-            type="submit"
-            className="btn btn-danger w-100 d-flex justify-content-center align-items-center"
-            disabled={loading}
-          >
-            {loading && (
-              <span
-                className="spinner-border spinner-border-sm me-2"
-                role="status"
-                aria-hidden="true"
-              ></span>
-            )}
+          <button type="submit" className="btn btn-danger w-100" disabled={loading}>
             {loading ? "Registering..." : "Register"}
           </button>
         </form>
 
-        <p className="text-center mt-3">
+        <div className="d-grid gap-2 my-3">
+          <button className="btn btn-outline-danger" onClick={handleFirebaseGoogleLogin} type="button">
+            Sign in with Google
+          </button>
+        </div>
+
+        <p className="text-center">
           Already have an account?{" "}
           <Link href="/auth/adminLogin" className="text-primary fw-medium">
             Login here

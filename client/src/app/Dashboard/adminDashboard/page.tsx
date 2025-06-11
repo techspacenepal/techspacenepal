@@ -15,6 +15,7 @@ import {
   LayoutDashboard,
   LogOut,
 } from "lucide-react";
+import { useAuth } from "@/app/context/authContext";
 
 interface Inquiry {
   _id: string;
@@ -45,6 +46,9 @@ interface UserType {
 }
 
 const Dashboard = () => {
+  const router = useRouter();
+  const isAdmin = useAuth();
+
   const [inquiryCount, setInquiryCount] = useState(0);
   const [contactCount, setContactCount] = useState(0);
   const [userCount, setUserCount] = useState(0);
@@ -52,7 +56,11 @@ const Dashboard = () => {
   const [recentContacts, setRecentContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const router = useRouter();
+  useEffect(() => {
+    if (!isAdmin) {
+      router.push("/auth/adminLogin");
+    }
+  }, [isAdmin]);
 
   useEffect(() => {
     const token = Cookies.get("adminToken");
@@ -106,146 +114,156 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="d-flex min-vh-100 bg-light">
-      {/* Sidebar */}
-      <aside className="bg-dark text-white p-3" style={{ width: "250px" }}>
-        <h2 className="mb-4">Admin Panel</h2>
-        <nav className="nav flex-column gap-2">
-          <Link
-            href="/auth/admin/dashboard"
-            className="nav-link text-white d-flex align-items-center gap-2"
-          >
-            <LayoutDashboard size={18} /> Dashboard
-          </Link>
-          <Link
-            href="/auth/admin/allUser"
-            className="nav-link text-white d-flex align-items-center gap-2"
-          >
-            <User size={18} /> Users
-          </Link>
-          <Link
-            href="/auth/admin/allContact"
-            className="nav-link text-white d-flex align-items-center gap-2"
-          >
-            <Calendar size={18} /> Contacts
-          </Link>
-          <Link
-            href="/auth/admin/allinquiry"
-            className="nav-link text-white d-flex align-items-center gap-2"
-          >
-            <MessageSquare size={18} /> Inquiries
-          </Link>
-          <Link
-            href="/auth/admin/services"
-            className="nav-link text-white d-flex align-items-center gap-2"
-          >
-            <LayoutDashboard size={18} /> Services
-          </Link>
-          <button
-            onClick={handleLogout}
-            className="nav-link text-danger d-flex align-items-center gap-2 btn btn-link text-start p-0"
-          >
-            <LogOut size={18} /> Logout
-          </button>
-        </nav>
-      </aside>
+    <>
+      {isAdmin && (
+        <div className="d-flex min-vh-100 bg-light">
+          {/* Sidebar */}
+          <aside className="bg-dark text-white p-3" style={{ width: "250px" }}>
+            <h2 className="mb-4">Admin Panel</h2>
+            <nav className="nav flex-column gap-2">
+              <Link
+                href="/auth/admin/dashboard"
+                className="nav-link text-white d-flex align-items-center gap-2"
+              >
+                <LayoutDashboard size={18} /> Dashboard
+              </Link>
+              <Link
+                href="/auth/admin/allUser"
+                className="nav-link text-white d-flex align-items-center gap-2"
+              >
+                <User size={18} /> Users
+              </Link>
+              <Link
+                href="/auth/admin/allContact"
+                className="nav-link text-white d-flex align-items-center gap-2"
+              >
+                <Calendar size={18} /> Contacts
+              </Link>
+              <Link
+                href="/auth/admin/allinquiry"
+                className="nav-link text-white d-flex align-items-center gap-2"
+              >
+                <MessageSquare size={18} /> Inquiries
+              </Link>
+              <Link
+                href="/auth/admin/services"
+                className="nav-link text-white d-flex align-items-center gap-2"
+              >
+                <LayoutDashboard size={18} /> Services
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="nav-link text-danger d-flex align-items-center gap-2 btn btn-link text-start p-0"
+              >
+                <LogOut size={18} /> Logout
+              </button>
+            </nav>
+          </aside>
 
-      {/* Main Content */}
-      <main className="flex-grow-1 p-4">
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <h1 className="h3 fw-bold">Dashboard</h1>
-          <div className="d-flex gap-3">
-            <Bell size={22} />
-            <User size={22} />
-          </div>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="row g-3 mb-4">
-          {[
-            { title: "Total Users", value: userCount },
-            { title: "Contacts", value: contactCount },
-            { title: "Inquiries", value: inquiryCount },
-            { title: "Services", value: 12 },
-          ].map((stat, i) => (
-            <div className="col-md-3" key={i}>
-              <div className="card shadow-sm">
-                <div className="card-body">
-                  <h6 className="text-muted">{stat.title}</h6>
-                  <h4>{stat.value}</h4>
-                </div>
+          {/* Main Content */}
+          <main className="flex-grow-1 p-4">
+            <div className="d-flex justify-content-between align-items-center mb-4">
+              <h1 className="h3 fw-bold">Dashboard</h1>
+              <div className="d-flex gap-3">
+                <Bell size={22} />
+                <User size={22} />
               </div>
             </div>
-          ))}
-        </div>
 
-        {/* Panels */}
-        <div className="row g-4">
-          {/* Recent Contacts */}
-          <div className="col-md-6">
-            <div className="card shadow-sm">
-              <div className="bg-white p-4 rounded-lg shadow mt-6">
-                <h3 className="text-xl font-bold mb-4 text-gray-800">
-                  Recent Contacts
-                </h3>
-                <ul className="divide-y divide-gray-200">
-                  {recentContacts
-                    .sort(
-                      (a, b) =>
-                        new Date(b.createdAt).getTime() -
-                        new Date(a.createdAt).getTime()
-                    )
-                    .slice(0, 3)
-                    .map((con) => (
-                      <li key={con._id} className="py-1">
-                        <p className="font-semibold">
-                          {con.name} - {con.course}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          {new Date(con.createdAt).toLocaleDateString()}
-                        </p>
-                      </li>
-                    ))}
-                  {recentContacts.length === 0 && (
-                    <li className="text-gray-500">No recent contacts found.</li>
-                  )}
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          {/* Services Panel */}
-          <div className="col-md-6">
-            <div className="card shadow-sm">
-              <div className="card-body">
-                <h5 className="card-title mb-3">Manage Services</h5>
-                <div className="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2">
-                  <span>Web Development</span>
-                  <div>
-                    <button className="btn btn-outline-secondary btn-sm me-2">
-                      Edit
-                    </button>
-                    <button className="btn btn-danger btn-sm">Delete</button>
+            {/* Stats Cards */}
+            <div className="row g-3 mb-4">
+              {[
+                { title: "Total Users", value: userCount },
+                { title: "Contacts", value: contactCount },
+                { title: "Inquiries", value: inquiryCount },
+                { title: "Services", value: 12 },
+              ].map((stat, i) => (
+                <div className="col-md-3" key={i}>
+                  <div className="card shadow-sm">
+                    <div className="card-body">
+                      <h6 className="text-muted">{stat.title}</h6>
+                      <h4>{stat.value}</h4>
+                    </div>
                   </div>
                 </div>
-                <div className="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2">
-                  <span>SEO Optimization</span>
-                  <div>
-                    <button className="btn btn-outline-secondary btn-sm me-2">
-                      Edit
-                    </button>
-                    <button className="btn btn-danger btn-sm">Delete</button>
+              ))}
+            </div>
+
+            {/* Panels */}
+            <div className="row g-4">
+              {/* Recent Contacts */}
+              <div className="col-md-6">
+                <div className="card shadow-sm">
+                  <div className="bg-white p-4 rounded-lg shadow mt-6">
+                    <h3 className="text-xl font-bold mb-4 text-gray-800">
+                      Recent Contacts
+                    </h3>
+                    <ul className="divide-y divide-gray-200">
+                      {recentContacts
+                        .sort(
+                          (a, b) =>
+                            new Date(b.createdAt).getTime() -
+                            new Date(a.createdAt).getTime()
+                        )
+                        .slice(0, 3)
+                        .map((con) => (
+                          <li key={con._id} className="py-1">
+                            <p className="font-semibold">
+                              {con.name} - {con.course}
+                            </p>
+                            <p className="text-sm text-gray-600">
+                              {new Date(con.createdAt).toLocaleDateString()}
+                            </p>
+                          </li>
+                        ))}
+                      {recentContacts.length === 0 && (
+                        <li className="text-gray-500">
+                          No recent contacts found.
+                        </li>
+                      )}
+                    </ul>
                   </div>
                 </div>
-                <button className="btn btn-primary w-100 mt-3">
-                  Add New Service
-                </button>
+              </div>
+
+              {/* Services Panel */}
+              <div className="col-md-6">
+                <div className="card shadow-sm">
+                  <div className="card-body">
+                    <h5 className="card-title mb-3">Manage Services</h5>
+                    <div className="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2">
+                      <span>Web Development</span>
+                      <div>
+                        <button className="btn btn-outline-secondary btn-sm me-2">
+                          Edit
+                        </button>
+                        <button className="btn btn-danger btn-sm">
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                    <div className="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2">
+                      <span>SEO Optimization</span>
+                      <div>
+                        <button className="btn btn-outline-secondary btn-sm me-2">
+                          Edit
+                        </button>
+                        <button className="btn btn-danger btn-sm">
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                    <button className="btn btn-primary w-100 mt-3">
+                      Add New Service
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          </main>
         </div>
-      </main>
-    </div>
+      )}
+    </>
   );
 };
 
