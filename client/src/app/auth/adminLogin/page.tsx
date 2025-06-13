@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useAuth } from "@/app/context/AuthContext";
 
 import {  signInWithPopup } from "firebase/auth";
-import { auth,  facebookProvider,  githubProvider, googleProvider } from "@/firebaseconfigurations/config";
+import { auth,    facebookProvider,    githubProvider, googleProvider } from "@/firebaseconfigurations/config";
 import { Facebook, GithubIcon } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 
@@ -213,6 +213,44 @@ const AdminLoginPage: React.FC = () => {
     toast.error(" Github login failed!");
   }
 };
+
+
+
+const handleFirebaseFacebookLogin = async () => {
+  try {
+    const result = await signInWithPopup(auth, facebookProvider);
+    const user = result.user;
+
+    toast.success("Facebook login successful!");
+ 
+  console.log("Facebook user:", user); // 👈 Add this line
+  
+    const email = user.email || `${user.uid}@facebook.com`;
+    const name = user.displayName || "FacebookUser";
+
+    const { data } = await axios.post("http://localhost:5000/api/auth/facebook-login", {
+      email,
+      name,
+    });
+
+    login(data.token, data.role);
+    Cookies.set("adminToken", data.token);
+    localStorage.setItem("adminToken", data.token);
+    localStorage.setItem("user", JSON.stringify({ username: data.username, role: data.role }));
+
+    setTimeout(() => {
+      router.push(data.role === "admin" ? "/Dashboard/adminDashboard" : "/Dashboard/userDashboard");
+    }, 1500);
+  } catch (error) {
+    console.error("Facebook login failed:", error);
+    toast.error("Facebook login failed!");
+  }
+};
+
+
+
+
+
  
   const [showPassword, setShowPassword] = useState(false);
   //--------------------------
@@ -315,6 +353,14 @@ const AdminLoginPage: React.FC = () => {
                       type="button"
                     >
                       <GithubIcon size={22} />
+                    </button>
+
+                    <button
+                      className="btn btn-outline-danger d-flex justify-content-center align-items-center"
+                      onClick={handleFirebaseFacebookLogin}
+                      type="button"
+                    >
+                      <Facebook size={22} />
                     </button>
                   </div>
 

@@ -42,6 +42,8 @@
 import express from 'express';
 import passport from 'passport';
 import Auth from '../models/Auth.js';
+import jwt from "jsonwebtoken";
+
 
 import {
   registerAdmin,
@@ -140,6 +142,48 @@ router.post("/google-login", async (req, res) => {
     return res.status(500).json({ message: "Google login failed" });
   }
 });
+
+
+
+
+// 🔹 Facebook Login
+router.post("/facebook-login", async (req, res) => {
+  const { email, name } = req.body;
+
+  if (!email || !name) {
+    return res.status(400).json({ message: "Email and name are required" });
+  }
+
+  try {
+    let user = await Auth.findOne({ email });
+
+    if (!user) {
+      user = await Auth.create({
+        username: name,
+        email,
+        password: "facebook_default_password",
+        role: "user",
+      });
+    }
+
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.status(200).json({
+      token,
+      role: user.role,
+      username: user.username,
+    });
+  } catch (error) {
+    console.error("Facebook login error:", error.message);
+    res.status(500).json({ message: "Facebook login failed" });
+  }
+});
+
+
 
 
 
