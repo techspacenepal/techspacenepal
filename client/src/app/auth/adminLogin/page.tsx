@@ -9,14 +9,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/app/context/AuthContext";
 
-// import { signInWithPopup } from "firebase/auth";
-// import { auth, googleProvider } from "@/firebaseconfigurations/config";
-
 
 
 
 const AdminLoginPage: React.FC = () => {
- 
+
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -55,41 +52,41 @@ const AdminLoginPage: React.FC = () => {
 
   /// -----google login in user --------
 
-//   const handleFirebaseGoogleLogin = async () => {
-//   try {
-//     const result = await signInWithPopup(auth, googleProvider);
-   
-//     const user = result.user;
+  //   const handleFirebaseGoogleLogin = async () => {
+  //   try {
+  //     const result = await signInWithPopup(auth, googleProvider);
 
-//     console.log("User info:", user);
+  //     const user = result.user;
 
-//     // Add user info to localStorage / redirect as needed
-//     toast.success("Firebase Google login successful!");
+  //     console.log("User info:", user);
 
-//     setTimeout(() => {
-//       router.push("/Dashboard/adminDashboard"); // ✅ Use Next.js router here
-//     }, 1500);
+  //     // Add user info to localStorage / redirect as needed
+  //     toast.success("Firebase Google login successful!");
 
-//   } catch (error) {
-//     console.error("Firebase error:", error);
-//     toast.error("Firebase Google login failed!");
-//   }
-// };
+  //     setTimeout(() => {
+  //       router.push("/Dashboard/adminDashboard"); // ✅ Use Next.js router here
+  //     }, 1500);
 
+  //   } catch (error) {
+  //     console.error("Firebase error:", error);
+  //     toast.error("Firebase Google login failed!");
+  //   }
+  // };
 
+  const [showPassword, setShowPassword] = useState(false);
 
 
   return (
-    <div className="container d-flex align-items-center justify-content-center vh-100">
+    <div className="container d-flex align-items-center justify-content-center min-vh-100 px-3">
       <Toaster position="top-right" />
-      <div className="card shadow-lg p-4" style={{ maxWidth: "400px", width: "100%" }}>
+      <div className="card shadow-lg p-4 w-100" style={{ maxWidth: "400px" }}>
         <div className="text-center mb-3">
           <Image
             src="/logo.jpg"
             alt="Krisha Logo"
             width={90}
             height={80}
-            className="mb-3"
+            className="mb-3 border rounded"
           />
           <p className="text-muted">Please login to continue</p>
         </div>
@@ -111,16 +108,32 @@ const AdminLoginPage: React.FC = () => {
 
           <div className="mb-3">
             <label htmlFor="password" className="form-label">Password</label>
-            <input
-              type="password"
-              className="form-control"
-              id="password"
-              placeholder="********"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              autoComplete="current-password"
-            />
+            <div className="position-relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="form-control"
+                id="password"
+                placeholder="********"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                autoComplete="current-password"
+              />
+              <span
+                onClick={() => setShowPassword(!showPassword)}
+                className="password-toggle-icon"
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  right: '10px',
+                  transform: 'translateY(-50%)',
+                  cursor: 'pointer',
+                  color: '#999',
+                }}
+              >
+                <i className={`fa ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`} />
+              </span>
+            </div>
           </div>
 
           <div className="d-grid mb-3">
@@ -142,19 +155,13 @@ const AdminLoginPage: React.FC = () => {
             </Link>
           </div>
 
-          {/* <div className="d-grid gap-2 mb-3">
-           
-            <button className="btn btn-outline-danger" onClick={handleFirebaseGoogleLogin} type="button">
-              Sign in with Google 
-            </button>
-          </div> */}
-
           <p className="text-center">
             <Link href="/" className="text-primary text-decoration-none">← Back to Home</Link>
           </p>
         </form>
       </div>
     </div>
+
   );
 };
 

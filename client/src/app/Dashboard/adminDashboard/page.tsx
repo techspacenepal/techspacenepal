@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
+import { useAuth } from "@/app/context/AuthContext";
 
 interface Inquiry {
   _id: string;
@@ -52,8 +52,6 @@ const Dashboard = () => {
   const [recentContacts, setRecentContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
 
-
-
   const router = useRouter();
 
   useEffect(() => {
@@ -63,11 +61,17 @@ const Dashboard = () => {
     }
   }, [router]);
 
+  // login vayesi matra dashboard dekhine
+  const { isAuthenticated, logout } = useAuth();
 
-
+  //   const logout = () => {
+  //   Cookies.remove("adminToken"); // Token हटाउनुहोस्
+  //   router.push("/auth/adminLogin"); // Login page मा redirect गर्नुहोस्
+  // };
+  ///-----
 
   // Fetch contact and inquiry counts
-   useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const [inquiryRes, contactRes, userRes] = await Promise.all([
@@ -106,19 +110,16 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
-  const handleLogout = () => {
-    Cookies.remove("adminToken");
-    router.push("/auth/adminLogin");
-  };
-
+  // const handleLogout = () => {
+  //   Cookies.remove("adminToken");
+  //   router.push("/auth/adminLogin");
+  // };
 
   return (
     <>
       <div className="d-flex min-vh-100 bg-light">
         {/* Sidebar */}
-        <aside
-          className="sidebar bg-dark text-white p-3"
-        >
+        <aside className="sidebar bg-dark text-white p-3">
           <h2 className="mb-4 sidebar-title">Admin Panel</h2>
           <nav className="nav flex-column gap-2">
             <Link
@@ -156,16 +157,46 @@ const Dashboard = () => {
               <LayoutDashboard size={18} />
               <span className="sidebar-text">Services</span>
             </Link>
+
             <Link
-              href="/auth/adminLogout"
-              className="nav-link text-danger d-flex align-items-center gap-2 sidebar-link"
+              href="/auth/admin/Gallery"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
             >
-              <LogOut size={18} />
-              <span className="sidebar-text">Logout</span>
+              <i className="bi bi-images" style={{ fontSize: "1rem" }}></i>
+              <span className="sidebar-text">Success Gallery</span>
             </Link>
+             <Link
+              href="/auth/admin/testimonial"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <i className="bi bi-images" style={{ fontSize: "1rem" }}></i>
+              <span className="sidebar-text">Testimonial</span>
+            </Link>
+              <Link
+              href="/auth/admin/teams"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <i className="bi bi-images" style={{ fontSize: "1rem" }}></i>
+              <span className="sidebar-text">Teams</span>
+            </Link>
+
+
+            {/* 🔒 Show logout if authenticated, otherwise show Login */}
+            {isAuthenticated ? (
+              <button
+                onClick={logout}
+                className="btn btn-danger d-flex align-items-center gap-2"
+              >
+                <LogOut size={18} />
+                Logout
+              </button>
+            ) : (
+              <Link href="/auth/adminLogin" className="btn btn-success">
+                Login
+              </Link>
+            )}
           </nav>
         </aside>
-        
 
         {/* Main Content */}
         <main className="flex-grow-1 py-4">
@@ -210,7 +241,10 @@ const Dashboard = () => {
                     <h5 className="card-title mb-3">Recent Contacts</h5>
                     <ul className="list-group list-group-flush">
                       {recentContacts
-                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                        .sort(
+                          (a, b) =>
+                            new Date(b.createdAt) - new Date(a.createdAt)
+                        )
                         .slice(0, 3)
                         .map((con) => (
                           <li key={con._id} className="list-group-item">
@@ -237,20 +271,24 @@ const Dashboard = () => {
                   <div className="card-body">
                     <h5 className="card-title mb-3">Manage Services</h5>
 
-                    {["Web Development", "SEO Optimization"].map((service, i) => (
-                      <div
-                        key={i}
-                        className="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2"
-                      >
-                        <span>{service}</span>
-                        <div>
-                          <button className="btn btn-outline-secondary btn-sm me-2">
-                            Edit
-                          </button>
-                          <button className="btn btn-danger btn-sm">Delete</button>
+                    {["Web Development", "SEO Optimization"].map(
+                      (service, i) => (
+                        <div
+                          key={i}
+                          className="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2"
+                        >
+                          <span>{service}</span>
+                          <div>
+                            <button className="btn btn-outline-secondary btn-sm me-2">
+                              Edit
+                            </button>
+                            <button className="btn btn-danger btn-sm">
+                              Delete
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      )
+                    )}
 
                     <button className="btn btn-primary w-100 mt-3">
                       Add New Service
@@ -261,16 +299,8 @@ const Dashboard = () => {
             </div>
           </div>
         </main>
-
-
-
       </div>
-
-
-
-
     </>
-
   );
 };
 

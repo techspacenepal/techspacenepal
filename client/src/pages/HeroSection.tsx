@@ -37,17 +37,12 @@ export default function HeroSection() {
                                     fill="#00b4d8"
                                     opacity="0.3"
                                 >
-                                    <animate
-                                        attributeName="cy"
+                                    <animate attributeName="cy"
                                         values="100%;0%;100%"
                                         dur={`${duration}s`}
                                         repeatCount="indefinite"
                                     />
-                                    <animate
-                                        attributeName="cx"
-                                        values={`${x}%;${x + 5}%;${x}%`}
-                                        dur={`${duration * 1.5}s`}
-                                        repeatCount="indefinite"
+                                    <animate attributeName="cx" values={`${x}%;${x + 5}%;${x}%`}  dur={`${duration * 1.5}s`}  repeatCount="indefinite"
                                     />
                                 </circle>
                             );

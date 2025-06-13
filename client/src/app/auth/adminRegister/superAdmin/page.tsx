@@ -142,15 +142,15 @@ const AdminRegisterPage: React.FC = () => {
       toast.error("Firebase Google login failed!");
     }
   };
-
+  const [showPassword, setShowPassword] = useState(false);
   //--------------------------
 
   return (
-    <div className="container d-flex align-items-center justify-content-center min-vh-100 bg-light">
+    <div className="container d-flex align-items-center justify-content-center min-vh-100 bg-light px-3">
       <Toaster position="top-right" />
       <div
-        className="card shadow p-4"
-        style={{ maxWidth: "500px", width: "100%" }}
+        className="card shadow p-4 w-100"
+        style={{ maxWidth: "500px" }}
       >
         <div className="text-center mb-3">
           <Image src="/logo.jpg" alt="Logo" width={90} height={80} />
@@ -184,13 +184,28 @@ const AdminRegisterPage: React.FC = () => {
 
           <div className="mb-3">
             <label className="form-label">Password</label>
-            <input
-              type="password"
-              className="form-control"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="position-relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="form-control"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <span
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  right: "10px",
+                  transform: "translateY(-50%)",
+                  cursor: "pointer",
+                  color: "#999",
+                }}
+              >
+                <i className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"}`} />
+              </span>
+            </div>
           </div>
 
           <div className="mb-4">
@@ -215,7 +230,7 @@ const AdminRegisterPage: React.FC = () => {
           </button>
         </form>
 
-        <div className="d-flex gap-3 my-3 justify-content-center align-items-center">
+        <div className="d-flex gap-3 my-3 justify-content-center align-items-center flex-wrap">
           <button
             className="btn btn-outline-danger d-flex justify-content-center align-items-center"
             onClick={handleFirebaseGoogleLogin}
@@ -252,6 +267,7 @@ const AdminRegisterPage: React.FC = () => {
         </p>
       </div>
     </div>
+
   );
 };
 

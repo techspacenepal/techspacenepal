@@ -1,35 +1,30 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
+import { useRouter } from "next/navigation";
 
 interface GalleryItem {
   _id: string;
   student: string;
   college: string;
-  address: string;
   imageUrl: string;
+  designation?: string;
+  company?: string;
+  faculty?: string;
 }
 
 export default function GalleryPage() {
+  const router = useRouter();
   const [galleryData, setGalleryData] = useState<GalleryItem[]>([]);
-  const [filteredData, setFilteredData] = useState<GalleryItem[]>([]);
-  const [showFilters, setShowFilters] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCollege, setSelectedCollege] = useState("");
 
-  const studentRef = useRef<HTMLInputElement>(null);
-  const collegeRef = useRef<HTMLInputElement>(null);
-  const addressRef = useRef<HTMLInputElement>(null);
-  const imageRef = useRef<HTMLInputElement>(null);
-
-  // Fetch data on load
   useEffect(() => {
     fetch("http://localhost:5000/api/gallery")
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
           setGalleryData(data);
-          setFilteredData(data);
         } else {
           console.error("Unexpected response format:", data);
         }
@@ -37,138 +32,132 @@ export default function GalleryPage() {
       .catch(console.error);
   }, []);
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const term = e.target.value.toLowerCase();
-    setSearchTerm(term);
-    setSelectedCollege("");
-    const result = galleryData.filter((item) =>
-      item.student.toLowerCase().includes(term)
-    );
-    setFilteredData(result);
+  const responsive = {
+    superLargeDesktop: {
+      breakpoint: { max: 4000, min: 1200 },
+      items: 4,
+    },
+    desktop: {
+      breakpoint: { max: 1200, min: 992 },
+      items: 3,
+    },
+    tablet: {
+      breakpoint: { max: 992, min: 768 },
+      items: 2,
+    },
+    mobile: {
+      breakpoint: { max: 768, min: 0 },
+      items: 1,
+    },
   };
-
-  const handleFilterClick = () => {
-    setShowFilters(!showFilters);
-  };
-
-  const handleCollegeSelect = (college: string) => {
-    setSelectedCollege(college);
-    setSearchTerm("");
-    const result = galleryData.filter(
-      (item) => item.college.toLowerCase() === college.toLowerCase()
-    );
-    setFilteredData(result);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (
-      !studentRef.current?.value ||
-      !collegeRef.current?.value ||
-      !addressRef.current?.value ||
-      !imageRef.current?.files?.[0]
-    ) {
-      alert("Please fill in all fields.");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("student", studentRef.current.value);
-    formData.append("college", collegeRef.current.value);
-    formData.append("address", addressRef.current.value);
-    formData.append("image", imageRef.current.files[0]);
-
-    try {
-      const res = await fetch("http://localhost:5000/api/gallery", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (res.ok) {
-        const newItem: GalleryItem = await res.json();
-        const updated = [newItem, ...galleryData];
-        setGalleryData(updated);
-        setFilteredData(updated);
-        studentRef.current.value = "";
-        collegeRef.current.value = "";
-        addressRef.current.value = "";
-        imageRef.current.value = "";
-      } else {
-        console.error("Upload failed");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  const colleges = [...new Set(galleryData.map((item) => item.college))];
 
   return (
     <div className="container py-5">
-      <div className="mx-auto" style={{ maxWidth: "960px" }}>
-        <h2 className="mb-4 text-center">📸 Student Gallery</h2>
 
-       
-        <div className="row g-3 align-items-stretch mb-4">
-          <div className="col-12 col-sm">
-            <input
-              type="text"
-              placeholder="Search student..."
-              value={searchTerm}
-              onChange={handleSearch}
-              className="form-control"
-            />
-          </div>
-          <div className="col-12 col-sm-auto">
-            <button onClick={handleFilterClick} className="btn btn-primary w-100">
-              {showFilters ? "Hide Filter" : "Filter by College"}
-            </button>
-          </div>
-        </div>
+      <div className="  d-flex flex-column flex-md-row align-items-center justify-content-between mb-0 gap-2 px-2">
+        <h2 className="mb-0 text-center text-md-start">Student Success Gallery</h2>
 
-        {showFilters && (
-          <div className="mb-4 d-flex flex-wrap gap-2 justify-content-center">
-            {colleges.map((college) => (
-              <button
-                key={college}
-                onClick={() => handleCollegeSelect(college)}
-                className={`btn btn-sm rounded-pill border ${
-                  selectedCollege === college
-                    ? "btn-primary text-white"
-                    : "btn-light"
-                }`}
+        <a
+          href="gallery/success-detail"
+          onClick={(e) => {
+            e.preventDefault();
+            router.push("gallery/success-detail");
+          }}
+          className="text-primary text-decoration-none d-inline-flex align-items-center gap-1"
+        >
+          <span>Read more success story</span>
+          <i className="bi bi-arrow-right fs-5"></i>
+        </a>
+
+
+
+      </div>
+
+
+      {galleryData.length === 0 ? (
+        <p className="text-muted text-center mt-5">No results found.</p>
+      ) : (
+        <Carousel
+          responsive={responsive}
+          infinite
+          autoPlay
+          autoPlaySpeed={3000}
+          keyBoardControl
+          showDots
+          arrows={false}
+          containerClass="carousel-container pb-5 pt-3"
+        >
+          {galleryData.map((item) => (
+            <div key={item._id} className="p-2">
+              <div
+                className="card h-100 text-center px-3"
+                style={{
+                  border: "0.3px solid #dee2e6",
+                  boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)",
+                  paddingTop: "2rem", 
+                }}
               >
-                {college}
-              </button>
-            ))}
-          </div>
-        )}
+                <img
+                  src={`http://localhost:5000${item.imageUrl}`}
+                  alt={item.student}
+                  className="rounded mx-auto"
+                  style={{
+                    width: "100px",
+                    height: "100px",
+                    objectFit: "cover",
+                    border: "3px solid #ccc",
+                   
+                  }}
+                />
 
-        {filteredData.length === 0 ? (
-          <p className="text-muted text-center mt-5">No results found.</p>
-        ) : (
-          <div className="row g-4">
-            {filteredData.map((item) => (
-              <div key={item._id} className="col-12 col-sm-6 col-md-4">
-                <div className="card h-100 shadow-sm border-0">
-                  <img
-                    src={`http://localhost:5000${item.imageUrl}`}
-                    alt={item.student}
-                    className="card-img-top"
-                    style={{ height: "200px", objectFit: "cover" }}
-                  />
-                  <div className="card-body">
-                    <h5 className="card-title">{item.student}</h5>
-                    <p className="card-text mb-1 text-muted">{item.college}</p>
-                    <p className="card-text small text-secondary">{item.address}</p>
-                  </div>
+                <div
+                  className="card-body d-flex flex-column align-items-center justify-content-center text-center"
+                  style={{ paddingBottom: "2rem" }}
+                >
+                  <h5 className="fw-bold mb-1 text-dark">Mr. {item.student}</h5>
+
+                  <p
+                    className="text-muted mb-1"
+                    style={{ fontSize: "14px", lineHeight: "1.4" }}
+                  >
+                    {item.designation}
+                  </p>
+
+                  <a
+                    href="#"
+                    className="d-inline-block mb-2"
+                    style={{
+                      fontSize: "14px",
+                      color: "#0d6efd",
+                      textDecoration: "none",
+                      fontWeight: 500,
+                    }}
+                  >
+                    @{item.company}
+                  </a>
+
+                  <h6
+                    className="fw-semibold text-secondary mb-1 mt-2"
+                    style={{ fontSize: "14px" }}
+                  >
+                    College / Faculty
+                  </h6>
+
+                  <p className="text-muted small mb-0" style={{ fontSize: "13px" }}>
+                    {item.college}
+                  </p>
+
+                  <p className="text-muted small mb-0" style={{ fontSize: "13px" }}>
+                    {item.faculty}
+                  </p>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+
+
+            </div>
+          ))}
+        </Carousel>
+      )}
     </div>
   );
 }
