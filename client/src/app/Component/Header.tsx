@@ -14,7 +14,7 @@ import { useAuth } from "../context/AuthContext";
 
 export default function TopNavbar() {
 
-    // login vayesi matra dashboard dekhine
+  // login vayesi matra dashboard dekhine
   const { isAuthenticated, user } = useAuth();
   ///-------
 
@@ -124,9 +124,9 @@ export default function TopNavbar() {
         </div>
       </div>
 
+
       {/* Main Navigation Bar */}
-      <nav
-        ref={navRef}
+      <nav ref={navRef}
         className="navbar navbar-expand-lg bg-body-tertiary py-3 border-top border-bottom"
         style={{ transition: "all 0.3s ease" }}
       >
@@ -134,7 +134,7 @@ export default function TopNavbar() {
         <div className="container d-flex align-items-center justify-content-between">
           {/* Logo + Dropdown */}
           <div
-            className="d-flex align-items-center gap-5 justify-content-between"
+            className="d-flex align-items-center gap-3 justify-content-between"
             style={{
               fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
             }}
@@ -201,7 +201,7 @@ export default function TopNavbar() {
 
           {/* Desktop Main Menu */}
           <ul
-            className="navbar-nav mb-2 mb-lg-0 gap-4 d-none d-lg-flex flex-row align-items-center"
+            className="navbar-nav mb-2 mb-lg-0 gap-3 d-none d-lg-flex flex-row align-items-center"
             style={{
               fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
               fontSize: "1rem",
@@ -225,18 +225,23 @@ export default function TopNavbar() {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link custom-hover" href="#">
-                Success Gallery
+              <a className="nav-link custom-hover" href="/gallery">
+                Success
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link custom-hover" href="#">
-                Student Testimonials
+              <a className="nav-link custom-hover" href="/testimonial">
+                Testimonials
               </a>
             </li>
             <li className="nav-item">
               <a className="nav-link custom-hover" href="#">
                 Upcoming Classes
+              </a>
+            </li>
+             <li className="nav-item">
+              <a className="nav-link custom-hover" href="/teams">
+                 Our Teams
               </a>
             </li>
             <li className="nav-item">
@@ -250,7 +255,7 @@ export default function TopNavbar() {
               </a>
             </li>
           </ul>
-          <div className="d-none d-lg-block">
+          <div className="d-none d-lg-flex align-items-center gap-3">
             <Link
               href="/inquiry"
               className="btn btn-primary px-3 py-2"
@@ -258,32 +263,20 @@ export default function TopNavbar() {
             >
               Send Inquiry
             </Link>
+
+            {/* ✅ Dashboard only if user is authenticated and role is 'admin' */}
+            {isAuthenticated && user?.role === "admin" && (
+              <Link
+                href="/Dashboard/adminDashboard"
+                className="btn btn-primary px-3 py-2"
+              >
+                Dashboard
+              </Link>
+            )}
           </div>
 
 
 
-          {/* यदि प्रयोगकर्ता login भएको छ भने मात्र Dashboard बटन देखाउने */}
-
-          {/* ✅ Dashboard only if user is authenticated and role is 'admin' */}
-          {isAuthenticated && user?.role === "admin" && (
-            <Link
-              href="/Dashboard/adminDashboard"
-              className="btn btn-primary me-2"
-            >
-              Dashboard
-            </Link>
-          )}
-
-          {/* 🔒 Show logout if authenticated, otherwise show Login */}
-          {/* {isAuthenticated ? (
-            <button onClick={logout} className="btn btn-danger">
-              Logout
-            </button>
-          ) : (
-            <Link href="/auth/adminLogin" className="btn btn-success">
-              Login
-            </Link>
-          )} */}
 
           {/* Toggler Button (mobile) */}
           <button
@@ -345,18 +338,23 @@ export default function TopNavbar() {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link custom-hover" href="#">
+                <a className="nav-link custom-hover" href="/gallery">
                   Success Gallery
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link custom-hover" href="#">
+                <a className="nav-link custom-hover" href="/testimonial">
                   Student Testimonials
                 </a>
               </li>
               <li className="nav-item">
                 <a className="nav-link custom-hover" href="#">
                   Upcoming Classes
+                </a>
+              </li>
+               <li className="nav-item">
+                <a className="nav-link custom-hover" href="/teams">
+                   Our teams
                 </a>
               </li>
               <li className="nav-item">
@@ -380,8 +378,10 @@ export default function TopNavbar() {
               </Link>
             </div>
           </div>
+
         </div>
       </nav>
+
     </header>
   );
 }

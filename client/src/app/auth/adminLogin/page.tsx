@@ -19,8 +19,6 @@ import { FcGoogle } from "react-icons/fc";
 
 const AdminLoginPage: React.FC = () => {
 
-  
- 
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -59,37 +57,62 @@ const AdminLoginPage: React.FC = () => {
 
   // -----google login in user --------
 
-// const handleFirebaseGoogleLogin = async () => {
-//     try {
-//       const result = await signInWithPopup(auth, googleProvider);
-//       const user = result.user;
+  //   const handleFirebaseGoogleLogin = async () => {
+  //   try {
+  //     const result = await signInWithPopup(auth, googleProvider);
 
-//       toast.success("  Google login successful!");
+  //     const user = result.user;
 
-//       // Send to backend to get user role
-//       const { data } = await axios.post(
-//         "http://localhost:5000/api/auth/google-login",
-//         {
-//           email: user.email,
-//           name: user.displayName,
-//         }
-//       );
+  //     console.log("User info:", user);
 
-//       const userRole = data.role;
+  //     // Add user info to localStorage / redirect as needed
+  //     toast.success("Firebase Google login successful!");
 
-//       if (userRole === "admin") {
-//         router.push("/Dashboard/adminDashboard");
-//       } else {
-//         router.push("/Dashboard/userDashboard");
-//       }
-//     } catch (error) {
-//       console.error("Firebase error:", error);
-//       toast.error("Firebase Google login failed!");
-//     }
-//   };
+  //     setTimeout(() => {
+  //       router.push("/Dashboard/adminDashboard"); // ✅ Use Next.js router here
+  //     }, 1500);
 
+  //   } catch (error) {
+  //     console.error("Firebase error:", error);
+  //     toast.error("Firebase Google login failed!");
+  //   }
+  // };
 
-const handleFirebaseGoogleLogin = async () => {
+  //  const handleFirebaseGoogleLogin = async () => {
+  //   try {
+  //     const result = await signInWithPopup(auth, googleProvider);
+  //     const user = result.user;
+
+  //     toast.success("  Google login successful!");
+
+  //     // Send to backend to get user role
+  //     const { data } = await axios.post(
+  //       "http://localhost:5000/api/auth/google-login",
+  //       {
+  //         email: user.email,
+  //         name: user.displayName,
+  //       }
+  //     );
+
+  //     const userRole = data.role;
+
+  //     if (userRole === "admin") {
+  //       router.push("/Dashboard/adminDashboard");
+  //     } else {
+  //       router.push("/Dashboard/userDashboard");
+  //     }
+  //   } catch (error) {
+  //     console.error("Firebase error:", error);
+  //     toast.error("Firebase Google login failed!");
+  //   }
+  // };
+
+  //-----Github login
+  
+  
+  
+
+  const handleFirebaseGoogleLogin = async () => {
   try {
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
@@ -101,22 +124,21 @@ const handleFirebaseGoogleLogin = async () => {
       name: user.displayName,
     });
 
-    const { token, role } = data;
+    // ✅ AuthContext को login function call गर्नुहोस्
+    login(data.token, data.role);
 
-    // 🔐 Save to localStorage or Context
-    localStorage.setItem("authToken", token);
-    localStorage.setItem("userRole", role);
+    Cookies.set("adminToken", data.token);
+    localStorage.setItem("adminToken", data.token);
+    localStorage.setItem("user", JSON.stringify({ username: data.username, role: data.role }));
 
-    // (Optional) Update context
-    // setIsAuthenticated(true);
-    // setUserRole(role);
+    setTimeout(() => {
+      if (data.role === "admin") {
+        router.push("/Dashboard/adminDashboard");
+      } else {
+        router.push("/Dashboard/userDashboard");
+      }
+    }, 1500);
 
-    // Redirect
-    if (role === "admin") {
-      router.push("/Dashboard/adminDashboard");
-    } else {
-      router.push("/Dashboard/userDashboard");
-    }
   } catch (error) {
     console.error("Firebase error:", error);
     toast.error("Firebase Google login failed!");
@@ -125,82 +147,91 @@ const handleFirebaseGoogleLogin = async () => {
 
 
 
-  //-----Github login
+  
+  // const handleFirebaseGithubLogin = async () => {
+  // try {
+  //   const result = await signInWithPopup(auth, googleProvider);
+  //   const user = result.user;
+
+  //   toast.success("Github login successful!");
+
+  //   const { data } = await axios.post("http://localhost:5000/api/auth/github-login", {
+  //     email: user.email,
+  //     name: user.displayName,
+  //   });
+
+  //   // ✅ AuthContext को login function call गर्नुहोस्
+  //   login(data.token, data.role);
+
+  //   Cookies.set("adminToken", data.token);
+  //   localStorage.setItem("adminToken", data.token);
+  //   localStorage.setItem("user", JSON.stringify({ username: data.username, role: data.role }));
+
+  //   setTimeout(() => {
+  //     if (data.role === "admin") {
+  //       router.push("/Dashboard/adminDashboard");
+  //     } else {
+  //       router.push("/Dashboard/userDashboard");
+  //     }
+  //   }, 1500);
+
+  // } catch (error) {
+  //   console.error("Firebase error:", error);
+  //   toast.error("Firebase Github login failed!");
+  // }
+  // };
+ 
   const handleFirebaseGithubLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, githubProvider);
-      const user = result.user;
+  try {
+    const result = await signInWithPopup(auth, githubProvider);
+    const user = result.user;
 
-      toast.success(" GitHub login successful!");
+    toast.success("Github login successful!");
 
-      // Send to backend to get user role
-      const { data } = await axios.post(
-        "http://localhost:5000/api/auth/github-login",
-        {
-          email: user.email,
-          name: user.displayName,
-        }
-      );
+    const { data } = await axios.post("http://localhost:5000/api/auth/google-login", {
+      email: user.email,
+      name: user.displayName,
+    });
 
-      const userRole = data.role;
+    // ✅ AuthContext को login function call गर्नुहोस्
+    login(data.token, data.role);
 
-      if (userRole === "admin") {
+    Cookies.set("adminToken", data.token);
+    localStorage.setItem("adminToken", data.token);
+    localStorage.setItem("user", JSON.stringify({ username: data.username, role: data.role }));
+
+    setTimeout(() => {
+      if (data.role === "admin") {
         router.push("/Dashboard/adminDashboard");
       } else {
         router.push("/Dashboard/userDashboard");
       }
-    } catch (error) {
-      console.error("Firebase error:", error);
-      toast.error("Firebase Google login failed!");
-    }
-  };
+    }, 1500);
 
-
-///-----facebook login
-  const handleFirebaseFacebookLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, facebookProvider);
-      const user = result.user;
-
-      toast.success(" Facebook login successful!");
-
-      // Send to backend to get user role
-      const { data } = await axios.post(
-        "http://localhost:5000/api/auth/facebook-login",
-        {
-          email: user.email,
-          name: user.displayName,
-        }
-      );
-
-      const userRole = data.role;
-
-      if (userRole === "admin") {
-        router.push("/Dashboard/adminDashboard");
-      } else {
-        router.push("/Dashboard/userDashboard");
-      }
-    } catch (error) {
-      console.error("Firebase error:", error);
-      toast.error("Firebase Google login failed!");
-    }
-  };
+  } catch (error) {
+    console.error("Firebase error:", error);
+    toast.error(" Github login failed!");
+  }
+};
+ 
+  const [showPassword, setShowPassword] = useState(false);
+  //--------------------------
 
 
 
 
 
   return (
-    <div className="container d-flex align-items-center justify-content-center vh-100">
+    <div className="container d-flex align-items-center justify-content-center min-vh-100 px-3">
       <Toaster position="top-right" />
-      <div className="card shadow-lg p-4" style={{ maxWidth: "400px", width: "100%" }}>
+      <div className="card shadow-lg p-4 w-100" style={{ maxWidth: "400px" }}>
         <div className="text-center mb-3">
           <Image
             src="/logo.jpg"
             alt="Krisha Logo"
             width={90}
             height={80}
-            className="mb-3"
+            className="mb-3 border rounded"
           />
           <p className="text-muted">Please login to continue</p>
         </div>
@@ -222,16 +253,32 @@ const handleFirebaseGoogleLogin = async () => {
 
           <div className="mb-3">
             <label htmlFor="password" className="form-label">Password</label>
-            <input
-              type="password"
-              className="form-control"
-              id="password"
-              placeholder="********"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              autoComplete="current-password"
-            />
+            <div className="position-relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="form-control"
+                id="password"
+                placeholder="********"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                autoComplete="current-password"
+              />
+              <span
+                onClick={() => setShowPassword(!showPassword)}
+                className="password-toggle-icon"
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  right: '10px',
+                  transform: 'translateY(-50%)',
+                  cursor: 'pointer',
+                  color: '#999',
+                }}
+              >
+                <i className={`fa ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`} />
+              </span>
+            </div>
           </div>
 
           <div className="d-grid mb-3">
@@ -253,31 +300,23 @@ const handleFirebaseGoogleLogin = async () => {
             </Link>
           </div>
 
-          <div className="d-flex gap-3 my-3 justify-content-center align-items-center">
-          <button
-            className="btn btn-outline-danger d-flex justify-content-center align-items-center"
-            onClick={handleFirebaseGoogleLogin}
-            type="button"
-          >
-            <FcGoogle size={24} />
-          </button>
-
-          <button
-            className="btn btn-outline-danger d-flex justify-content-center align-items-center"
-            onClick={handleFirebaseGithubLogin}
-            type="button"
-          >
-            <GithubIcon size={22} />
-          </button>
-
-          <button
-            className="btn btn-outline-danger d-flex justify-content-center align-items-center"
-            onClick={handleFirebaseFacebookLogin}
-            type="button"
-          >
-            <Facebook size={22} />
-          </button>
-        </div>
+             <div className="d-flex gap-3 my-3 justify-content-center align-items-center flex-wrap">
+                    <button
+                      className="btn btn-outline-danger d-flex justify-content-center align-items-center"
+                      onClick={handleFirebaseGoogleLogin}
+                      type="button"
+                    >
+                      <FcGoogle size={24} />
+                    </button>
+          
+                    <button
+                      className="btn btn-outline-danger d-flex justify-content-center align-items-center"
+                      onClick={handleFirebaseGithubLogin}
+                      type="button"
+                    >
+                      <GithubIcon size={22} />
+                    </button>
+                  </div>
 
           <p className="text-center">
             <Link href="/" className="text-primary text-decoration-none">← Back to Home</Link>
@@ -285,6 +324,7 @@ const handleFirebaseGoogleLogin = async () => {
         </form>
       </div>
     </div>
+
   );
 };
 

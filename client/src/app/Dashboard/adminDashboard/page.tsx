@@ -158,6 +158,29 @@ const Dashboard = () => {
               <span className="sidebar-text">Services</span>
             </Link>
 
+            <Link
+              href="/auth/admin/Gallery"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <i className="bi bi-images" style={{ fontSize: "1rem" }}></i>
+              <span className="sidebar-text">Success Gallery</span>
+            </Link>
+             <Link
+              href="/auth/admin/testimonial"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <i className="bi bi-images" style={{ fontSize: "1rem" }}></i>
+              <span className="sidebar-text">Testimonial</span>
+            </Link>
+              <Link
+              href="/auth/admin/teams"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <i className="bi bi-images" style={{ fontSize: "1rem" }}></i>
+              <span className="sidebar-text">Teams</span>
+            </Link>
+
+
             {/* 🔒 Show logout if authenticated, otherwise show Login */}
             {isAuthenticated ? (
               <button

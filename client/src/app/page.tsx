@@ -5,6 +5,8 @@ import HeroSection from '@/pages/HeroSection'
 import React from 'react'
 import Footer from './Component/Footer'
 import GalleryForm from './(users)/gallery/page'
+import Testimonialpage from './(users)/testimonial/page'
+import TeamSection from './(users)/teams/page'
 
 
 
@@ -14,6 +16,8 @@ function page() {
         <HeroSection/>   
          <Courses/>
          <GalleryForm/>
+          <Testimonialpage/>
+          <TeamSection/>
          <Footer/>
     </>
   )
