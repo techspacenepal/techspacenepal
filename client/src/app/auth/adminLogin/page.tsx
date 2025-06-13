@@ -9,9 +9,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/app/context/AuthContext";
 
-import { signInWithPopup } from "firebase/auth";
-import { auth, githubProvider, googleProvider } from "@/firebaseconfigurations/config";
-import { GithubIcon } from "lucide-react";
+import {  signInWithPopup } from "firebase/auth";
+import { auth,  facebookProvider,  githubProvider, googleProvider } from "@/firebaseconfigurations/config";
+import { Facebook, GithubIcon } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 
 
@@ -59,21 +59,64 @@ const AdminLoginPage: React.FC = () => {
 
   // -----google login in user --------
 
-  const handleFirebaseGoogleLogin = async () => {
+// const handleFirebaseGoogleLogin = async () => {
+//     try {
+//       const result = await signInWithPopup(auth, googleProvider);
+//       const user = result.user;
+
+//       toast.success("  Google login successful!");
+
+//       // Send to backend to get user role
+//       const { data } = await axios.post(
+//         "http://localhost:5000/api/auth/google-login",
+//         {
+//           email: user.email,
+//           name: user.displayName,
+//         }
+//       );
+
+//       const userRole = data.role;
+
+//       if (userRole === "admin") {
+//         router.push("/Dashboard/adminDashboard");
+//       } else {
+//         router.push("/Dashboard/userDashboard");
+//       }
+//     } catch (error) {
+//       console.error("Firebase error:", error);
+//       toast.error("Firebase Google login failed!");
+//     }
+//   };
+
+
+const handleFirebaseGoogleLogin = async () => {
   try {
     const result = await signInWithPopup(auth, googleProvider);
-   
     const user = result.user;
 
-    console.log("User info:", user);
+    toast.success("Google login successful!");
 
-    // Add user info to localStorage / redirect as needed
-    toast.success("Firebase Google login successful!");
+    const { data } = await axios.post("http://localhost:5000/api/auth/google-login", {
+      email: user.email,
+      name: user.displayName,
+    });
 
-    setTimeout(() => {
-      router.push("/Dashboard/adminDashboard"); // ✅ Use Next.js router here
-    }, 1500);
+    const { token, role } = data;
 
+    // 🔐 Save to localStorage or Context
+    localStorage.setItem("authToken", token);
+    localStorage.setItem("userRole", role);
+
+    // (Optional) Update context
+    // setIsAuthenticated(true);
+    // setUserRole(role);
+
+    // Redirect
+    if (role === "admin") {
+      router.push("/Dashboard/adminDashboard");
+    } else {
+      router.push("/Dashboard/userDashboard");
+    }
   } catch (error) {
     console.error("Firebase error:", error);
     toast.error("Firebase Google login failed!");
@@ -92,7 +135,38 @@ const AdminLoginPage: React.FC = () => {
 
       // Send to backend to get user role
       const { data } = await axios.post(
-        "http://localhost:5000/api/auth/google-login",
+        "http://localhost:5000/api/auth/github-login",
+        {
+          email: user.email,
+          name: user.displayName,
+        }
+      );
+
+      const userRole = data.role;
+
+      if (userRole === "admin") {
+        router.push("/Dashboard/adminDashboard");
+      } else {
+        router.push("/Dashboard/userDashboard");
+      }
+    } catch (error) {
+      console.error("Firebase error:", error);
+      toast.error("Firebase Google login failed!");
+    }
+  };
+
+
+///-----facebook login
+  const handleFirebaseFacebookLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, facebookProvider);
+      const user = result.user;
+
+      toast.success(" Facebook login successful!");
+
+      // Send to backend to get user role
+      const { data } = await axios.post(
+        "http://localhost:5000/api/auth/facebook-login",
         {
           email: user.email,
           name: user.displayName,
@@ -194,6 +268,14 @@ const AdminLoginPage: React.FC = () => {
             type="button"
           >
             <GithubIcon size={22} />
+          </button>
+
+          <button
+            className="btn btn-outline-danger d-flex justify-content-center align-items-center"
+            onClick={handleFirebaseFacebookLogin}
+            type="button"
+          >
+            <Facebook size={22} />
           </button>
         </div>
 
