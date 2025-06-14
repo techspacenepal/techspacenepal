@@ -44,6 +44,8 @@ const AdminLoginPage: React.FC = () => {
 
       toast.success("Login successful! Redirecting...");
 
+      
+
       setTimeout(() => {
         router.push(data.role === "admin" ? "/Dashboard/adminDashboard" : "/Dashboard/userDashboard");
       }, 1500);

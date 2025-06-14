@@ -14,7 +14,6 @@ import { useAuth } from "../context/AuthContext";
 import { usePathname } from "next/navigation";
 
 export default function TopNavbar() {
-
   // login vayesi matra dashboard dekhine
   const { isAuthenticated, user } = useAuth();
   ///-------
@@ -86,14 +85,12 @@ export default function TopNavbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-
- const pathname = usePathname();
-   const hideHeader = pathname === "/auth/adminLogin"; // ✅ create a flag
+  const pathname = usePathname();
+  const hideHeader = pathname === "/auth/adminLogin"; // ✅ create a flag
   const hideFooter = pathname === "/auth/adminRegister/superAdmin";
 
-
-   if (hideHeader) return null; // ✅ Early return if path matches
-  if (hideFooter)  return null;
+  if (hideHeader) return null; // ✅ Early return if path matches
+  if (hideFooter) return null;
 
   return (
     <header>
@@ -134,9 +131,9 @@ export default function TopNavbar() {
         </div>
       </div>
 
-
       {/* Main Navigation Bar */}
-      <nav ref={navRef}
+      <nav
+        ref={navRef}
         className="navbar navbar-expand-lg bg-body-tertiary py-3 border-top border-bottom"
         style={{ transition: "all 0.3s ease" }}
       >
@@ -249,9 +246,9 @@ export default function TopNavbar() {
                 Upcoming Classes
               </a>
             </li>
-             <li className="nav-item">
+            <li className="nav-item">
               <a className="nav-link custom-hover" href="/teams">
-                 Our Teams
+                Our Teams
               </a>
             </li>
             <li className="nav-item">
@@ -274,19 +271,22 @@ export default function TopNavbar() {
               Send Inquiry
             </Link>
 
-            {/* ✅ Dashboard only if user is authenticated and role is 'admin' */}
-            {isAuthenticated && user?.role === "admin" && (
-              <Link
-                href="/Dashboard/adminDashboard"
-                className="btn btn-primary px-3 py-2"
-              >
-                Dashboard
-              </Link>
-            )}
+          
+
+            {isAuthenticated &&
+              (user?.role === "admin" || user?.role === "user") && (
+                <Link
+                  href={
+                    user?.role === "admin"
+                      ? "/Dashboard/adminDashboard"
+                      : "/Dashboard/userDashboard"
+                  }
+                  className="btn btn-primary px-3 py-2"
+                >
+                  Dashboard
+                </Link>
+              )}
           </div>
-
-
-
 
           {/* Toggler Button (mobile) */}
           <button
@@ -362,9 +362,9 @@ export default function TopNavbar() {
                   Upcoming Classes
                 </a>
               </li>
-               <li className="nav-item">
+              <li className="nav-item">
                 <a className="nav-link custom-hover" href="/teams">
-                   Our teams
+                  Our teams
                 </a>
               </li>
               <li className="nav-item">
@@ -388,10 +388,8 @@ export default function TopNavbar() {
               </Link>
             </div>
           </div>
-
         </div>
       </nav>
-
     </header>
   );
 }

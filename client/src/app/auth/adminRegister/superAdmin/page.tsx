@@ -14,7 +14,7 @@ const AdminRegisterPage: React.FC = () => {
 
    const router = useRouter();
 
-    // ✅ Check for adminToken and redirect to login if not found
+    // ✅ Check for adminToken and redirect to login if not found     hide search bar in register page 
   useEffect(() => {
     const token = Cookies.get("adminToken");
     if (!token) {
@@ -22,7 +22,32 @@ const AdminRegisterPage: React.FC = () => {
       router.push("/auth/adminLogin");
     }
   }, []);
+  
 
+  ///-------authorixed code 
+  // useEffect(() => {
+  //   const token = Cookies.get("adminToken");
+  //   const role = Cookies.get("userRole");
+
+  //       console.log("Token:", token); // Debugging purpose
+  //   console.log("Role:", role);
+
+
+  //   if (!token) {
+  //     toast.error("Token missing!");
+  //     router.push("/auth/adminLogin");
+  //     return;
+  //   }
+
+  //   if (role !== "admin") {
+  //     toast.error("Unauthorized access!");
+  //     router.push("/auth/adminLogin");
+  //   }
+  // }, []);
+
+
+
+  ///----------------------------
 
 
   const [username, setUsername] = useState("");
@@ -181,9 +206,9 @@ const AdminRegisterPage: React.FC = () => {
           </button>
         </div> */}
 
-        <p className="text-center">
+        <p className="text-center mt-3 ">
           Already have an account?{" "}
-          <Link href="/auth/adminLogin" className="text-primary fw-medium">
+          <Link href="/auth/adminLogin" className="text-primary fw-medium text-decoration-none">
             Login here
           </Link>
         </p>
@@ -192,7 +217,7 @@ const AdminRegisterPage: React.FC = () => {
           Or go to{" "}
           <Link
             href="/"
-            className="text-danger fw-medium d-inline-flex align-items-center"
+            className="text-danger fw-medium d-inline-flex align-items-center text-decoration-none"
           >
             <HomeIcon className="me-1" size={18} />
             Home
