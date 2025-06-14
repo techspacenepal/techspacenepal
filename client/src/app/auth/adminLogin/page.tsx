@@ -224,7 +224,7 @@ const handleFirebaseFacebookLogin = async () => {
     toast.success("Facebook login successful!");
  
   console.log("Facebook user:", user); // 👈 Add this line
-  
+
     const email = user.email || `${user.uid}@facebook.com`;
     const name = user.displayName || "FacebookUser";
 

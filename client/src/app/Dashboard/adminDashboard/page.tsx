@@ -180,6 +180,14 @@ const Dashboard = () => {
               <span className="sidebar-text">Teams</span>
             </Link>
 
+             <Link
+              href="/auth/adminRegister/superAdmin"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <i className="bi bi-person-fill me-2" style={{ fontSize: "1rem" }}></i>
+              <span className="sidebar-text">Register</span>
+            </Link>
+
 
             {/* 🔒 Show logout if authenticated, otherwise show Login */}
             {isAuthenticated ? (
@@ -216,19 +224,30 @@ const Dashboard = () => {
             {/* Stats Cards */}
             <div className="row g-3 mb-4">
               {[
-                { title: "Total Users", value: userCount },
-                { title: "Contacts", value: contactCount },
-                { title: "Inquiries", value: inquiryCount },
-                { title: "Services", value: 12 },
+                { title: "Total Users", value: userCount,  link: "/auth/admin/allUser" },
+                { title: "Contacts", value: contactCount, link: "/auth/admin/allContact"  },
+                { title: "Inquiries", value: inquiryCount,link: "/auth/admin/allinquiry"  },
+                { title: "Services", value: 12 , link: "/auth/admin/allServices" },
               ].map((stat, i) => (
                 <div className="col-12 col-sm-6 col-md-3" key={i}>
-                  <div className="card shadow-sm h-100">
-                    <div className="card-body text-center">
-                      <h6 className="text-muted small">{stat.title}</h6>
-                      <h4 className="fw-bold mb-0">{stat.value}</h4>
-                    </div>
-                  </div>
-                </div>
+    {stat.link ? (
+      <Link href={stat.link} className="text-decoration-none text-dark">
+        <div className="card shadow-sm h-100 hover-shadow">
+          <div className="card-body text-center">
+            <h6 className="text-muted small">{stat.title}</h6>
+            <h4 className="fw-bold mb-0">{stat.value}</h4>
+          </div>
+        </div>
+      </Link>
+    ) : (
+      <div className="card shadow-sm h-100">
+        <div className="card-body text-center">
+          <h6 className="text-muted small">{stat.title}</h6>
+          <h4 className="fw-bold mb-0">{stat.value}</h4>
+        </div>
+      </div>
+    )}
+  </div>
               ))}
             </div>
 

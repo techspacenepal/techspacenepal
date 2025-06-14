@@ -52,10 +52,6 @@ const Dashboard = () => {
   const [recentContacts, setRecentContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // login vayesi matra dashboard dekhine
-  const { isAuthenticated, logout } = useAuth();
-  ///-----
-
   const router = useRouter();
 
   useEffect(() => {
@@ -64,6 +60,15 @@ const Dashboard = () => {
       router.push("/auth/adminLogin");
     }
   }, [router]);
+
+  // login vayesi matra dashboard dekhine
+  const { isAuthenticated, logout } = useAuth();
+
+  //   const logout = () => {
+  //   Cookies.remove("adminToken"); // Token हटाउनुहोस्
+  //   router.push("/auth/adminLogin"); // Login page मा redirect गर्नुहोस्
+  // };
+  ///-----
 
   // Fetch contact and inquiry counts
   useEffect(() => {
@@ -105,17 +110,17 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
-  //   const handleLogout = () => {
-  //     Cookies.remove("adminToken");
-  //     router.push("/auth/adminLogin");
-  //   };
+  // const handleLogout = () => {
+  //   Cookies.remove("adminToken");
+  //   router.push("/auth/adminLogin");
+  // };
 
   return (
     <>
       <div className="d-flex min-vh-100 bg-light">
         {/* Sidebar */}
         <aside className="sidebar bg-dark text-white p-3">
-          <h2 className="mb-4 sidebar-title">User Panel</h2>
+          <h2 className="mb-4 sidebar-title">Admin Panel</h2>
           <nav className="nav flex-column gap-2">
             <Link
               href="/auth/admin/dashboard"
@@ -153,9 +158,35 @@ const Dashboard = () => {
               <span className="sidebar-text">Services</span>
             </Link>
 
+            <Link
+              href="/auth/admin/Gallery"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <i className="bi bi-images" style={{ fontSize: "1rem" }}></i>
+              <span className="sidebar-text">Success Gallery</span>
+            </Link>
+            <Link
+              href="/auth/admin/testimonial"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <i className="bi bi-images" style={{ fontSize: "1rem" }}></i>
+              <span className="sidebar-text">Testimonial</span>
+            </Link>
+            <Link
+              href="/auth/admin/teams"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <i className="bi bi-images" style={{ fontSize: "1rem" }}></i>
+              <span className="sidebar-text">Teams</span>
+            </Link>
+
             {/* 🔒 Show logout if authenticated, otherwise show Login */}
             {isAuthenticated ? (
-              <button onClick={logout} className="btn btn-danger">
+              <button
+                onClick={logout}
+                className="btn btn-danger d-flex align-items-center gap-2"
+              >
+                <LogOut size={18} />
                 Logout
               </button>
             ) : (
@@ -184,18 +215,48 @@ const Dashboard = () => {
             {/* Stats Cards */}
             <div className="row g-3 mb-4">
               {[
-                { title: "Total Users", value: userCount },
-                { title: "Contacts", value: contactCount },
-                { title: "Inquiries", value: inquiryCount },
-                { title: "Services", value: 12 },
+                {
+                  title: "Total Users",
+                  value: userCount,
+                  link: "/auth/admin/userUsers",
+                },
+                {
+                  title: "Contacts",
+                  value: contactCount,
+                  link: "/auth/admin/userContact",
+                },
+                {
+                  title: "Inquiries",
+                  value: inquiryCount,
+                  link: "/auth/admin/userInquiry",
+                },
+                {
+                  title: "Services",
+                  value: 12,
+                  link: "/auth/admin/userServices",
+                },
               ].map((stat, i) => (
                 <div className="col-12 col-sm-6 col-md-3" key={i}>
-                  <div className="card shadow-sm h-100">
-                    <div className="card-body text-center">
-                      <h6 className="text-muted small">{stat.title}</h6>
-                      <h4 className="fw-bold mb-0">{stat.value}</h4>
-                    </div>
-                  </div>
+                  {stat.link ? (
+                    <Link
+                      href={stat.link}
+                      className="text-decoration-none text-dark"
+                    >
+                      <div className="card shadow-sm h-100 hover-shadow">
+                        <div className="card-body text-center">
+                          <h6 className="text-muted small">{stat.title}</h6>
+                          <h4 className="fw-bold mb-0">{stat.value}</h4>
+                        </div>
+                      </div>
+                    </Link>
+                  ) : (
+                    <div className="card shadow-sm h-100">
+                      <div className="card-body text-center">
+                        <h6 className="text-muted small">{stat.title}</h6>
+                        <h4 className="fw-bold mb-0">{stat.value}</h4>
+                      </div>
+                    </div> 
+                  )}
                 </div>
               ))}
             </div>
@@ -234,32 +295,36 @@ const Dashboard = () => {
               </div>
 
               {/* Services Panel */}
-              {/* <div className="col-12 col-lg-6">
+              <div className="col-12 col-lg-6">
                 <div className="card shadow-sm h-100">
                   <div className="card-body">
                     <h5 className="card-title mb-3">Manage Services</h5>
 
-                    {["Web Development", "SEO Optimization"].map((service, i) => (
-                      <div
-                        key={i}
-                        className="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2"
-                      >
-                        <span>{service}</span>
-                        <div>
-                          <button className="btn btn-outline-secondary btn-sm me-2">
-                            Edit
-                          </button>
-                          <button className="btn btn-danger btn-sm">Delete</button>
+                    {["Web Development", "SEO Optimization"].map(
+                      (service, i) => (
+                        <div
+                          key={i}
+                          className="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2"
+                        >
+                          <span>{service}</span>
+                          <div>
+                            <button className="btn btn-outline-secondary btn-sm me-2">
+                              Edit
+                            </button>
+                            <button className="btn btn-danger btn-sm">
+                              Delete
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      )
+                    )}
 
                     <button className="btn btn-primary w-100 mt-3">
                       Add New Service
                     </button>
                   </div>
                 </div>
-              </div> */}
+              </div>
             </div>
           </div>
         </main>

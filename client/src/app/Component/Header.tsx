@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   FaFacebookF,
   FaTwitter,
@@ -11,6 +11,7 @@ import {
   FaWhatsapp,
 } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
+import { usePathname } from "next/navigation";
 
 export default function TopNavbar() {
 
@@ -84,6 +85,15 @@ export default function TopNavbar() {
 
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+
+ const pathname = usePathname();
+   const hideHeader = pathname === "/auth/adminLogin"; // ✅ create a flag
+  const hideFooter = pathname === "/auth/adminRegister/superAdmin";
+
+
+   if (hideHeader) return null; // ✅ Early return if path matches
+  if (hideFooter)  return null;
 
   return (
     <header>
