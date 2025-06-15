@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, } from "react";
 import {
   FaFacebookF,
   FaTwitter,
@@ -15,6 +15,24 @@ import { useAuth } from "../context/AuthContext";
 import { usePathname } from "next/navigation";
 
 export default function TopNavbar() {
+
+
+  const [classes, setClasses] = useState([]);
+
+  useEffect(() => {
+    const fetchClasses = () => {
+      axios
+        .get("http://localhost:5000/api/classes")
+        .then((res) => setClasses(res.data))
+        .catch((err) => console.error("Failed to fetch classes", err));
+    };
+
+    fetchClasses(); // Initial load
+    const interval = setInterval(fetchClasses, 10000); // every 10 sec
+
+    return () => clearInterval(interval); // cleanup
+  }, []);
+
   // login vayesi matra dashboard dekhine
   const { isAuthenticated, user } = useAuth();
   ///-------
@@ -93,21 +111,7 @@ export default function TopNavbar() {
   if (hideHeader) return null; // ✅ Early return if path matches
   if (hideFooter) return null;
 
- const [classes, setClasses] = useState([]);
-useEffect(() => {
-  const fetchClasses = () => {
-    axios
-      .get("http://localhost:5000/api/classes")
-      .then((res) => setClasses(res.data))
-      .catch((err) => console.error("Failed to fetch classes"));
-  };
 
-  fetchClasses(); // Initial load
-
-  const interval = setInterval(fetchClasses, 10000); // Fetch every 10 seconds
-
-  return () => clearInterval(interval); // Cleanup on unmount
-}, []);
 
   return (
     <header>
