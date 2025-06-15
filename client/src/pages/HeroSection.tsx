@@ -2,8 +2,8 @@ import Image from 'next/image';
 
 export default function HeroSection() {
     return (
-        <> 
-        {/* Home section */}
+        <>
+            {/* Home section */}
             <section
                 className="container  heroBg position-relative py-5 py-sm-5 py-md-5 py-lg-5"
                 style={{
@@ -23,7 +23,7 @@ export default function HeroSection() {
                     }}
                 >
                     <svg width="100%" height="100%" style={{ position: 'absolute' }}>
-                        {[...Array(50)].map((_, i) => {
+                        {Array.from({ length: 50 }).map((_, i) => {
                             const size = Math.random() * 3 + 1;
                             const x = Math.random() * 100;
                             const y = Math.random() * 100;
@@ -37,17 +37,22 @@ export default function HeroSection() {
                                     fill="#00b4d8"
                                     opacity="0.3"
                                 >
-                                    <animate attributeName="cy"
+                                    <animate
+                                        attributeName="cy"
                                         values="100%;0%;100%"
                                         dur={`${duration}s`}
                                         repeatCount="indefinite"
                                     />
-                                    <animate attributeName="cx" values={`${x}%;${x + 5}%;${x}%`}  dur={`${duration * 1.5}s`}  repeatCount="indefinite"
+                                    <animate attributeName="cx"
+                                        values={`${x}%;${x + 5}%;${x}%`}
+                                        dur={`${duration * 1.5}s`}
+                                        repeatCount="indefinite"
                                     />
                                 </circle>
                             );
                         })}
                     </svg>
+
                 </div>
 
                 <div className="row align-items-center justify-content-between flex-column-reverse flex-lg-row gap-4 gap-lg-0" style={{ position: 'relative', zIndex: 1 }}>

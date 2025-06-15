@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
-import React, { useEffect, useRef } from "react";
+import axios from "axios";
+import React, { useEffect, useRef, useState } from "react";
 import {
   FaFacebookF,
   FaTwitter,
@@ -91,6 +92,22 @@ export default function TopNavbar() {
 
   if (hideHeader) return null; // ✅ Early return if path matches
   if (hideFooter) return null;
+
+ const [classes, setClasses] = useState([]);
+useEffect(() => {
+  const fetchClasses = () => {
+    axios
+      .get("http://localhost:5000/api/classes")
+      .then((res) => setClasses(res.data))
+      .catch((err) => console.error("Failed to fetch classes"));
+  };
+
+  fetchClasses(); // Initial load
+
+  const interval = setInterval(fetchClasses, 10000); // Fetch every 10 seconds
+
+  return () => clearInterval(interval); // Cleanup on unmount
+}, []);
 
   return (
     <header>
@@ -242,8 +259,8 @@ export default function TopNavbar() {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link custom-hover" href="#">
-                Upcoming Classes
+              <a className="nav-link custom-hover" href="/UpcomingClassesUser">
+                Upcoming Classes ({classes.length})
               </a>
             </li>
             <li className="nav-item">
@@ -358,7 +375,7 @@ export default function TopNavbar() {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link custom-hover" href="#">
+                <a className="nav-link custom-hover" href="UpcomingClassesUser">
                   Upcoming Classes
                 </a>
               </li>

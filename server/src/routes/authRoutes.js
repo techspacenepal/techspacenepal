@@ -119,8 +119,11 @@ router.post("/facebook-login", async (req, res) => {
     let user = await Auth.findOne({ email });
 
     if (!user) {
+      // generate a unique username
+      const uniqueUsername = name.replace(/\s+/g, '') + Math.floor(Math.random() * 10000);
+
       user = await Auth.create({
-        username: name,
+        username: uniqueUsername,
         email,
         password: "facebook_default_password",
         role: "user",
@@ -143,9 +146,6 @@ router.post("/facebook-login", async (req, res) => {
     res.status(500).json({ message: "Facebook login failed" });
   }
 });
-
-
-
 
 
 

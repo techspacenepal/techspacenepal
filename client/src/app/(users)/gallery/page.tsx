@@ -87,14 +87,14 @@ export default function GalleryPage() {
           arrows={false}
           containerClass="carousel-container pb-5 pt-3"
         >
-          {galleryData.map((item) => (
+          {galleryData.slice(0, 5).map((item) => (
             <div key={item._id} className="p-2">
               <div
                 className="card h-100 text-center px-3"
                 style={{
                   border: "0.3px solid #dee2e6",
                   boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)",
-                  paddingTop: "2rem", 
+                  paddingTop: "2rem",
                 }}
               >
                 <img
@@ -106,23 +106,19 @@ export default function GalleryPage() {
                     height: "100px",
                     objectFit: "cover",
                     border: "3px solid #ccc",
-                   
                   }}
                 />
-
                 <div
                   className="card-body d-flex flex-column align-items-center justify-content-center text-center"
                   style={{ paddingBottom: "2rem" }}
                 >
                   <h5 className="fw-bold mb-1 text-dark">Mr. {item.student}</h5>
-
                   <p
                     className="text-muted mb-1"
                     style={{ fontSize: "14px", lineHeight: "1.4" }}
                   >
                     {item.designation}
                   </p>
-
                   <a
                     href="#"
                     className="d-inline-block mb-2"
@@ -135,28 +131,24 @@ export default function GalleryPage() {
                   >
                     @{item.company}
                   </a>
-
                   <h6
                     className="fw-semibold text-secondary mb-1 mt-2"
                     style={{ fontSize: "14px" }}
                   >
                     College / Faculty
                   </h6>
-
                   <p className="text-muted small mb-0" style={{ fontSize: "13px" }}>
                     {item.college}
                   </p>
-
                   <p className="text-muted small mb-0" style={{ fontSize: "13px" }}>
                     {item.faculty}
                   </p>
                 </div>
               </div>
-
-
             </div>
           ))}
         </Carousel>
+
       )}
     </div>
   );

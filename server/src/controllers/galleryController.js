@@ -2,10 +2,10 @@ import Gallery from "../models/Gallery.js";
 
 export const createGallery = async (req, res) => {
   try {
-    const { student, college, address } = req.body;
+    const { student, college, company, designation, faculty  } = req.body;
     const imageUrl = "/uploads/" + req.file.filename;
 
-    const newGallery = await Gallery.create({ student, college, address, imageUrl });
+    const newGallery = await Gallery.create({ student, college, faculty, designation, imageUrl, company});
     res.status(201).json(newGallery);
   } catch (error) {
     console.error("Error creating gallery:", error);

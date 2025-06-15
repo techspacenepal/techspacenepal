@@ -4,13 +4,13 @@ import { initializeApp } from "firebase/app";
 import {  FacebookAuthProvider, getAuth, GithubAuthProvider, GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDLu9UnNl_58R2xirZSrdiy0rPFs1qxMz0",
-  authDomain: "fir-authentication-ef83f.firebaseapp.com",
-  projectId: "fir-authentication-ef83f",
-  storageBucket: "fir-authentication-ef83f.firebasestorage.app",
-  messagingSenderId: "668675062129",
-  appId: "1:668675062129:web:e8f3b027aab97368fc9ed0",
-  measurementId: "G-4T9PRNYB5G"
+  apiKey: "AIzaSyB737apAqenke2EiH2jRc6DNHCmFINXhdM",
+  authDomain: "fir-aunthentication-69cc9.firebaseapp.com",
+  projectId: "fir-aunthentication-69cc9",
+  storageBucket: "fir-aunthentication-69cc9.firebasestorage.app",
+  messagingSenderId: "309631532216",
+  appId: "1:309631532216:web:9cfec8cfeb3da73243c84d",
+  measurementId: "G-C1W7YF4FYL"
 };
 
 

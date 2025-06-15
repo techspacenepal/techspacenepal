@@ -268,7 +268,7 @@ const handleFirebaseFacebookLogin = async () => {
         <div className="text-center mb-3">
           <Image
             src="/logo.jpg"
-            alt="Krisha Logo"
+            alt=" Logo"
             width={90}
             height={80}
             className="mb-3 border rounded"
