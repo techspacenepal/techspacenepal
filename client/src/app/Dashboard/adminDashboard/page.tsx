@@ -179,6 +179,20 @@ const Dashboard = () => {
               <i className="bi bi-images" style={{ fontSize: "1rem" }}></i>
               <span className="sidebar-text">Teams</span>
             </Link>
+               <Link
+              href="/auth/admin/courses"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <i className="bi bi-images" style={{ fontSize: "1rem" }}></i>
+              <span className="sidebar-text">Courses</span>
+            </Link>
+                <Link
+              href="/auth/admin/UpcomingClasses"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <i className="bi bi-images" style={{ fontSize: "1rem" }}></i>
+              <span className="sidebar-text">classes UP</span>
+            </Link>
 
 
             {/* 🔒 Show logout if authenticated, otherwise show Login */}

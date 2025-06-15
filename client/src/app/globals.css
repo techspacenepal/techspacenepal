@@ -105,70 +105,6 @@ header.sticky.animated-sticky {
 
 
 
-.course-card {
-  padding: 15px 15px;
-  background: #fff;
-  color: #000;
-  border-radius: 12px;
-  overflow: hidden;
-  width: 200px;
-  height: 250px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.course-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-.course-image {
-  width: 100%;
-  height: 120px;
-  object-fit: cover;
-}
-
-.course-title {
-  font-size: 15px;
-  width: 100%;
-}
-
-.course-duration {
-  font-size: 13px;
-}
-
-.badge {
-  background-color: rgb(255, 63, 0);
-}
-
-.card-title {
-  font-size: 19px;
-}
-
-.card {
-  position: relative;
-  /* width: 250px; */
-  overflow: hidden;
-  /* border-radius: 10px; */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card-img-top {
-  height: 170px;
-  width: 100%;
-  display: block;
-  transition: transform 0.3s ease;
-}
-
-.card-img-top:hover {
-  transform: scale(1.1);
-
-}
-
-
-
-
 /* header skills */
 .nav-item.dropdown:hover .dropdown-menu {
   display: block;
@@ -457,27 +393,11 @@ footer i {
     padding: 1.5rem !important;
   }
 }
-/* 
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
 
-.modal-content {
-  background: white;
-  padding: 2rem;
-  max-width: 600px;
-  width: 90%;
-  border-radius: 15px;
-} */
+
+
+
+
 
 .modal-overlay {
   position: fixed;
@@ -499,3 +419,38 @@ footer i {
   width: 90%;
   border-radius: 15px;
 }
+
+
+/* courses */
+.image-hover-wrapper {
+  overflow: hidden;
+  position: relative;
+}
+
+.image-hover {
+  transition: transform 0.5s ease;
+}
+
+.image-hover-wrapper:hover .image-hover {
+  transform: scale(1.1);
+}
+@media (max-width: 575.98px) {
+  .overflow-scroll-wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .overflow-scroll-wrapper > .col-12 {
+    flex: 0 0 auto;
+    width: 85%; /* You can also use fixed px like 260px if preferred */
+    max-width: 85%;
+    margin-right: 1rem;
+  }
+}
+
