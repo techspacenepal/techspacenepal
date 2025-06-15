@@ -12,6 +12,7 @@ import {
   FaWhatsapp,
 } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
+import { usePathname } from "next/navigation";
 
 export default function TopNavbar() {
 

@@ -1,47 +1,10 @@
-// import express from 'express';
-// import { registerAdmin, loginAdmin, logoutAdmin, getAdminById, getUserById, getAllUsers,  updateUserByEmail, login, logout, forgotPassword, resetPassword, deleteUserById, googleLogin } from '../controllers/authController.js';
-// import { authenticateToken,  } from '../middlewares/authMiddleware.js';
-// import Auth from '../models/Auth.js';
-// import { protect } from '../middlewares/protectSuperAdmin.js';
-// import passport from 'passport';
-// // import { protectSuperAdmin } from '../middlewares/protectSuperAdmin.js';
-
-// const router = express.Router();
-
-// router.post('/register', registerAdmin);
-// router.post('/login', loginAdmin);
-// router.post('/logout', logoutAdmin);
-// router.get('/get-admin/:id', getAdminById); // ✅ New route
-// router.get('/get-user/:id', getUserById);
-// router.get('/users', getAllUsers);
-// router.delete('/:id', protect, deleteUserById);
-
-// router.put("/users/:email", updateUserByEmail);
-// router.post('/login', login);
-// router.post('/logout', authenticateToken, logout)
-// router.post('/forgot-password', forgotPassword);
-// router.post('/reset-password/:token', resetPassword);
-
-// // In authRoutes.js or similar
-
-// // GET /api/users - fetch all users or just user count
-// router.get("/", async (req, res) => {
-//   try {
-//     const users = await Auth.find(); // fetch all users
-//     res.status(200).json(users);
-//   } catch (error) {
-//     res.status(500).json({ message: "Server error fetching users" });
-//   }
-// });
-
-
-// export default router;
-
 
 
 import express from 'express';
 import passport from 'passport';
 import Auth from '../models/Auth.js';
+import jwt from "jsonwebtoken";
+
 
 import {
   registerAdmin,
@@ -140,6 +103,48 @@ router.post("/google-login", async (req, res) => {
     return res.status(500).json({ message: "Google login failed" });
   }
 });
+
+
+
+
+// 🔹 Facebook Login
+router.post("/facebook-login", async (req, res) => {
+  const { email, name } = req.body;
+
+  if (!email || !name) {
+    return res.status(400).json({ message: "Email and name are required" });
+  }
+
+  try {
+    let user = await Auth.findOne({ email });
+
+    if (!user) {
+      user = await Auth.create({
+        username: name,
+        email,
+        password: "facebook_default_password",
+        role: "user",
+      });
+    }
+
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.status(200).json({
+      token,
+      role: user.role,
+      username: user.username,
+    });
+  } catch (error) {
+    console.error("Facebook login error:", error.message);
+    res.status(500).json({ message: "Facebook login failed" });
+  }
+});
+
+
 
 
 

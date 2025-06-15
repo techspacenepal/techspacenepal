@@ -1,24 +1,55 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { GithubIcon, HomeIcon } from "lucide-react";
-
-import { FcGoogle } from "react-icons/fc"; // Google Icon from react-icons
-
-import { signInWithPopup } from "firebase/auth";
-import {
-  auth,
-  githubProvider,
-  googleProvider,
-} from "@/firebaseconfigurations/config";
+import {  HomeIcon } from "lucide-react";
+import Cookies from "js-cookie";
 
 const AdminRegisterPage: React.FC = () => {
-  const router = useRouter();
+
+
+   const router = useRouter();
+
+    // ✅ Check for adminToken and redirect to login if not found     hide search bar in register page 
+  useEffect(() => {
+    const token = Cookies.get("adminToken");
+    if (!token) {
+      toast.error("Please login first!");
+      router.push("/auth/adminLogin");
+    }
+  }, []);
+  
+
+  ///-------authorixed code 
+  // useEffect(() => {
+  //   const token = Cookies.get("adminToken");
+  //   const role = Cookies.get("userRole");
+
+  //       console.log("Token:", token); // Debugging purpose
+  //   console.log("Role:", role);
+
+
+  //   if (!token) {
+  //     toast.error("Token missing!");
+  //     router.push("/auth/adminLogin");
+  //     return;
+  //   }
+
+  //   if (role !== "admin") {
+  //     toast.error("Unauthorized access!");
+  //     router.push("/auth/adminLogin");
+  //   }
+  // }, []);
+
+
+
+  ///----------------------------
+
+
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,6 +59,9 @@ const AdminRegisterPage: React.FC = () => {
   const isStrongPassword = (password: string) => {
     return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
   };
+
+
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,83 +99,7 @@ const AdminRegisterPage: React.FC = () => {
     }
   };
 
-  // const handleFirebaseGoogleLogin = async () => {
-  //   try {
-  //     const result = await signInWithPopup(auth, googleProvider);
-  //     const user = result.user;
-  //     console.log("User info:", user);
-  //     toast.success("Firebase Google login successful!");
-
-  //     // You might want to send `user.email` to your backend as well for registration/login
-  //     setTimeout(() => {
-  //       router.push("/Dashboard/adminDashboard");
-  //     }, 1500);
-  //   } catch (error) {
-  //     console.error("Firebase error:", error);
-  //     toast.error("Firebase Google login failed!");
-  //   }
-  // };
-
-  ///----------------------------new code
-
-  const handleFirebaseGoogleLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
-
-      toast.success("  Google login successful!");
-
-      // Send to backend to get user role
-      const { data } = await axios.post(
-        "http://localhost:5000/api/auth/google-login",
-        {
-          email: user.email,
-          name: user.displayName,
-        }
-      );
-
-      const userRole = data.role;
-
-      if (userRole === "admin") {
-        router.push("/Dashboard/adminDashboard");
-      } else {
-        router.push("/Dashboard/userDashboard");
-      }
-    } catch (error) {
-      console.error("Firebase error:", error);
-      toast.error("Firebase Google login failed!");
-    }
-  };
-
-  //-----Github login
-  const handleFirebaseGithubLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, githubProvider);
-      const user = result.user;
-
-      toast.success(" GitHub login successful!");
-
-      // Send to backend to get user role
-      const { data } = await axios.post(
-        "http://localhost:5000/api/auth/google-login",
-        {
-          email: user.email,
-          name: user.displayName,
-        }
-      );
-
-      const userRole = data.role;
-
-      if (userRole === "admin") {
-        router.push("/Dashboard/adminDashboard");
-      } else {
-        router.push("/Dashboard/userDashboard");
-      }
-    } catch (error) {
-      console.error("Firebase error:", error);
-      toast.error("Firebase Google login failed!");
-    }
-  };
+ 
   const [showPassword, setShowPassword] = useState(false);
   //--------------------------
 
@@ -230,7 +188,7 @@ const AdminRegisterPage: React.FC = () => {
           </button>
         </form>
 
-        <div className="d-flex gap-3 my-3 justify-content-center align-items-center flex-wrap">
+        {/* <div className="d-flex gap-3 my-3 justify-content-center align-items-center flex-wrap">
           <button
             className="btn btn-outline-danger d-flex justify-content-center align-items-center"
             onClick={handleFirebaseGoogleLogin}
@@ -246,11 +204,11 @@ const AdminRegisterPage: React.FC = () => {
           >
             <GithubIcon size={22} />
           </button>
-        </div>
+        </div> */}
 
-        <p className="text-center">
+        <p className="text-center mt-3 ">
           Already have an account?{" "}
-          <Link href="/auth/adminLogin" className="text-primary fw-medium">
+          <Link href="/auth/adminLogin" className="text-primary fw-medium text-decoration-none">
             Login here
           </Link>
         </p>
@@ -259,7 +217,7 @@ const AdminRegisterPage: React.FC = () => {
           Or go to{" "}
           <Link
             href="/"
-            className="text-danger fw-medium d-inline-flex align-items-center"
+            className="text-danger fw-medium d-inline-flex align-items-center text-decoration-none"
           >
             <HomeIcon className="me-1" size={18} />
             Home

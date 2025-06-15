@@ -7,6 +7,9 @@ const generateToken = (id, role) => {
   return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
+
+
+
 // Utility to validate strong password
 const isStrongPassword = (password) => {
   return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
@@ -175,7 +178,7 @@ export const login = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    const user = await User.findOne({ username });
+    const user = await Auth.findOne({ username });
     if (!user) {
       return res.status(400).json({ message: 'User not found' });
     }
@@ -190,7 +193,9 @@ export const login = async (req, res) => {
     await user.save();
 
     // Token generate
-    const token = generateToken(user);
+    // const token = generateToken(user);
+
+    const token = generateToken(user._id, user.role);
 
     res.json({ token, user });
   } catch (error) {
