@@ -57,60 +57,6 @@ const AdminLoginPage: React.FC = () => {
   };
 
 
-  // -----google login in user --------
-
-  //   const handleFirebaseGoogleLogin = async () => {
-  //   try {
-  //     const result = await signInWithPopup(auth, googleProvider);
-
-  //     const user = result.user;
-
-  //     console.log("User info:", user);
-
-  //     // Add user info to localStorage / redirect as needed
-  //     toast.success("Firebase Google login successful!");
-
-  //     setTimeout(() => {
-  //       router.push("/Dashboard/adminDashboard"); // ✅ Use Next.js router here
-  //     }, 1500);
-
-  //   } catch (error) {
-  //     console.error("Firebase error:", error);
-  //     toast.error("Firebase Google login failed!");
-  //   }
-  // };
-
-  //  const handleFirebaseGoogleLogin = async () => {
-  //   try {
-  //     const result = await signInWithPopup(auth, googleProvider);
-  //     const user = result.user;
-
-  //     toast.success("  Google login successful!");
-
-  //     // Send to backend to get user role
-  //     const { data } = await axios.post(
-  //       "http://localhost:5000/api/auth/google-login",
-  //       {
-  //         email: user.email,
-  //         name: user.displayName,
-  //       }
-  //     );
-
-  //     const userRole = data.role;
-
-  //     if (userRole === "admin") {
-  //       router.push("/Dashboard/adminDashboard");
-  //     } else {
-  //       router.push("/Dashboard/userDashboard");
-  //     }
-  //   } catch (error) {
-  //     console.error("Firebase error:", error);
-  //     toast.error("Firebase Google login failed!");
-  //   }
-  // };
-
-  //-----Github login
-  
   
   
 
@@ -150,39 +96,6 @@ const AdminLoginPage: React.FC = () => {
 
 
   
-  // const handleFirebaseGithubLogin = async () => {
-  // try {
-  //   const result = await signInWithPopup(auth, googleProvider);
-  //   const user = result.user;
-
-  //   toast.success("Github login successful!");
-
-  //   const { data } = await axios.post("http://localhost:5000/api/auth/github-login", {
-  //     email: user.email,
-  //     name: user.displayName,
-  //   });
-
-  //   // ✅ AuthContext को login function call गर्नुहोस्
-  //   login(data.token, data.role);
-
-  //   Cookies.set("adminToken", data.token);
-  //   localStorage.setItem("adminToken", data.token);
-  //   localStorage.setItem("user", JSON.stringify({ username: data.username, role: data.role }));
-
-  //   setTimeout(() => {
-  //     if (data.role === "admin") {
-  //       router.push("/Dashboard/adminDashboard");
-  //     } else {
-  //       router.push("/Dashboard/userDashboard");
-  //     }
-  //   }, 1500);
-
-  // } catch (error) {
-  //   console.error("Firebase error:", error);
-  //   toast.error("Firebase Github login failed!");
-  // }
-  // };
- 
   const handleFirebaseGithubLogin = async () => {
   try {
     const result = await signInWithPopup(auth, githubProvider);
@@ -268,7 +181,7 @@ const handleFirebaseFacebookLogin = async () => {
         <div className="text-center mb-3">
           <Image
             src="/logo.jpg"
-            alt="Krisha Logo"
+            alt=" Logo"
             width={90}
             height={80}
             className="mb-3 border rounded"
