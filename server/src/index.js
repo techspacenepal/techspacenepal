@@ -138,6 +138,16 @@ app.use('/uploads', express.static(path.join('public/uploads')));
 // Serve uploads statically for all uploads including courses images
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
+
+//////-----today mobile devices
+app.use(cors({
+  origin: '*', // development मा, production मा specific domain राख्नुहोस्
+  methods: ['GET', 'POST', 'PUT', 'DELETE']
+}));
+
+
+
+
 // Your existing routes
 app.use('/api/inquiry', inquiryRoutes);
 app.use('/api/auth', authRoutes);

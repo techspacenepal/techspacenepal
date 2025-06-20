@@ -39,7 +39,7 @@
 //   return (
 //     <section className="bg-light py-5">
 //       <div className="container">
-//         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
+//         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center">
 //           <div className="text-center text-md-start">
 //             <h2 className="fw-bold text-primary mb-2">What Our Students Say</h2>
 //             <p className="text-muted mb-2 mb-md-0">
@@ -68,28 +68,57 @@
 //               containerClass="carousel-container px-0 pb-5 pt-3"
 //               itemClass="carousel-item-padding-40-px"
 //             >
-//               {testimonials.map((testimonial, idx) => (
-//                 <div className="col-12 px-3" key={testimonial._id || idx}>
-//                   <div className="card border-0 shadow" style={{ height: "300px" }}>
-//                     <div className="card-body d-flex flex-column justify-content-between pb-0">
-//                       <p className="text-secondary fst-italic mb-3">
-//                         “
-//                         {testimonial.message.split(" ").slice(0, 45).join(" ")}
-//                         {testimonial.message.split(" ").length > 45 ? "..." : ""}
-//                         ”
-//                       </p>
-//                       {testimonial.message.split(" ").length > 45 && (
-//                         <a
-//                           className="fw-semibold p-0 mt-auto text-start"
-//                           onClick={() => openModal(testimonial)}
-//                           style={{ cursor: "pointer" }}
-//                         >
-//                           Read More
-//                         </a>
-//                       )}
+//               {testimonials.slice(0, 5).map((testimonial, idx) => (
+//                 <div className="col-12 px-3 py-5 border-4" key={testimonial._id || idx}>
+//                   <div
+//                     className="px-4 py-5 bg-white shadow rounded-4 position-relative"
+//                     style={{
+//                       height: "305px",
+//                       minHeight: "280px",
+//                       borderLeft: "5px solid #f48024",
+//                         borderRight: "5px solid #f48024",
+//                     }}
+//                   >
+//                     <div
+//                       className="position-absolute d-flex justify-content-center align-items-center"
+//                       style={{
+//                         top: "0",
+//                         left: "10%",
+//                         transform: "translate(-50%, -50%)",
+//                         backgroundColor: "#fff",
+//                         width: "48px",
+//                         height: "48px",
+//                         borderRadius: "50%",
+//                         boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+//                         // border: "5px solid #f48024"
+//                       }}
+//                     >
+//                       <svg
+//                         xmlns="http://www.w3.org/2000/svg"
+//                         viewBox="0 0 448 512"
+//                         width="24"
+//                         height="24"
+//                       >
+//                         <path d="M0 216C0 149.7 53.7 96 120 96l8 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-8 0c-30.9 0-56 25.1-56 56l0 8 64 0c35.3 0 64 28.7 64 64l0 64c0 35.3-28.7 64-64 64l-64 0c-35.3 0-64-28.7-64-64l0-32 0-32 0-72zm256 0c0-66.3 53.7-120 120-120l8 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-8 0c-30.9 0-56 25.1-56 56l0 8 64 0c35.3 0 64 28.7 64 64l0 64c0 35.3-28.7 64-64 64l-64 0c-35.3 0-64-28.7-64-64l0-32 0-32 0-72z" />
+//                       </svg>
 //                     </div>
 
-//                     <div className="card-footer bg-white border-0 d-flex align-items-center pt-3 pb-3 mt-auto">
+//                     <p className="text-secondary mb-2 border-top" style={{ fontSize: "16px", lineHeight: "1.6" }}>
+//                       {testimonial.message.split(" ").slice(0, 35).join(" ")}
+//                       {testimonial.message.split(" ").length > 35 ? "..." : ""}
+//                     </p>
+
+//                     {testimonial.message.split(" ").length > 35 && (
+//                       <a
+//                         className="fw-semibold p-0 text-primary text-decoration-none"
+//                         onClick={() => openModal(testimonial)}
+//                         style={{ cursor: "pointer", fontSize: "14px" }}
+//                       >
+//                         Read More
+//                       </a>
+//                     )}
+
+//                     <div className="d-flex align-items-center mt-2 border-bottom">
 //                       <img
 //                         src={
 //                           testimonial.image
@@ -98,32 +127,26 @@
 //                         }
 //                         alt={testimonial.name}
 //                         className="rounded-circle me-3"
-//                         width="55"
-//                         height="55"
 //                         style={{
-//                           width: "75px",
-//                           height: "75px",
+//                           width: "83px",
+//                           height: "83px",
 //                           objectFit: "cover",
 //                           objectPosition: "center top",
 //                           border: "3px solid #ffffff",
-//                           boxShadow: "0 0 0 4px #d2e9ff",
+//                           boxShadow: "0 0 0 3px #d2e9ff"
 //                         }}
 //                       />
 //                       <div>
-//                         <h6 className="mb-0">{testimonial.name}</h6>
+//                         <h6 className="mb-0 fw-bold">{testimonial.name}</h6>
 //                         <small className="text-muted">{testimonial.course}</small>
 //                       </div>
 //                     </div>
 //                   </div>
-
 //                 </div>
 //               ))}
 //             </Carousel>
 //           </div>
 //         )}
-
-
-
 //       </div>
 
 //       {/* Modal */}
@@ -161,10 +184,9 @@
 //                     objectFit: "cover",
 //                     objectPosition: "center",
 //                     border: "3px solid #fff",
-//                     boxShadow: "0 0 0 4px #b6d9ff", // light blue outer border
+//                     boxShadow: "0 0 0 4px #b6d9ff",
 //                   }}
 //                 />
-
 //                 <div>
 //                   <h5 className="mb-0">{selected.name}</h5>
 //                   <small className="text-muted">{selected.course}</small>
@@ -231,7 +253,7 @@ function Testimonialpage() {
   return (
     <section className="bg-light py-5">
       <div className="container">
-        <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-center">
           <div className="text-center text-md-start">
             <h2 className="fw-bold text-primary mb-2">What Our Students Say</h2>
             <p className="text-muted mb-2 mb-md-0">
@@ -261,48 +283,76 @@ function Testimonialpage() {
               itemClass="carousel-item-padding-40-px"
             >
               {testimonials.slice(0, 5).map((testimonial, idx) => (
-                <div className="col-12 px-3" key={testimonial._id || idx}>
-                  <div className="card border-0 shadow" style={{ height: "300px" }}>
-                    <div className="card-body d-flex flex-column justify-content-between pb-0">
-                      <p className="text-secondary fst-italic mb-3">
-                        “
-                        {testimonial.message.split(" ").slice(0, 45).join(" ")}
-                        {testimonial.message.split(" ").length > 45 ? "..." : ""}
-                        ”
-                      </p>
-                      {testimonial.message.split(" ").length > 45 && (
-                        <a
-                          className="fw-semibold p-0 mt-auto text-start"
-                          onClick={() => openModal(testimonial)}
-                          style={{ cursor: "pointer" }}
-                        >
-                          Read More
-                        </a>
-                      )}
+                <div className="col-12 px-3 py-5" key={testimonial._id || idx}>
+                  <div
+                    className="px-4 py-5 bg-white shadow rounded-4 position-relative"
+                    style={{
+                      minHeight: "280px",
+                      borderLeft: "5px solid #f48024",
+                      borderRight: "5px solid #f48024",
+                    }}
+                  >
+                    <div
+                      className="position-absolute d-flex justify-content-center align-items-center"
+                      style={{
+                        top: "0",
+                        left: "10%",
+                        transform: "translate(-50%, -50%)",
+                        backgroundColor: "#fff",
+                        width: "48px",
+                        height: "48px",
+                        borderRadius: "50%",
+                        boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 448 512"
+                        width="24"
+                        height="24"
+                      >
+                        <path d="M0 216C0 149.7 53.7 96 120 96l8 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-8 0c-30.9 0-56 25.1-56 56l0 8 64 0c35.3 0 64 28.7 64 64l0 64c0 35.3-28.7 64-64 64l-64 0c-35.3 0-64-28.7-64-64l0-32 0-32 0-72zm256 0c0-66.3 53.7-120 120-120l8 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-8 0c-30.9 0-56 25.1-56 56l0 8 64 0c35.3 0 64 28.7 64 64l0 64c0 35.3-28.7 64-64 64l-64 0c-35.3 0-64-28.7-64-64l0-32 0-32 0-72z" />
+                      </svg>
                     </div>
 
-                    <div className="card-footer bg-white border-0 d-flex align-items-center pt-3 pb-3 mt-auto">
+                    <p className="text-secondary mb-2 border-top" style={{ fontSize: "16px", lineHeight: "1.6" }}>
+                      {testimonial.message.split(" ").slice(0, 35).join(" ")}
+                      {testimonial.message.split(" ").length > 35 ? "..." : ""}
+                    </p>
+
+                    {testimonial.message.split(" ").length > 35 && (
+                      <a
+                        className="fw-semibold p-0 text-primary text-decoration-none"
+                        onClick={() => openModal(testimonial)}
+                        style={{ cursor: "pointer", fontSize: "14px" }}
+                      >
+                        Read More
+                      </a>
+                    )}
+
+                    <div className="d-flex align-items-center flex-nowrap mt-2 border-bottom">
                       <img
                         src={
                           testimonial.image
                             ? `http://localhost:5000${testimonial.image}`
-                            : "https://via.placeholder.com/55"
+                            : "https://via.placeholder.com/170"
                         }
                         alt={testimonial.name}
                         className="rounded-circle me-3"
-                        width="55"
-                        height="55"
+                        width="85"
+                        height="85"
                         style={{
-                          width: "75px",
-                          height: "75px",
+                          width: "85px",
+                          height: "85px",
                           objectFit: "cover",
-                          objectPosition: "center top",
+                          objectPosition: "center center", // 👈 change this
                           border: "3px solid #ffffff",
                           boxShadow: "0 0 0 4px #d2e9ff",
                         }}
                       />
+
                       <div>
-                        <h6 className="mb-0">{testimonial.name}</h6>
+                        <h6 className="mb-0 fw-bold">{testimonial.name}</h6>
                         <small className="text-muted">{testimonial.course}</small>
                       </div>
                     </div>

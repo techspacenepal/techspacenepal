@@ -454,3 +454,69 @@ footer i {
   }
 }
 
+/* navbar  */
+@media (max-width: 991.98px) {
+  .custom-mobile-menu {
+    position: fixed;
+    top: 56px; /* adjust to your navbar height */
+    right: 0;
+    width: 50%;
+    height: 100vh;
+    background-color: #fff;
+    z-index: 1050;
+    padding: 1rem;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .custom-mobile-menu.show {
+    transform: translateX(0);
+  }
+
+  /* Prevent default Bootstrap collapse flicker */
+  .navbar-collapse.collapse:not(.show) {
+    display: block !important; /* required to allow transform to work */
+    height: 0;
+    overflow: hidden;
+  }
+}
+
+
+.custom-dropdown .dropdown-menu {
+  opacity: 1;
+  transform: translateY(10px);
+  visibility: hidden;
+  transition: all 0.3s ease-in-out;
+  display: block;
+  pointer-events: none;
+}
+
+.custom-dropdown.show .dropdown-menu {
+  opacity: 0;
+  transform: translateY(0);
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.dropdown-menu {
+  background-color: #fff;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+  border-radius: 0.5rem;
+  min-width: 220px;
+}
+
+.dropdown-item {
+  transition: background 0.2s ease-in-out;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+@media (max-width: 767px) {
+  .navbar-collapse {
+    display: none !important;
+  }
+}
+
+
