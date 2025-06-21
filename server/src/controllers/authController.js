@@ -1,7 +1,12 @@
 import Auth from '../models/Auth.js';
 import jwt from 'jsonwebtoken';
-import sendEmail from '../utils/sendEmail.js';
+import {sendEmail} from '../utils/sendEmail.js';
 import crypto from 'crypto';
+
+import dotenv from "dotenv";
+dotenv.config();
+
+import nodemailer from "nodemailer";
 
 const generateToken = (id, role) => {
   return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "7d" });
@@ -222,71 +227,151 @@ export const logout = async (req, res) => {
 
 
 
+// export const forgotPassword = async (req, res) => {
+//   const { email } = req.body;
+//   try {
+//     const user = await Auth.findOne({ email });
+//     if (!user) {
+//       return res.status(404).json({ message: 'No account found with this email.' });
+//     }
 
-export const forgotPassword = async (req, res) => {
-  const { email } = req.body;
-  try {
-    const user = await Auth.findOne({ email });
-    if (!user) return res.status(404).json({ message: 'User not found' });
+//     const otp = Math.floor(100000 + Math.random() * 900000).toString();
+//     const resetToken = crypto.randomBytes(20).toString('hex');
 
-    const resetToken = crypto.randomBytes(20).toString('hex');
-    const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-    user.resetPasswordToken = hashedToken;
-    user.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 minutes
-    await user.save();
+//     user.resetToken = resetToken;
+//     user.resetTokenExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+//     user.otp = otp;
+//     user.otpExpiry = Date.now() + 10 * 60 * 1000;
+//     await user.save();
 
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
-    const message = `You requested a password reset. Please go to: ${resetUrl}`;
+//     const message = `Hello ${user.username || 'User'},\n\nYour password reset OTP code is: ${otp}. This code is valid for 10 minutes.\n\nSkill Training Nepal`;
 
-    await sendEmail({ email: user.email, subject: 'Password Reset', message });
+//     await sendEmail({
+//       to: user.email,
+//       subject: 'Password Reset OTP',
+//       message,
+//     });
 
-    // *** IMPORTANT: send resetToken also ***
-    res.status(200).json({ 
-      message: 'Password reset email sent',
-      resetToken // send this token to frontend for redirect
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Something went wrong' });
-  }
-};
+//     res.status(200).json({
+//       message: 'OTP has been sent to your email.',
+//       resetToken,
+//     });
+//   } catch (error) {
+//     res.status(500).json({ message: 'Server error, please try again later.' });
+//   }
+// };
+// export const resetPassword = async (req, res) => {
+//   const { token } = req.params;
+//   const { password } = req.body;
+//   try {
+//     const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
+//     const user = await Auth.findOne({
+//       resetPasswordToken: hashedToken,
+//       resetPasswordExpire: { $gt: Date.now() }, // token expiry check
+//     });
 
+//     if (!user) return res.status(400).json({ message: 'Invalid or expired token' });
 
-export const resetPassword = async (req, res) => {
-  const { token } = req.params;
-  const { password } = req.body;
-  try {
-    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+//     // Set new password (hashing handled by pre-save middleware in Auth model)
+//     user.password = password;
 
-    const user = await Auth.findOne({
-      resetPasswordToken: hashedToken,
-      resetPasswordExpire: { $gt: Date.now() }, // token expiry check
-    });
+//     // Remove reset token fields
+//     user.resetPasswordToken = undefined;
+//     user.resetPasswordExpire = undefined;
 
-    if (!user) return res.status(400).json({ message: 'Invalid or expired token' });
+//     await user.save();
 
-    // Set new password (hashing handled by pre-save middleware in Auth model)
-    user.password = password;
-
-    // Remove reset token fields
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
-
-    await user.save();
-
-    return res.status(200).json({ message: 'Password changed successful' });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: 'Server error' });
-  }
-};
+//     return res.status(200).json({ message: 'Password changed successful' });
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(500).json({ message: 'Server error' });
+//   }
+// };
 
 
 
 
 
 //// google login -------------------
+
+
+
+
+
+export const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpiry = Date.now() + 10 * 60 * 1000;
+
+    const user = await Auth.findOne({ email });
+    if (!user) return res.status(404).json({ message: "Email not found." });
+
+    user.resetOTP = otp;
+    user.resetOTPExpiry = otpExpiry;
+    await user.save();
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: `"Teach Space" <${process.env.GMAIL_USER}>`,
+      to: email,
+      subject: "Teach Space - OTP Verification Code",
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 10px;">
+          <h2 style="color: #007bff;">Teach Space</h2>
+          <p>Hello,</p>
+          <p>Your OTP code is: <strong style="font-size: 18px;">${otp}</strong></p>
+          <p>This code is valid for 10 minutes. Please do not share this code with anyone.</p>
+          <br />
+          <p>Thank you,<br/>Teach Space Team</p>
+        </div>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({ message: "OTP has been sent to your email." });
+  } catch (error) {
+    console.error("Error sending OTP:", error);
+    res.status(500).json({ message: "Failed to send OTP.", error: error.message });
+  }
+};
+
+
+
+
+export const resetPassword = async (req, res) => {
+  const { email, otp, newPassword } = req.body;
+
+  try {
+    const user = await Auth.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (user.resetOTP !== otp || user.resetOTPExpiry < Date.now()) {
+      return res.status(400).json({ message: "Invalid or expired OTP" });
+    }
+
+    user.password = newPassword;
+    user.resetOTP = undefined;
+    user.resetOTPExpiry = undefined;
+    await user.save();
+
+    res.status(200).json({ message: "Password reset successful!" });
+  } catch (error) {
+    res.status(500).json({ message: "Error resetting password", error: error.message });
+  }
+};
+
+
 
 export const googleLogin = async (req, res) => {
   const { email, googleId, username } = req.body;

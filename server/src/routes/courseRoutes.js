@@ -6,7 +6,8 @@ import {
   getCourses,
   addCourse,
   updateCourse,
-  deleteCourse
+  deleteCourse,
+  getCourseById
 } from '../controllers/courseController.js';
 
 const router = express.Router();
@@ -23,5 +24,9 @@ router.get('/', getCourses);                             // GET all
 router.post('/', upload.single('image'), addCourse);     // ADD
 router.put('/:id', upload.single('image'), updateCourse); // UPDATE ✅
 router.delete('/:id', deleteCourse);                      // DELETE ✅
+
+router.get("/api/courses/:courseId", getCourseById);
+
+
 
 export default router;

@@ -91,7 +91,7 @@ const AdminRegisterPage: React.FC = () => {
       });
 
       toast.success("Registration successful! Please login.");
-      setTimeout(() => router.push("/auth/adminLogin"), 1500);
+      setTimeout(() => router.push("/auth/adminLogin"), 100);
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Registration failed!");
     } finally {

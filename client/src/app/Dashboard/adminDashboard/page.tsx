@@ -122,102 +122,136 @@ const Dashboard = () => {
         <aside className="sidebar bg-dark text-white p-3">
           <h2 className="mb-4 sidebar-title">Admin Panel</h2>
           <nav className="nav flex-column gap-2">
-            <Link
-              href="/auth/admin/dashboard"
-              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-            >
-              <LayoutDashboard size={18} />
-              <span className="sidebar-text">Dashboard</span>
-            </Link>
-            <Link
-              href="/auth/admin/allUser"
-              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-            >
-              <User size={18} />
-              <span className="sidebar-text">Users</span>
-            </Link>
-            <Link
-              href="/auth/admin/allContact"
-              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-            >
-              <Calendar size={18} />
-              <span className="sidebar-text">Contacts</span>
-            </Link>
-            <Link
-              href="/auth/admin/allinquiry"
-              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-            >
-              <MessageSquare size={18} />
-              <span className="sidebar-text">Inquiries</span>
-            </Link>
-            <Link
-              href="/auth/admin/services"
-              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-            >
-              <LayoutDashboard size={18} />
-              <span className="sidebar-text">Services</span>
-            </Link>
+  <Link
+    href="/auth/admin/dashboard"
+    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+  >
+    <LayoutDashboard size={18} />
+    <span className="sidebar-text">Dashboard</span>
+  </Link>
 
-            <Link
-              href="/auth/admin/Gallery"
-              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-            >
-              <i className="bi bi-images" style={{ fontSize: "1rem" }}></i>
-              <span className="sidebar-text">Success Gallery</span>
-            </Link>
-             <Link
-              href="/auth/admin/testimonial"
-              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-            >
-              <i className="bi bi-images" style={{ fontSize: "1rem" }}></i>
-              <span className="sidebar-text">Testimonial</span>
-            </Link>
-              <Link
-              href="/auth/admin/teams"
-              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-            >
-              <i className="bi bi-images" style={{ fontSize: "1rem" }}></i>
-              <span className="sidebar-text">Teams</span>
-            </Link>
-               <Link
-              href="/auth/admin/courses"
-              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-            >
-              <i className="bi bi-images" style={{ fontSize: "1rem" }}></i>
-              <span className="sidebar-text">Courses</span>
-            </Link>
-                <Link
-              href="/auth/admin/UpcomingClasses"
-              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-            >
-              <i className="bi bi-images" style={{ fontSize: "1rem" }}></i>
-              <span className="sidebar-text">classes UP</span>
-            </Link>
+  <Link
+    href="/auth/admin/allUser"
+    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+  >
+    <User size={18} />
+    <span className="sidebar-text">Users</span>
+  </Link>
 
-             <Link
-              href="/auth/adminRegister/superAdmin"
-              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-            >
-              <i className="bi bi-person-fill me-2" style={{ fontSize: "1rem" }}></i>
-              <span className="sidebar-text">Register</span>
-            </Link>
+  <Link
+    href="/auth/admin/allContact"
+    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+  >
+    <Calendar size={18} />
+    <span className="sidebar-text">Contacts</span>
+  </Link>
 
+  <Link
+    href="/auth/admin/allinquiry"
+    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+  >
+    <MessageSquare size={18} />
+    <span className="sidebar-text">Inquiries</span>
+  </Link>
 
-            {/* 🔒 Show logout if authenticated, otherwise show Login */}
-            {isAuthenticated ? (
-              <button
-                onClick={logout}
-                className="btn btn-danger d-flex align-items-center gap-2"
-              >
-                <LogOut size={18} />
-                Logout
-              </button>
-            ) : (
-              <Link href="/auth/adminLogin" className="btn btn-success">
-                Login
-              </Link>
-            )}
-          </nav>
+  <Link
+    href="/auth/admin/services"
+    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+  >
+    <LayoutDashboard size={18} />
+    <span className="sidebar-text">Services</span>
+  </Link>
+
+  <Link
+    href="/auth/admin/Gallery"
+    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+  >
+    <i className="bi bi-images" style={{ fontSize: "1rem" }}></i>
+    <span className="sidebar-text">Success Gallery</span>
+  </Link>
+
+  <Link
+    href="/auth/admin/testimonial"
+    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+  >
+    <i className="bi bi-chat-text" style={{ fontSize: "1rem" }}></i>
+    <span className="sidebar-text">Testimonial</span>
+  </Link>
+
+  <Link
+    href="/auth/admin/teams"
+    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+  >
+    <i className="bi bi-people" style={{ fontSize: "1rem" }}></i>
+    <span className="sidebar-text">Teams</span>
+  </Link>
+
+  <Link
+    href="/auth/admin/courses"
+    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+  >
+    <i className="bi bi-journal-bookmark" style={{ fontSize: "1rem" }}></i>
+    <span className="sidebar-text">Courses</span>
+  </Link>
+
+  <Link
+    href="/auth/admin/addAnnouncement"
+    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+  >
+    <i className="bi bi-megaphone" style={{ fontSize: "1rem" }}></i>
+    <span className="sidebar-text">Add Announcements</span>
+  </Link>
+
+  <Link
+    href="/auth/admin/enrolledCourses"
+    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+  >
+    <i className="bi bi-journal-check" style={{ fontSize: "1rem" }}></i>
+    <span className="sidebar-text">Add Enrolled Courses</span>
+  </Link>
+
+  <Link
+    href="/auth/admin/allstudents"
+    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+  >
+    <i className="bi bi-person-badge" style={{ fontSize: "1rem" }}></i>
+    <span className="sidebar-text">All Students</span>
+  </Link>
+
+  <Link
+    href="/auth/admin/UpcomingClasses"
+    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+  >
+    <i className="bi bi-calendar-event" style={{ fontSize: "1rem" }}></i>
+    <span className="sidebar-text">Classes UP</span>
+  </Link>
+
+  <Link
+    href="/auth/adminRegister/superAdmin"
+    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+  >
+    <i
+      className="bi bi-person-fill"
+      style={{ fontSize: "1rem", marginRight: "0.5rem" }}
+    ></i>
+    <span className="sidebar-text">Register</span>
+  </Link>
+
+  {isAuthenticated ? (
+    <button
+      onClick={logout}
+      className="btn btn-danger d-flex align-items-center gap-2"
+    >
+      <LogOut size={18} />
+      Logout
+    </button>
+  ) : (
+    <Link href="/auth/adminLogin" className="btn btn-success">
+      Login
+    </Link>
+  )}
+</nav>
+
         </aside>
 
         {/* Main Content */}
@@ -238,30 +272,49 @@ const Dashboard = () => {
             {/* Stats Cards */}
             <div className="row g-3 mb-4">
               {[
-                { title: "Total Users", value: userCount,  link: "/auth/admin/allUser" },
-                { title: "Contacts", value: contactCount, link: "/auth/admin/allContact"  },
-                { title: "Inquiries", value: inquiryCount,link: "/auth/admin/allinquiry"  },
-                { title: "Services", value: 12 , link: "/auth/admin/allServices" },
+                {
+                  title: "Total Users",
+                  value: userCount,
+                  link: "/auth/admin/allUser",
+                },
+                {
+                  title: "Contacts",
+                  value: contactCount,
+                  link: "/auth/admin/allContact",
+                },
+                {
+                  title: "Inquiries",
+                  value: inquiryCount,
+                  link: "/auth/admin/allinquiry",
+                },
+                {
+                  title: "Services",
+                  value: 12,
+                  link: "/auth/admin/allServices",
+                },
               ].map((stat, i) => (
                 <div className="col-12 col-sm-6 col-md-3" key={i}>
-    {stat.link ? (
-      <Link href={stat.link} className="text-decoration-none text-dark">
-        <div className="card shadow-sm h-100 hover-shadow">
-          <div className="card-body text-center">
-            <h6 className="text-muted small">{stat.title}</h6>
-            <h4 className="fw-bold mb-0">{stat.value}</h4>
-          </div>
-        </div>
-      </Link>
-    ) : (
-      <div className="card shadow-sm h-100">
-        <div className="card-body text-center">
-          <h6 className="text-muted small">{stat.title}</h6>
-          <h4 className="fw-bold mb-0">{stat.value}</h4>
-        </div>
-      </div>
-    )}
-  </div>
+                  {stat.link ? (
+                    <Link
+                      href={stat.link}
+                      className="text-decoration-none text-dark"
+                    >
+                      <div className="card shadow-sm h-100 hover-shadow">
+                        <div className="card-body text-center">
+                          <h6 className="text-muted small">{stat.title}</h6>
+                          <h4 className="fw-bold mb-0">{stat.value}</h4>
+                        </div>
+                      </div>
+                    </Link>
+                  ) : (
+                    <div className="card shadow-sm h-100">
+                      <div className="card-body text-center">
+                        <h6 className="text-muted small">{stat.title}</h6>
+                        <h4 className="fw-bold mb-0">{stat.value}</h4>
+                      </div>
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
 

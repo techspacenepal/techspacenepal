@@ -31,7 +31,7 @@
 //   },
 //    resetPasswordToken: String,
 //   resetPasswordExpire: Date,
-  
+
 // }, { timestamps: true });
 
 // // Hash password before saving (only if modified or new)
@@ -56,12 +56,8 @@
 // const Auth = mongoose.models.Auth || mongoose.model('Auth', authSchema);
 // export default Auth;
 
-
-
-
-
-import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
 const authSchema = new mongoose.Schema(
   {
@@ -71,7 +67,7 @@ const authSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: [true, 'Email is required'],
+      required: [true, "Email is required"],
       unique: true,
       lowercase: true,
       trim: true,
@@ -80,26 +76,26 @@ const authSchema = new mongoose.Schema(
       type: String,
       minlength: 6,
     },
-    provider: { type: String, default: 'google' },
-    
+    provider: { type: String, default: "google" },
+
     role: {
       type: String,
-      enum: ['user', 'admin'],
-      default: 'user',
+      enum: ["user", "admin"],
+      default: "user",
     },
     active: {
       type: Boolean,
       default: false,
     },
-    resetPasswordToken: String,
-    resetPasswordExpire: Date,
+    resetOTP: String,
+    resetOTPExpiry: Date,
   },
   { timestamps: true }
 );
 
 // ✅ Hash password only if it exists and is modified
-authSchema.pre('save', async function (next) {
-  if (!this.isModified('password') || !this.password) return next();
+authSchema.pre("save", async function (next) {
+  if (!this.isModified("password") || !this.password) return next();
 
   try {
     const salt = await bcrypt.genSalt(10);
@@ -115,5 +111,5 @@ authSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-const Auth = mongoose.models.Auth || mongoose.model('Auth', authSchema);
+const Auth = mongoose.models.Auth || mongoose.model("Auth", authSchema);
 export default Auth;

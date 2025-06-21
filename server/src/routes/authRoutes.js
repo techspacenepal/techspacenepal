@@ -19,7 +19,7 @@ import {
   forgotPassword,
   resetPassword,
   deleteUserById,
-  googleLogin
+  googleLogin,
 } from '../controllers/authController.js';
 
 import { authenticateToken } from '../middlewares/authMiddleware.js';
@@ -43,7 +43,8 @@ router.delete('/:id', protect, deleteUserById);
 router.post('/login-user', login); // renamed to avoid conflict
 router.post('/logout-user', authenticateToken, logout);
 router.post('/forgot-password', forgotPassword);
-router.post('/reset-password/:token', resetPassword);
+router.post('/reset-password', resetPassword);
+
 
 /* ------------------ Google OAuth ------------------ */
 router.post('/google-login', googleLogin);

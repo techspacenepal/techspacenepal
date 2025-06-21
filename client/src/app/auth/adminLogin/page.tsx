@@ -48,7 +48,7 @@ const AdminLoginPage: React.FC = () => {
 
       setTimeout(() => {
         router.push(data.role === "admin" ? "/Dashboard/adminDashboard" : "/Dashboard/userDashboard");
-      }, 1500);
+      }, 100);
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Login failed!");
     } finally {
@@ -208,7 +208,7 @@ const AdminLoginPage: React.FC = () => {
       } else {
         router.push("/Dashboard/userDashboard");
       }
-    }, 1500);
+    }, 100);
 
   } catch (error) {
     console.error("Firebase error:", error);
@@ -216,52 +216,9 @@ const AdminLoginPage: React.FC = () => {
   }
 };
 
-
-
-const handleFirebaseFacebookLogin = async () => {
-  try {
-    const result = await signInWithPopup(auth, facebookProvider);
-    const user = result.user;
-
-    toast.success("Facebook login successful!");
- 
-  console.log("Facebook user:", user); // 👈 Add this line
-
-    const email = user.email || `${user.uid}@facebook.com`;
-    const name = user.displayName || "FacebookUser";
-
-    const { data } = await axios.post("http://localhost:5000/api/auth/facebook-login", {
-      email,
-      name,
-    });
-
-    login(data.token, data.role);
-    Cookies.set("adminToken", data.token);
-    localStorage.setItem("adminToken", data.token);
-    localStorage.setItem("user", JSON.stringify({ username: data.username, role: data.role }));
-
-    setTimeout(() => {
-      router.push(data.role === "admin" ? "/Dashboard/adminDashboard" : "/Dashboard/userDashboard");
-    }, 1500);
-  } catch (error) {
-    console.error("Facebook login failed:", error);
-    toast.error("Facebook login failed!");
-  }
-};
-
-
-
-
-
- 
   const [showPassword, setShowPassword] = useState(false);
   //--------------------------
-
-
-
-
-
-  return (
+ return (
     <div className="container d-flex align-items-center justify-content-center min-vh-100 px-3">
       <Toaster position="top-right" />
       <div className="card shadow-lg p-4 w-100" style={{ maxWidth: "400px" }}>
@@ -339,7 +296,7 @@ const handleFirebaseFacebookLogin = async () => {
               Forgot Password?
             </Link>
           </div>
-
+{/* 
              <div className="d-flex gap-3 my-3 justify-content-center align-items-center flex-wrap">
                     <button
                       className="btn btn-outline-danger d-flex justify-content-center align-items-center"
@@ -364,7 +321,7 @@ const handleFirebaseFacebookLogin = async () => {
                     >
                       <Facebook size={22} />
                     </button>
-                  </div>
+                  </div> */}
 
           <p className="text-center">
             <Link href="/" className="text-primary text-decoration-none">← Back to Home</Link>

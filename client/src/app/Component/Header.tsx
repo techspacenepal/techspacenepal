@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import axios from "axios";
-import React, { useEffect, useRef, useState, } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   FaFacebookF,
   FaTwitter,
@@ -15,8 +15,6 @@ import { useAuth } from "../context/AuthContext";
 import { usePathname } from "next/navigation";
 
 export default function TopNavbar() {
-
-
   const [classes, setClasses] = useState([]);
 
   useEffect(() => {
@@ -110,8 +108,6 @@ export default function TopNavbar() {
 
   if (hideHeader) return null; // ✅ Early return if path matches
   if (hideFooter) return null;
-
-
 
   return (
     <header>
@@ -291,15 +287,32 @@ export default function TopNavbar() {
             >
               Send Inquiry
             </Link>
+            
 
-          
-
-            {isAuthenticated &&
-              (user?.role === "admin" || user?.role === "user") && (
+            {/* {isAuthenticated &&
+              (user?.role === "admin" || user?.role === "user" || user?.role === "student") && (
                 <Link
                   href={
                     user?.role === "admin"
                       ? "/Dashboard/adminDashboard"
+                      : "/Dashboard/userDashboard"
+                  }
+                  className="btn btn-primary px-3 py-2"
+                >
+                  Dashboard
+                </Link>
+              )} */}
+
+            {isAuthenticated &&
+              (user?.role === "admin" ||
+                user?.role === "user" ||
+                user?.role === "student") && (
+                <Link
+                  href={
+                    user?.role === "admin"
+                      ? "/Dashboard/adminDashboard"
+                      : user?.role === "student"
+                      ? "/studentdashboard"
                       : "/Dashboard/userDashboard"
                   }
                   className="btn btn-primary px-3 py-2"

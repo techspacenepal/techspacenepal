@@ -1,101 +1,51 @@
-'use client';
-import { useState } from 'react';
-import axios from 'axios';
-import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik';
-import * as Yup from 'yup';
-import { useRouter } from 'next/navigation';
 
-interface ForgotPasswordValues {
-  email: string;
-}
+"use client";
 
-const ForgotPassword: React.FC = () => {
-  const router = useRouter();
-  const [successMessage, setSuccessMessage] = useState<string>('');
-  const [errorMessage, setErrorMessage] = useState<string>('');
+import { useState } from "react";
+import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
+import { useRouter } from "next/navigation"; // 👉 import router
 
-  const initialValues: ForgotPasswordValues = {
-    email: '',
-  };
+export default function ForgotPassword() {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter(); // 👉 initialize router
 
-  const validationSchema = Yup.object({
-    email: Yup.string().email('Invalid email').required('Required'),
-  });
-
-  const handleSubmit = async (
-    values: ForgotPasswordValues,
-    { setSubmitting }: FormikHelpers<ForgotPasswordValues>
-  ) => {
+  const handleSendOTP = async (e: any) => {
+    e.preventDefault();
+    setLoading(true);
     try {
-      const res = await axios.post(
-        'http://localhost:5000/api/auth/forgot-password',
-        { email: values.email }
-      );
+      await axios.post("http://localhost:5000/api/auth/forgot-password", { email });
+      toast.success("OTP sent to your email");
 
-      setSuccessMessage(res.data.message);
-      setErrorMessage('');
-
-      const token = res.data.resetToken;
-
-      if (token) {
-        setTimeout(() => {
-          router.push(`/auth/reset-password/${token}`);
-        }, 1000);
-      } else {
-        setErrorMessage('No reset token received from server');
-      }
+      // 👉 Redirect after slight delay
+      setTimeout(() => {
+        router.push("/auth/reset-password/[token]");
+      }, 100);
     } catch (err: any) {
-      setErrorMessage(err.response?.data?.message || 'Something went wrong');
-      setSuccessMessage('');
+      toast.error(err.response?.data?.message || "Error sending OTP");
+    } finally {
+      setLoading(false);
     }
-    setSubmitting(false);
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center min-vh-100 bg-light">
-      <div className="col-md-6 bg-white p-4 rounded shadow">
-        <h2 className="text-center mb-4">Forgot Password</h2>
-
-        {successMessage && (
-          <div className="alert alert-success text-center">{successMessage}</div>
-        )}
-        {errorMessage && (
-          <div className="alert alert-danger text-center">{errorMessage}</div>
-        )}
-
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-        >
-          {({ isSubmitting }) => (
-            <Form>
-              <div className="mb-3">
-                <label htmlFor="email" className="form-label">
-                  Email address
-                </label>
-                <Field
-                  id="email"
-                  name="email"
-                  type="email"
-                  className="form-control"
-                />
-                <ErrorMessage name="email" component="div" className="text-danger small" />
-              </div>
-
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className={`btn w-100 ${isSubmitting ? 'btn-secondary' : 'btn-danger'}`}
-              >
-                {isSubmitting ? 'Sending...' : 'Send Reset Link'}
-              </button>
-            </Form>
-          )}
-        </Formik>
-      </div>
+    <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light">
+      <Toaster position="top-right" />
+      <form onSubmit={handleSendOTP} className="p-4 card shadow w-100" style={{ maxWidth: 400 }}>
+        <h4 className="mb-3 text-center">Forgot Password</h4>
+        <input
+          type="email"
+          placeholder="Enter your email"
+          className="form-control mb-3"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+          {loading ? "Sending..." : "Send OTP"}
+        </button>
+      </form>
     </div>
   );
-};
-
-export default ForgotPassword;
+}
