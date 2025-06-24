@@ -2,11 +2,11 @@ import Student from '../models/student.js';
 import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken';
 import {sendEmail} from '../utils/sendEmail.js';
+import nodemailer from "nodemailer";
 
 import dotenv from "dotenv";
 dotenv.config();
 
-import nodemailer from "nodemailer";
 
 const generateToken = (id, role) => {
   return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "7d" });

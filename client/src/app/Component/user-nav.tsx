@@ -7,15 +7,16 @@ import Cookies from "js-cookie";
 import { User as UserIcon, LogOut } from "lucide-react";
 import SettingsModal from "../Component/settingModel";
 import { useRouter } from "next/navigation";
+import { Notifications } from "./notification";
 
 interface User {
-  name: string;
+  username: string;
   email: string;
   avatarUrl?: string;
 }
 
 export function UserNav() {
-  const [user, setUser] = useState<User | null>(null);
+  const [student, setUser] = useState<User | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const router = useRouter();
@@ -48,10 +49,14 @@ export function UserNav() {
     fetchUser();
   }, []);
 
-  if (!user) return null;
+  if (!student) return null;
 
   return (
-    <>
+    <div className="d-flex align-items-center gap-3 position-relative">
+      {/* 🔔 Notification Icon */}
+      <Notifications />
+
+      {/* 👤 User Dropdown */}
       <div className="dropdown">
         <button
           className="btn btn-light dropdown-toggle d-flex align-items-center rounded-circle p-0 border-0"
@@ -61,20 +66,20 @@ export function UserNav() {
           aria-expanded={showDropdown}
           onClick={toggleDropdown}
         >
-          {user.avatarUrl ? (
+          {student.avatarUrl ? (
             <img
-              src={user.avatarUrl}
-              alt={user.name || "User"}
+              src={student.avatarUrl}
+              alt={student.username || "student"}
               className="rounded-circle"
               width={40}
               height={40}
             />
-          ) : user.name ? (
+          ) : student.username ? (
             <div
               className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
               style={{ width: 40, height: 40, fontWeight: "bold" }}
             >
-              {user.name.substring(0, 2).toUpperCase()}
+              {student.username.substring(0, 2).toUpperCase()}
             </div>
           ) : (
             <div
@@ -88,8 +93,8 @@ export function UserNav() {
 
         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
           <li className="dropdown-header">
-            <strong>{user.name}</strong>
-            <div className="small text-muted">{user.email}</div>
+            <strong>{student.username}</strong>
+            <div className="small text-muted">{student.email}</div>
           </li>
           <li><hr className="dropdown-divider" /></li>
 
@@ -119,10 +124,14 @@ export function UserNav() {
         </ul>
       </div>
 
+      {/* ⚙️ Settings Modal */}
       {showSettingsModal && (
-        <SettingsModal user={user} onClose={() => setShowSettingsModal(false)} />
+        <SettingsModal
+          user={student}
+          onClose={() => setShowSettingsModal(false)}
+          onUpdate={(updatedUser) => setUser(updatedUser)}
+        />
       )}
-    </>
+    </div>
   );
 }
- 

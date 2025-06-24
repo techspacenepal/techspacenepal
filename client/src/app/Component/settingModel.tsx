@@ -7,14 +7,15 @@ import Cookies from "js-cookie";
 
 interface Props {
   user: {
-    name: string;
+    username: string;
     email: string;
   };
   onClose: () => void;
+  onUpdate: (updatedUser: { username: string; email: string }) => void;
 }
 
-export default function SettingsModal({ user, onClose }: Props) {
-  const [name, setName] = useState(user.name);
+export default function SettingsModal({ user, onClose, onUpdate }: Props) {
+  const [username, setUsername] = useState(user.username);
   const [email, setEmail] = useState(user.email);
   const [loading, setLoading] = useState(false);
 
@@ -25,14 +26,17 @@ export default function SettingsModal({ user, onClose }: Props) {
       if (!token) return;
 
       await axios.put(
-        "http://localhost:5000/api/students/update", // 👈 change this to your actual update route
-        { name, email },
+        "http://localhost:5000/api/students/update", // आफ्नो backend update endpoint अनुसार परिवर्तन गर्नुहोस्
+        { username, email },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
+
+      // update frontend state immediately
+      onUpdate({ username, email });
 
       alert("Profile updated successfully");
       onClose();
@@ -70,8 +74,8 @@ export default function SettingsModal({ user, onClose }: Props) {
                 <Form.Label>Full Name</Form.Label>
                 <Form.Control
                   type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                 />
               </Form.Group>
               <Form.Group className="mb-3">

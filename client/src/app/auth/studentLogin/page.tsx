@@ -37,6 +37,8 @@ const AdminLoginPage: React.FC = () => {
         password,
       });
 
+      console.log(" Received Token:", data.token);
+
       login(data.token, data.role);
       Cookies.set("adminToken", data.token);
       localStorage.setItem("adminToken", data.token);
