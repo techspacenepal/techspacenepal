@@ -1,0 +1,650 @@
+.search-box {
+  border-radius: 50px;
+  border: 1px solid #ddd;
+  padding: 6px 15px;
+  display: flex;
+  align-items: center;
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  flex: 1;
+  background: transparent;
+}
+
+.search-icon {
+  color: #999;
+}
+
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+.logo-text {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.sub-text {
+  font-size: 13px;
+  color: #007bff;
+  line-height: 1;
+}
+
+
+
+/* Add this to your CSS file */
+header.sticky.animated-sticky {
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  animation: fadeInDown 0.5s ease-in-out;
+  transition: all 0.5s ease;
+}
+
+@keyframes fadeInDown {
+  from {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+
+/* navbar  */
+
+
+.nav-link.custom-hover {
+  position: relative;
+  display: inline-block;
+  color: inherit;
+  text-decoration: none;
+  padding-bottom: 0px;
+  transition: color 0.3s ease;
+}
+
+.nav-link.custom-hover::after,
+.navbar.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 2px;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: center;
+  background-color: #0d6efd;
+  /* Bootstrap primary color */
+  transition: transform 0.3s ease;
+}
+
+.nav-link.custom-hover:hover {
+  color: #0d6efd !important;
+}
+
+.nav-link.custom-hover:hover::after,
+.navbar .navbar-nav .active::after {
+  transform: scaleX(1);
+}
+
+.nav-link {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+
+
+
+/* courses */
+
+
+
+/* header skills */
+.nav-item.dropdown:hover .dropdown-menu {
+  display: block;
+  animation: fadeIn 0.3s ease-in-out;
+  top: 100% !important;
+  /* aligns dropdown to bottom of nav item */
+  margin-top: 0px !important;
+  /* no spacing */
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide-in collapse from right */
+
+
+/* Base hidden state */
+.slide-menu {
+  transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.4s ease;
+  transform: translateX(100%) scale(0.98);
+  opacity: 0;
+  visibility: hidden;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 60%;
+  height: 100%;
+  background: white;
+  z-index: 1050;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Show state */
+.slide-menu.show {
+  transform: translateX(0) scale(1);
+  opacity: 1;
+  visibility: visible;
+}
+
+.custom-backdrop {
+  transition: opacity 0.6s ease;
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.4);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  z-index: 1040;
+}
+
+body:not(.right-menu-open) .custom-backdrop {
+  opacity: 0;
+  pointer-events: none;
+}
+
+
+
+
+
+
+
+
+
+/* side menu */
+.navbar-nav {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  gap: 1.5rem;
+  /* nice spacing between menu items */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: #333;
+  list-style: none;
+}
+
+.navbar-nav .nav-item {
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link {
+  color: #555;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.navbar-nav .nav-link.active,
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link:focus {
+  color: #0d6efd;
+  /* Bootstrap primary blue */
+  outline: none;
+}
+
+.navbar-nav .nav-link:focus-visible {
+  outline: 2px solid #0d6efd;
+  outline-offset: 2px;
+}
+
+
+
+
+/* Sticky navbar styles */
+.sticky {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1050;
+  /* Bootstrap nav high z-index */
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  animation: slideDown 0.4s ease forwards;
+}
+
+/* Slide down animation */
+@keyframes slideDown {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+
+
+
+
+@media (max-width: 768px) {
+  .navbar-nav.d-none.d-lg-flex {
+    display: none !important;
+  }
+
+  nav.navbar .container.d-flex {
+    justify-content: space-between;
+    position: relative;
+  }
+
+  .nav-item.dropdown {
+    order: 2;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1050;
+    /* Bootstrap dropdown default z-index */
+  }
+
+  .navbar-brand {
+    order: 1;
+  }
+
+  .navbar-toggler {
+    order: 3;
+  }
+
+  .nav-item.dropdown>a.nav-link {
+    font-size: 1.1rem;
+  }
+}
+
+
+/* footer */
+footer i {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+
+
+.sidebar {
+  width: 70px;
+  min-height: 100vh;
+  transition: width 0.3s ease;
+  overflow-x: hidden;
+  white-space: nowrap;
+  position: relative;
+}
+
+.sidebar:hover {
+  width: 250px;
+}
+
+.sidebar-text {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.sidebar:hover .sidebar-text {
+  opacity: 1;
+}
+
+.sidebar-title {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  font-size: 1.25rem;
+}
+
+.sidebar:hover .sidebar-title {
+  opacity: 1;
+}
+
+.sidebar-toggle-btn {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1200;
+  background-color: #343a40;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.sidebar-wrapper {
+  transition: transform 0.3s ease;
+}
+
+@media (max-width: 767px) {
+  .sidebar-wrapper.closed {
+    transform: translateX(-100%);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 250px;
+    background: #212529;
+    z-index: 1100;
+    overflow-y: auto;
+  }
+
+  .sidebar-wrapper.open {
+    transform: translateX(0);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 250px;
+    background: #212529;
+    z-index: 1100;
+    overflow-y: auto;
+  }
+}
+
+@media (min-width: 768px) {
+  .sidebar-toggle-btn {
+    display: none;
+  }
+
+  .sidebar-wrapper {
+    transform: none !important;
+    position: relative !important;
+    width: 250px;
+  }
+}
+
+
+/* login page */
+@media (max-width: 576px) {
+  .card {
+    padding: 1.5rem !important;
+  }
+}
+
+
+
+
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  max-width: 600px;
+  width: 90%;
+  border-radius: 15px;
+}
+
+
+/* courses */
+.image-hover-wrapper {
+  overflow: hidden;
+  position: relative;
+}
+
+.image-hover {
+  transition: transform 0.5s ease;
+}
+
+.image-hover-wrapper:hover .image-hover {
+  transform: scale(1.1);
+}
+@media (max-width: 575.98px) {
+  .overflow-scroll-wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .overflow-scroll-wrapper > .col-12 {
+    flex: 0 0 auto;
+    width: 85%; /* You can also use fixed px like 260px if preferred */
+    max-width: 85%;
+    margin-right: 1rem;
+  }
+}
+
+/* navbar  */
+@media (max-width: 991.98px) {
+  .custom-mobile-menu {
+    position: fixed;
+    top: 56px; /* adjust to your navbar height */
+    right: 0;
+    width: 50%;
+    height: 100vh;
+    background-color: #fff;
+    z-index: 1050;
+    padding: 1rem;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .custom-mobile-menu.show {
+    transform: translateX(0);
+  }
+
+  /* Prevent default Bootstrap collapse flicker */
+  .navbar-collapse.collapse:not(.show) {
+    display: block !important; /* required to allow transform to work */
+    height: 0;
+    overflow: hidden;
+  }
+}
+
+
+.custom-dropdown .dropdown-menu {
+  opacity: 1;
+  transform: translateY(10px);
+  visibility: hidden;
+  transition: all 0.3s ease-in-out;
+  display: block;
+  pointer-events: none;
+}
+
+.custom-dropdown.show .dropdown-menu {
+  opacity: 0;
+  transform: translateY(0);
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.dropdown-menu {
+  background-color: #fff;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+  border-radius: 0.5rem;
+  min-width: 220px;
+}
+
+.dropdown-item {
+  transition: background 0.2s ease-in-out;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+@media (max-width: 767px) {
+  .navbar-collapse {
+    display: none !important;
+  }
+}
+
+
+/* Hover trigger */
+.dropdown-hover:hover .dropdown-menu {
+  display: block;
+  animation: fadeInTop 0.3s ease-in-out;
+}
+
+/* Card-style dropdown appearance */
+.dropdown-menu.custom-dropdown {
+  top: calc(100% + 8px); /* ✅ Drop slightly below the nav item */
+  position: absolute;
+  z-index: 999;
+  border-top: 4px solid #f48024;
+  border-radius: 12px;
+  padding: 10px 0;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: translateY(5px);
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+/* On hover show with animation */
+.dropdown-hover:hover .dropdown-menu.custom-dropdown {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+@keyframes glowing {
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(13, 110, 253, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(13, 110, 253, 0.8);
+  }
+}
+
+@keyframes floatSkewed {
+  0%, 100% {
+    transform: skew(-10deg, -10deg) translateY(0);
+  }
+  50% {
+    transform: skew(-10deg, -10deg) translateY(-10px);
+  }
+}
+
+.glowing-box {
+  animation: glowing 2s infinite ease-in-out;
+}
+
+.floating-box {
+  animation: floatSkewed 4s ease-in-out infinite;
+}
+
+
+/* services */
+.cardHover {
+  transition: all 0.3s ease-in-out;
+  border: 2px solid transparent;
+}
+
+.cardHover:hover {
+  border-color: #0d6efd;
+  box-shadow: 0 0 10px rgba(13, 110, 253, 0.15);
+}
+
+
+/* HOme */
+
+
+.bg-blob-shape {
+  width: 600px;
+  height: 440px;
+  background: radial-gradient(circle at 30% 30%, #ff758c, #ff7eb3);
+  z-index: 1;
+  border-radius: 60% 40% 60% 40% / 50% 60% 40% 50%;
+  transform: rotate(-10deg);
+  opacity: 0.9;
+  filter: blur(1.5px);
+}
+.floating-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 14px 20px;
+  width: 220px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.floating-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+}
+/* Make dropdowns appear on hover */
+.dropdown-hover:hover > .dropdown-menu {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(40px); /* dropdown tala jhosine (increase px to go lower) */
+  transition: all 0.3s ease;
+}
+
+/* Initial state: hidden and in position */
+.dropdown-menu {
+  display: block; /* Important for hover effect */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(0px);
+  transition: all 0.3s ease;
+  margin-top: 0 !important; /* Bootstrap default override */
+  z-index: 999;
+}
+
+/* Dropdown item spacing and hover effect (optional cleanup) */
+.dropdown-menu .dropdown-item {
+  padding: 10px 20px;
+  transition: background 0.2s, padding-left 0.2s;
+}
+
+.dropdown-menu .dropdown-item:hover {
+  background-color: #f8f9fa;
+  padding-left: 28px;
+}
+
+/* Rotate chevron on hover (optional) */
+.dropdown-hover:hover .bi-chevron-down {
+  transform: rotate(180deg);
+  transition: transform 0.3s ease;
+}

@@ -2,15 +2,7 @@
 import Link from "next/link";
 import axios from "axios";
 import React, { useEffect, useRef, useState, } from "react";
-import {
-  FaFacebookF,
-  FaTwitter,
-  FaInstagram,
-  FaYoutube,
-  FaPhoneAlt,
-  FaEnvelope,
-  FaWhatsapp,
-} from "react-icons/fa";
+
 import { useAuth } from "../context/AuthContext";
 import { usePathname } from "next/navigation";
 
@@ -114,119 +106,134 @@ export default function TopNavbar() {
 
 
   return (
-    <header>
-      {/* Top Contact Bar */}
-      <div className="bg-primary text-white py-2">
-        <div className="container">
-          <div className="row justify-content-between align-items-center">
-            <div className="col-auto d-flex align-items-center gap-3 flex-wrap">
-              <div className="d-flex align-items-center gap-1">
-                <FaPhoneAlt />
-                <span>+977 01-5244419 / +977-9813906662</span>
-              </div>
-              <div className="d-flex align-items-center gap-1">
-                <FaEnvelope />
-                <span>info@skilltrainingnepal.com</span>
-              </div>
-              <div className="d-flex align-items-center gap-1">
-                <FaWhatsapp />
-                <span>+977-9813906662</span>
+    <>
+      <header>
+        <nav ref={navRef} className="navbar navbar-expand-lg bg-light py-3 border">
+          <div className="container">
+            <a className="navbar-brand fw-bold fs-4 text-primary" href="/">Navbar</a>
+
+            <button
+              className="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span className="navbar-toggler-icon" />
+            </button>
+
+            <div className="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li className="nav-item">
+                  <a
+                    className="nav-link text-uppercase fw-semibold px-3 py-2 rounded text-dark fs-6"
+                    style={{
+                      fontFamily: 'Poppins, sans-serif',
+                      letterSpacing: '0.5px',
+                      transition: 'all 0.3s ease',
+                    }}
+                    href="/"
+                  >
+                    Home
+                  </a>
+                </li>
+
+                <li className="nav-item">
+                  <a
+                    className="nav-link text-uppercase fw-semibold px-3 py-2 rounded text-dark fs-6"
+                    style={{
+                      fontFamily: 'Poppins, sans-serif',
+                      letterSpacing: '0.5px',
+                      transition: 'all 0.3s ease',
+                    }}
+                    href="/gallery"
+                  >
+                    Success Gallery
+                  </a>
+                </li>
+
+                <li className="nav-item">
+                  <a
+                    className="nav-link text-uppercase fw-semibold px-3 py-2 rounded text-dark fs-6"
+                    style={{
+                      fontFamily: 'Poppins, sans-serif',
+                      letterSpacing: '0.5px',
+                      transition: 'all 0.3s ease',
+                    }}
+                    href="/UpcomingClassesUser"
+                  >
+                    Upcoming Classes ({classes.length})
+                  </a>
+                </li>
+
+                <li className="nav-item dropdown">
+                  <a
+                    className="nav-link d-flex align-items-center gap-1 fw-semibold text-dark px-3 py-2 rounded text-uppercase fs-6"
+                    href="#"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    style={{
+                      fontFamily: 'Poppins, sans-serif',
+                      letterSpacing: '0.5px',
+                      transition: 'all 0.3s ease',
+                    }}
+                  >
+                    All courses <i className="bi bi-chevron-down"></i>
+                  </a>
+                  <ul className="dropdown-menu">
+                    <li><a className="dropdown-item" href="#">Action</a></li>
+                    <li><a className="dropdown-item" href="#">Another action</a></li>
+                    <li><hr className="dropdown-divider" /></li>
+                    <li><a className="dropdown-item" href="#">Something else here</a></li>
+                  </ul>
+                </li>
+
+                <li className="nav-item dropdown">
+                  <a
+                    className="nav-link d-flex align-items-center gap-1 fw-semibold text-dark px-3 py-2 rounded text-uppercase fs-6"
+                    href="#"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    style={{
+                      fontFamily: 'Poppins, sans-serif',
+                      letterSpacing: '0.5px',
+                      transition: 'all 0.3s ease',
+                    }}
+                  >
+                    more <i className="bi bi-chevron-down"></i>
+                  </a>
+                  <ul className="dropdown-menu">
+                    <li><a className="dropdown-item" href="/testimonial">testimonial</a></li>
+                  </ul>
+                </li>
+              </ul>
+
+              {/* Inquiry Button */}
+              <div className="d-none d-lg-block ms-3">
+                <Link
+                  href="/inquiry"
+                  className="btn btn-primary px-3 py-2 fw-semibold"
+                  style={{
+                    color: "#fff",
+                    fontFamily: 'Poppins, sans-serif',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                  }}
+                >
+                  Send Inquiry
+                </Link>
               </div>
             </div>
-            <div className="col-auto d-flex align-items-center gap-2">
-              <span className="fw-bold">FOLLOW US</span>
-              <a href="#" className="text-white">
-                <FaFacebookF />
-              </a>
-              <a href="#" className="text-white">
-                <FaTwitter />
-              </a>
-              <a href="#" className="text-white">
-                <FaInstagram />
-              </a>
-              <a href="#" className="text-white">
-                <FaYoutube />
-              </a>
-            </div>
+
           </div>
-        </div>
-      </div>
-
-      {/* Main Navigation Bar */}
-      <nav
-        ref={navRef}
-        className="navbar navbar-expand-lg bg-body-tertiary"
-        style={{ transition: "all 0.3s ease" }}
-      >
-        <div className="container">
-          <a className="navbar-brand" href="/">Navbar</a>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon" />
-          </button>
-
-          <div
-            className="collapse navbar-collapse custom-mobile-menu"
-            id="navbarSupportedContent"
-          >
-            <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="/">Home</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">About</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">Services</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="/UpcomingClassesUser">
-                  Upcoming Classes ({classes.length})
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="/gallery">Success Gallery</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="/testimonial">Testimonial</a>
-              </li>
-
-              <li className="nav-item dropdown dropdown-hover">
-                <a className="nav-link dropdown-toggle" href="#" id="allCoursesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  All Courses
-                </a>
-                <ul className="dropdown-menu shadow" aria-labelledby="allCoursesDropdown">
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Web Development
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Mobile Development
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                       UI/UX Design
-                    </a>
-                  </li>
-                </ul>
-              </li>
-
-            </ul>
-          </div>
-        </div>
-      </nav>
+        </nav>
+      </header>
 
 
-    </header>
+    </>
   );
 }
