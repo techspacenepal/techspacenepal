@@ -199,22 +199,21 @@
 
 
 /* HOme */
-
-
 .bg-blob-shape {
-  width: 600px;
+  width: 625px;
   height: 440px;
-  background: radial-gradient(circle at 30% 30%, #ff758c, #ff7eb3);
+  background: radial-gradient(circle at 30% 30%, #0056b3, #4facfe); /* primary blue gradient */
   z-index: 1;
   border-radius: 60% 40% 60% 40% / 50% 60% 40% 50%;
   transform: rotate(-10deg);
   opacity: 0.9;
   filter: blur(1.5px);
 }
+
 .floating-card {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(0, 86, 179, 0.15); /* blue tint */
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(0, 86, 179, 0.3);
   border-radius: 16px;
   padding: 14px 20px;
   width: 220px;
@@ -222,11 +221,36 @@
   display: flex;
   align-items: center;
   gap: 15px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 86, 179, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .floating-card:hover {
   transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 12px 28px rgba(0, 86, 179, 0.35);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* header */
+.logoImg {
+  width: 120px;       /* display width */
+  height: 60px;       /* display height */
+  object-fit: contain; /* aspect ratio maintain */
+  image-rendering: crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+
+
+

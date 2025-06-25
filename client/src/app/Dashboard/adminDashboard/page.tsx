@@ -151,7 +151,7 @@ const Dashboard = () => {
               <span className="sidebar-text">Inquiries</span>
             </Link>
             <Link
-              href="/auth/admin/services"
+              href="/auth/admin/ManageServices"
               className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
             >
               <LayoutDashboard size={18} />

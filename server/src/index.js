@@ -116,7 +116,7 @@ import galleryRoutes from "./routes/galleryRoutes.js";
 import testimonialRoutes from "./routes/testimonialRoutes.js";
 import teamRoutes from "./routes/team.js";
 import classRoutes from './routes/classRoutes.js';
-
+import serviceRoutes from './routes/serviceRoutes.js';
 
 
 // Import courses route and mongoose here:
@@ -134,6 +134,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join('public/uploads')));
+app.use('/api/services', serviceRoutes);
 
 // Serve uploads statically for all uploads including courses images
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
