@@ -1,7 +1,20 @@
 'use client'
+
+import { usePathname } from 'next/navigation';
 import React from 'react';
 
+
+
+
 const Footer = () => {
+
+    const pathname = usePathname();
+  const hideHeader = pathname === "/auth/adminLogin";
+  const hideFooter = pathname === "/auth/adminRegister/superAdmin";
+
+  if (hideHeader || hideFooter) return null;
+
+
     return (
         <footer className="bg-dark text-white pt-5 pb-3">
             <div className="container">

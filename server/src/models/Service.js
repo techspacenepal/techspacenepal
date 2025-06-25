@@ -1,10 +1,9 @@
-// models/Service.js
 import mongoose from 'mongoose';
 
 const serviceSchema = new mongoose.Schema({
   title: String,
-  description: String,
-  icon: String, // icon URL or icon name
+  desc: String,
+  icon: String, // icon URL or path
 });
 
 export default mongoose.model('Service', serviceSchema);

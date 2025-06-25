@@ -1,30 +1,27 @@
 'use client'
-
+import React, { useState, useEffect } from 'react'
 import Courses from '@/pages/Courses'
 import HeroSection from '@/pages/HeroSection'
-import React from 'react'
 import GalleryForm from './(users)/gallery/page'
 import Testimonialpage from './(users)/testimonial/page'
 import TeamSection from './(users)/teams/page'
 import UpcomingClassesUser from './(users)/UpcomingClassesUser/page'
-// import AboutSection from '@/pages/AboutSection'
 import ServicesSection from '@/pages/ServicesSection'
 
+function Page() {
+ 
 
-
-function page() {
   return (
     <>
       <HeroSection />
-      {/* <AboutSection/> */}
-      <ServicesSection/>
+      <ServicesSection />
       <Courses />
       <GalleryForm />
       <Testimonialpage />
       <TeamSection />
-      <UpcomingClassesUser/>
+      <UpcomingClassesUser />
     </>
   )
 }
 
-export default page
+export default Page

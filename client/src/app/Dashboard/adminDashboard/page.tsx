@@ -114,12 +114,13 @@ const Dashboard = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [userInitials, setUserInitials] = useState("");
+  const [services, setServices] = useState([]);
+  const [serviceCount, setServiceCount] = useState(0);
 
   const router = useRouter();
 
   // login vayesi matra dashboard dekhine
   const { isAuthenticated, logout } = useAuth();
-
 
   useEffect(() => {
     const token = Cookies.get("adminToken");
@@ -163,51 +164,60 @@ const Dashboard = () => {
     }
   }, []);
 
-
-  
   // Fetch contact and inquiry counts
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const [inquiryRes, contactRes, userRes] = await Promise.all([
-        axios.get("http://localhost:5000/api/inquiry"),
-        axios.get("http://localhost:5000/api/contact"),
-        axios.get("http://localhost:5000/api/auth/users"),
-      ]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [inquiryRes, contactRes, userRes, serviceRes] = await Promise.all([
+          axios.get("http://localhost:5000/api/inquiry"),
+          axios.get("http://localhost:5000/api/contact"),
+          axios.get("http://localhost:5000/api/auth/users"),
+          axios.get("http://localhost:5000/api/services"), // 4th request
+        ]);
 
-      // ✅ These must be arrays — add fallback empty array to avoid TypeError
-      const inquiries = Array.isArray(inquiryRes.data) ? inquiryRes.data : inquiryRes.data.inquiries || [];
-      const contacts = Array.isArray(contactRes.data) ? contactRes.data : contactRes.data.contacts || [];
-      const users = Array.isArray(userRes.data) ? userRes.data : userRes.data.users || [];
+        // ✅ These must be arrays — add fallback empty array to avoid TypeError
+        const inquiries = Array.isArray(inquiryRes.data)
+          ? inquiryRes.data
+          : inquiryRes.data.inquiries || [];
+        const contacts = Array.isArray(contactRes.data)
+          ? contactRes.data
+          : contactRes.data.contacts || [];
+        const users = Array.isArray(userRes.data)
+          ? userRes.data
+          : userRes.data.users || [];
 
-      const sortedInquiries = inquiries.sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
-      const sortedContacts = contacts.sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
+        const services = Array.isArray(serviceRes.data) ? serviceRes.data : [];
+        setServiceCount(services.length);
 
-      setInquiryCount(sortedInquiries.length);
-      setContactCount(sortedContacts.length);
-      setUserCount(users.length);
+        const sortedInquiries = inquiries.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        const sortedContacts = contacts.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
 
-      setRecentInquiries(sortedInquiries.slice(0, 3));
-      setRecentContacts(sortedContacts.slice(0, 3));
+        setInquiryCount(sortedInquiries.length);
+        setContactCount(sortedContacts.length);
+        setUserCount(users.length);
 
-      // ✅ Count only unseen
-      const unseenInquiries = sortedInquiries.filter((i) => !i.seen);
-      const unseenContacts = sortedContacts.filter((c) => !c.seen);
-      setUnreadCount(unseenInquiries.length + unseenContacts.length);
-    } catch (err) {
-      console.error("Dashboard fetch error:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+        setRecentInquiries(sortedInquiries.slice(0, 3));
+        setRecentContacts(sortedContacts.slice(0, 3));
 
-  fetchData();
-}, []);
+        // ✅ Count only unseen
+        const unseenInquiries = sortedInquiries.filter((i) => !i.seen);
+        const unseenContacts = sortedContacts.filter((c) => !c.seen);
+        setUnreadCount(unseenInquiries.length + unseenContacts.length);
+      } catch (err) {
+        console.error("Dashboard fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchData();
+  }, []);
 
   const allNotifications = [
     ...recentContacts.map((item) => ({ ...item, type: "contact" as const })),
@@ -240,6 +250,19 @@ useEffect(() => {
       }
     }
   };
+
+  const fetchServices = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/services");
+      setServices(res.data); // Assuming it's an array of services
+    } catch (err) {
+      console.error("Failed to fetch services:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchServices();
+  }, []);
 
   return (
     <>
@@ -281,7 +304,7 @@ useEffect(() => {
             </Link>
 
             <Link
-              href="/auth/admin/services"
+              href="/auth/admin/ManageServices"
               className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
             >
               <LayoutDashboard size={18} />
@@ -289,7 +312,7 @@ useEffect(() => {
             </Link>
 
             <Link
-              href="/auth/admin/Gallery"
+              href="/auth/admin/gallery"
               className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
             >
               <i className="bi bi-images" style={{ fontSize: "1rem" }}></i>
@@ -459,7 +482,7 @@ useEffect(() => {
                 },
                 {
                   title: "Services",
-                  value: 12,
+                  value: serviceCount, // 🆕 dynamic value
                   link: "/auth/admin/allServices",
                 },
               ].map((stat, i) => (
@@ -527,28 +550,18 @@ useEffect(() => {
                   <div className="card-body">
                     <h5 className="card-title mb-3">Manage Services</h5>
 
-                    {["Web Development", "SEO Optimization"].map(
-                      (service, i) => (
-                        <div
-                          key={i}
-                          className="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2"
-                        >
-                          <span>{service}</span>
-                          <div>
-                            <button className="btn btn-outline-secondary btn-sm me-2">
-                              Edit
-                            </button>
-                            <button className="btn btn-danger btn-sm">
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                      )
-                    )}
+                    {services.map((service) => (
+                      <div
+                        key={service._id}
+                        className="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2"
+                      >
+                        <span>{service.title}</span>
+                      </div>
+                    ))}
 
-                    <button className="btn btn-primary w-100 mt-3">
-                      Add New Service
-                    </button>
+                    {services.length === 0 && (
+                      <p className="text-muted">No services found.</p>
+                    )}
                   </div>
                 </div>
               </div>

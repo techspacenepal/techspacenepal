@@ -22,6 +22,9 @@ import teamRoutes from './routes/team.js';
 import classRoutes from './routes/classRoutes.js';
 import studentRoutes from './routes/studentRoutes.js';
 import enrolledCoursesRoutes from './routes/enrolledCoursesRoutes.js';
+import serviceRoutes from './routes/serviceRoutes.js';
+
+
 import courseRoutes from './routes/courseRoutes.js';
 import announcementRoutes from './routes/announcementRoutes.js';
 // Custom error middleware (dummy placeholder)
@@ -47,6 +50,8 @@ app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/uploads', express.static(path.join('public/uploads')));
+app.use('/api/services', serviceRoutes);
 
 // Serve static uploads folder
 // ध्यान दिनुहोस्: यो path ले server/src बाट बाहिर server/uploads मा पुग्छ

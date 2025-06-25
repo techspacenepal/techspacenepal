@@ -1,8 +1,9 @@
-'use client';
-
+'use client'
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
 
 interface User {
   _id: string;
@@ -16,6 +17,8 @@ const UserTable = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [pageLoading, setPageLoading] = useState(true); // 🌀 for full-page loader
+  const router = useRouter();
 
   const fetchUsers = async () => {
     try {
@@ -23,7 +26,8 @@ const UserTable = () => {
       const allUsers: User[] = res.data.users || res.data;
 
       const sorted = allUsers.sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
 
       setUsers(sorted);
@@ -37,7 +41,7 @@ const UserTable = () => {
   const handleDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
     try {
-      const token = localStorage.getItem('adminToken'); // or from context
+      const token = Cookies.get('adminToken'); // 🍪 use cookie
       await axios.delete(`http://localhost:5000/api/auth/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -50,7 +54,6 @@ const UserTable = () => {
     }
   };
 
-
   const filteredUsers = users.filter((user) =>
     [user.username, user.email, user.role]
       .join(' ')
@@ -59,9 +62,49 @@ const UserTable = () => {
   );
 
   useEffect(() => {
-    fetchUsers();
+    const token = Cookies.get('adminToken');
+
+    setTimeout(() => {
+      if (!token) {
+        toast.error('Please login to access this page');
+        router.push('/auth/adminLogin');
+      } else {
+        fetchUsers();
+      }
+      setPageLoading(false);
+    }, 1000);
   }, []);
 
+  // 🌀 Full-page spinner on first load
+  if (pageLoading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+        <div className="multi-spinner"></div>
+        <style jsx>{`
+          .multi-spinner {
+            width: 4rem;
+            height: 4rem;
+            border: 8px solid transparent;
+            border-top: 8px solid red;
+            border-right: 8px solid blue;
+            border-bottom: 8px solid green;
+            border-left: 8px solid orange;
+            border-radius: 50%;
+            animation: spin 1.2s linear infinite;
+          }
+
+          @keyframes spin {
+            0% {
+              transform: rotate(0deg);
+            }
+            100% {
+              transform: rotate(360deg);
+            }
+          }
+        `}</style>
+      </div>
+    );
+  }
   return (
     <div className="container py-5">
       <Toaster />
