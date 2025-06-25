@@ -9,6 +9,7 @@ import SettingsModal from "../Component/settingModel";
 import { useRouter } from "next/navigation";
 import { Notifications } from "./notification";
 
+
 interface User {
   username: string;
   email: string;
@@ -54,7 +55,7 @@ export function UserNav() {
   return (
     <div className="d-flex align-items-center gap-3 position-relative">
       {/* 🔔 Notification Icon */}
-      <Notifications />
+      <Notifications/>
 
       {/* 👤 User Dropdown */}
       <div className="dropdown">

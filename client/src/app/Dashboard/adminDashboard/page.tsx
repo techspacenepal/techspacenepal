@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -44,6 +44,65 @@ interface UserType {
   createdAt: string;
 }
 
+interface NotificationItem {
+  _id: string;
+  name: string;
+  course: string;
+  type: "inquiry" | "contact";
+  createdAt: string;
+}
+
+const getInitials = (name: string) => {
+  const parts = name.trim().split(" ");
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  } else if (parts.length === 1) {
+    return parts[0].slice(0, 2).toUpperCase();
+  }
+  return "";
+};
+
+const NotificationDropdown: React.FC<{ items: NotificationItem[] }> = ({
+  items,
+}) => {
+  return (
+    <div
+      className="dropdown-menu dropdown-menu-end show p-2 shadow"
+      style={{ minWidth: "300px" }}
+    >
+      <h6 className="dropdown-header">Notifications</h6>
+      {items.length === 0 ? (
+        <span className="dropdown-item text-muted">No new notifications</span>
+      ) : (
+        items.map((item) => (
+          <div key={item._id} className="dropdown-item small">
+            <strong>{item.name}</strong> sent a new {item.type}
+            <br />
+            <small className="text-muted">
+              {new Date(item.createdAt).toLocaleString("en-GB")}
+            </small>
+          </div>
+        ))
+      )}
+      <div className="dropdown-divider" />
+      <div className="text-center">
+        <Link
+          href="/auth/admin/allContact"
+          className="dropdown-item small text-primary"
+        >
+          View All Contacts
+        </Link>
+        <Link
+          href="/auth/admin/allinquiry"
+          className="dropdown-item small text-primary"
+        >
+          View All Inquiries
+        </Link>
+      </div>
+    </div>
+  );
+};
+
 const Dashboard = () => {
   const [inquiryCount, setInquiryCount] = useState(0);
   const [contactCount, setContactCount] = useState(0);
@@ -51,8 +110,16 @@ const Dashboard = () => {
   const [recentInquiries, setRecentInquiries] = useState<Inquiry[]>([]);
   const [recentContacts, setRecentContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [userInitials, setUserInitials] = useState("");
 
   const router = useRouter();
+
+  // login vayesi matra dashboard dekhine
+  const { isAuthenticated, logout } = useAuth();
+
 
   useEffect(() => {
     const token = Cookies.get("adminToken");
@@ -61,59 +128,118 @@ const Dashboard = () => {
     }
   }, [router]);
 
-  // login vayesi matra dashboard dekhine
-  const { isAuthenticated, logout } = useAuth();
-
-  //   const logout = () => {
-  //   Cookies.remove("adminToken"); // Token हटाउनुहोस्
-  //   router.push("/auth/adminLogin"); // Login page मा redirect गर्नुहोस्
-  // };
-  ///-----
-
-  // Fetch contact and inquiry counts
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [inquiryRes, contactRes, userRes] = await Promise.all([
-          axios.get("http://localhost:5000/api/inquiry"),
-          axios.get("http://localhost:5000/api/contact"),
-          axios.get("http://localhost:5000/api/auth/users"),
-        ]);
-
-        const inquiries: Inquiry[] =
-          inquiryRes.data.inquiries || inquiryRes.data;
-        const contacts: Contact[] =
-          contactRes.data.inquiries || contactRes.data;
-        const users: UserType[] = userRes.data.users || userRes.data;
-
-        const sortedInquiries = inquiries.sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-        const sortedContacts = contacts.sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-
-        setInquiryCount(sortedInquiries.length);
-        setContactCount(sortedContacts.length);
-        setUserCount(users.length);
-        setRecentInquiries(sortedInquiries.slice(0, 3));
-        setRecentContacts(sortedContacts.slice(0, 3));
-      } catch (err) {
-        console.error("Dashboard fetch error:", err);
-      } finally {
-        setLoading(false);
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowDropdown(false);
       }
     };
 
-    fetchData();
+    if (showDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showDropdown]);
+
+  // Load user initials from localStorage on mount
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        const fullName = user.username || user.name || "";
+        setUserInitials(getInitials(fullName));
+      } catch {
+        setUserInitials("");
+      }
+    }
   }, []);
 
-  // const handleLogout = () => {
-  //   Cookies.remove("adminToken");
-  //   router.push("/auth/adminLogin");
-  // };
+
+  
+  // Fetch contact and inquiry counts
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const [inquiryRes, contactRes, userRes] = await Promise.all([
+        axios.get("http://localhost:5000/api/inquiry"),
+        axios.get("http://localhost:5000/api/contact"),
+        axios.get("http://localhost:5000/api/auth/users"),
+      ]);
+
+      // ✅ These must be arrays — add fallback empty array to avoid TypeError
+      const inquiries = Array.isArray(inquiryRes.data) ? inquiryRes.data : inquiryRes.data.inquiries || [];
+      const contacts = Array.isArray(contactRes.data) ? contactRes.data : contactRes.data.contacts || [];
+      const users = Array.isArray(userRes.data) ? userRes.data : userRes.data.users || [];
+
+      const sortedInquiries = inquiries.sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+      const sortedContacts = contacts.sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+
+      setInquiryCount(sortedInquiries.length);
+      setContactCount(sortedContacts.length);
+      setUserCount(users.length);
+
+      setRecentInquiries(sortedInquiries.slice(0, 3));
+      setRecentContacts(sortedContacts.slice(0, 3));
+
+      // ✅ Count only unseen
+      const unseenInquiries = sortedInquiries.filter((i) => !i.seen);
+      const unseenContacts = sortedContacts.filter((c) => !c.seen);
+      setUnreadCount(unseenInquiries.length + unseenContacts.length);
+    } catch (err) {
+      console.error("Dashboard fetch error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, []);
+
+
+  const allNotifications = [
+    ...recentContacts.map((item) => ({ ...item, type: "contact" as const })),
+    ...recentInquiries.map((item) => ({
+      ...item,
+      name: item.name || item.fullName || "",
+      type: "inquiry" as const,
+    })),
+  ]
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+    .slice(0, 5);
+
+  const handleBellClick = async () => {
+    const newShow = !showDropdown;
+    setShowDropdown(newShow);
+
+    if (newShow) {
+      try {
+        // Mark all as seen on backend
+        await Promise.all([
+          axios.put("http://localhost:5000/api/inquiry/mark-seen"),
+          axios.put("http://localhost:5000/api/contact/mark-seen"),
+        ]);
+        setUnreadCount(0); // Reset unread count on frontend
+      } catch (error) {
+        console.error("Failed to mark notifications as seen", error);
+      }
+    }
+  };
 
   return (
     <>
@@ -122,136 +248,147 @@ const Dashboard = () => {
         <aside className="sidebar bg-dark text-white p-3">
           <h2 className="mb-4 sidebar-title">Admin Panel</h2>
           <nav className="nav flex-column gap-2">
-  <Link
-    href="/auth/admin/dashboard"
-    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-  >
-    <LayoutDashboard size={18} />
-    <span className="sidebar-text">Dashboard</span>
-  </Link>
+            <Link
+              href="/Dashboard/adminDashboard"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <LayoutDashboard size={18} />
+              <span className="sidebar-text">Dashboard</span>
+            </Link>
 
-  <Link
-    href="/auth/admin/allUser"
-    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-  >
-    <User size={18} />
-    <span className="sidebar-text">Users</span>
-  </Link>
+            <Link
+              href="/auth/admin/allUser"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <User size={18} />
+              <span className="sidebar-text">Users</span>
+            </Link>
 
-  <Link
-    href="/auth/admin/allContact"
-    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-  >
-    <Calendar size={18} />
-    <span className="sidebar-text">Contacts</span>
-  </Link>
+            <Link
+              href="/auth/admin/allContact"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <Calendar size={18} />
+              <span className="sidebar-text">Contacts</span>
+            </Link>
 
-  <Link
-    href="/auth/admin/allinquiry"
-    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-  >
-    <MessageSquare size={18} />
-    <span className="sidebar-text">Inquiries</span>
-  </Link>
+            <Link
+              href="/auth/admin/allinquiry"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <MessageSquare size={18} />
+              <span className="sidebar-text">Inquiries</span>
+            </Link>
 
-  <Link
-    href="/auth/admin/services"
-    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-  >
-    <LayoutDashboard size={18} />
-    <span className="sidebar-text">Services</span>
-  </Link>
+            <Link
+              href="/auth/admin/services"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <LayoutDashboard size={18} />
+              <span className="sidebar-text">Services</span>
+            </Link>
 
-  <Link
-    href="/auth/admin/Gallery"
-    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-  >
-    <i className="bi bi-images" style={{ fontSize: "1rem" }}></i>
-    <span className="sidebar-text">Success Gallery</span>
-  </Link>
+            <Link
+              href="/auth/admin/Gallery"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <i className="bi bi-images" style={{ fontSize: "1rem" }}></i>
+              <span className="sidebar-text">Success Gallery</span>
+            </Link>
 
-  <Link
-    href="/auth/admin/testimonial"
-    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-  >
-    <i className="bi bi-chat-text" style={{ fontSize: "1rem" }}></i>
-    <span className="sidebar-text">Testimonial</span>
-  </Link>
+            <Link
+              href="/auth/admin/testimonial"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <i className="bi bi-chat-text" style={{ fontSize: "1rem" }}></i>
+              <span className="sidebar-text">Testimonial</span>
+            </Link>
 
-  <Link
-    href="/auth/admin/teams"
-    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-  >
-    <i className="bi bi-people" style={{ fontSize: "1rem" }}></i>
-    <span className="sidebar-text">Teams</span>
-  </Link>
+            <Link
+              href="/auth/admin/teams"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <i className="bi bi-people" style={{ fontSize: "1rem" }}></i>
+              <span className="sidebar-text">Teams</span>
+            </Link>
 
-  <Link
-    href="/auth/admin/courses"
-    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-  >
-    <i className="bi bi-journal-bookmark" style={{ fontSize: "1rem" }}></i>
-    <span className="sidebar-text">Courses</span>
-  </Link>
+            <Link
+              href="/auth/admin/courses"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <i
+                className="bi bi-journal-bookmark"
+                style={{ fontSize: "1rem" }}
+              ></i>
+              <span className="sidebar-text">Courses</span>
+            </Link>
 
-  <Link
-    href="/auth/admin/addAnnouncement"
-    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-  >
-    <i className="bi bi-megaphone" style={{ fontSize: "1rem" }}></i>
-    <span className="sidebar-text">Add Announcements</span>
-  </Link>
+            <Link
+              href="/auth/admin/addAnnouncement"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <i className="bi bi-megaphone" style={{ fontSize: "1rem" }}></i>
+              <span className="sidebar-text">Add Announcements</span>
+            </Link>
 
-  <Link
-    href="/auth/admin/enrolledCourses"
-    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-  >
-    <i className="bi bi-journal-check" style={{ fontSize: "1rem" }}></i>
-    <span className="sidebar-text">Add Enrolled Courses</span>
-  </Link>
+            <Link
+              href="/auth/admin/enrolledCourses"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <i
+                className="bi bi-journal-check"
+                style={{ fontSize: "1rem" }}
+              ></i>
+              <span className="sidebar-text">Add Enrolled Courses</span>
+            </Link>
 
-  <Link
-    href="/auth/admin/allstudents"
-    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-  >
-    <i className="bi bi-person-badge" style={{ fontSize: "1rem" }}></i>
-    <span className="sidebar-text">All Students</span>
-  </Link>
+            <Link
+              href="/auth/admin/allstudents"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <i
+                className="bi bi-person-badge"
+                style={{ fontSize: "1rem" }}
+              ></i>
+              <span className="sidebar-text">All Students</span>
+            </Link>
 
-  <Link
-    href="/auth/admin/UpcomingClasses"
-    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-  >
-    <i className="bi bi-calendar-event" style={{ fontSize: "1rem" }}></i>
-    <span className="sidebar-text">Classes UP</span>
-  </Link>
+            <Link
+              href="/auth/admin/UpcomingClasses"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <i
+                className="bi bi-calendar-event"
+                style={{ fontSize: "1rem" }}
+              ></i>
+              <span className="sidebar-text">Classes UP</span>
+            </Link>
 
-  <Link
-    href="/auth/adminRegister/superAdmin"
-    className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
-  >
-    <i
-      className="bi bi-person-fill"
-      style={{ fontSize: "1rem", marginRight: "0.5rem" }}
-    ></i>
-    <span className="sidebar-text">Register</span>
-  </Link>
+            <Link
+              href="/auth/adminRegister/superAdmin"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <i
+                className="bi bi-person-fill"
+                style={{ fontSize: "1rem", marginRight: "0.5rem" }}
+              ></i>
+              <span className="sidebar-text">Register</span>
+            </Link>
 
-  {isAuthenticated ? (
-    <button
-      onClick={logout}
-      className="btn btn-danger d-flex align-items-center gap-2"
-    >
-      <LogOut size={18} />
-      Logout
-    </button>
-  ) : (
-    <Link href="/auth/adminLogin" className="btn btn-success">
-      Login
-    </Link>
-  )}
-</nav>
-
+            {isAuthenticated ? (
+              <button
+                onClick={logout}
+                className="btn btn-danger d-flex align-items-center gap-2"
+              >
+                <LogOut size={18} />
+                Logout
+              </button>
+            ) : (
+              <Link href="/auth/adminLogin" className="btn btn-success">
+                Login
+              </Link>
+            )}
+          </nav>
         </aside>
 
         {/* Main Content */}
@@ -263,9 +400,42 @@ const Dashboard = () => {
             {/* Header */}
             <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap">
               <h1 className="h3 fw-bold mb-2 mb-md-0">Dashboard</h1>
-              <div className="d-flex gap-3">
-                <Bell size={22} />
-                <User size={22} />
+              <div className="d-flex gap-3 align-items-center position-relative">
+                <button
+                  className="btn btn-link position-relative p-0 border-0"
+                  onClick={handleBellClick}
+                >
+                  <Bell size={22} className="text-dark" />
+                  {unreadCount > 0 && (
+                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                      {unreadCount}
+                    </span>
+                  )}
+                </button>
+
+                {/* Notification Dropdown */}
+                {showDropdown && (
+                  <div
+                    ref={dropdownRef}
+                    className="position-absolute px-50"
+                    style={{
+                      top: "120%",
+                      left: "-230px",
+                      zIndex: 1050,
+                    }}
+                  >
+                    <NotificationDropdown items={allNotifications} />
+                  </div>
+                )}
+
+                {/* Show user initials */}
+                <div
+                  className="rounded-circle bg-dark text-white d-flex justify-content-center align-items-center"
+                  style={{ width: 32, height: 32, fontSize: 14 }}
+                  title="Logged in user"
+                >
+                  {userInitials}
+                </div>
               </div>
             </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -44,15 +44,34 @@ interface UserType {
   createdAt: string;
 }
 
+
+const getInitials = (name: string) => {
+  const parts = name.trim().split(" ");
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  } else if (parts.length === 1) {
+    return parts[0].slice(0, 2).toUpperCase();
+  }
+  return "";
+};
+
+
 const Dashboard = () => {
-  const [inquiryCount, setInquiryCount] = useState(0);
+    const [inquiryCount, setInquiryCount] = useState(0);
   const [contactCount, setContactCount] = useState(0);
   const [userCount, setUserCount] = useState(0);
   const [recentInquiries, setRecentInquiries] = useState<Inquiry[]>([]);
   const [recentContacts, setRecentContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [userInitials, setUserInitials] = useState("");
 
   const router = useRouter();
+
+    // login vayesi matra dashboard dekhine
+  const { isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
     const token = Cookies.get("adminToken");
@@ -61,14 +80,20 @@ const Dashboard = () => {
     }
   }, [router]);
 
-  // login vayesi matra dashboard dekhine
-  const { isAuthenticated, logout } = useAuth();
 
-  //   const logout = () => {
-  //   Cookies.remove("adminToken"); // Token हटाउनुहोस्
-  //   router.push("/auth/adminLogin"); // Login page मा redirect गर्नुहोस्
-  // };
-  ///-----
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        const fullName = user.username || user.name || "";
+        setUserInitials(getInitials(fullName));
+      } catch {
+        setUserInitials("");
+      }
+    }
+  }, []);
+
 
   // Fetch contact and inquiry counts
   useEffect(() => {
@@ -110,11 +135,93 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
-  // const handleLogout = () => {
-  //   Cookies.remove("adminToken");
-  //   router.push("/auth/adminLogin");
-  // };
 
+   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowDropdown(false);
+      }
+    };
+    if (showDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showDropdown]);
+
+    useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [inquiryRes, contactRes, userRes] = await Promise.all([
+          axios.get("http://localhost:5000/api/inquiry"),
+          axios.get("http://localhost:5000/api/contact"),
+          axios.get("http://localhost:5000/api/auth/users"),
+        ]);
+
+        const inquiries: Inquiry[] = Array.isArray(inquiryRes.data)
+          ? inquiryRes.data
+          : inquiryRes.data.inquiries || [];
+
+        const contacts: Contact[] = Array.isArray(contactRes.data)
+          ? contactRes.data
+          : contactRes.data.contacts || [];
+
+        const users: UserType[] = Array.isArray(userRes.data)
+          ? userRes.data
+          : userRes.data.users || [];
+
+        const sortedInquiries = inquiries.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        const sortedContacts = contacts.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+
+        setInquiryCount(sortedInquiries.length);
+        setContactCount(sortedContacts.length);
+        setUserCount(users.length);
+        setRecentInquiries(sortedInquiries.slice(0, 3));
+        setRecentContacts(sortedContacts.slice(0, 3));
+
+        const unseenInquiries = sortedInquiries.filter((i) => !i.seen);
+        const unseenContacts = sortedContacts.filter((c) => !c.seen);
+        setUnreadCount(unseenInquiries.length + unseenContacts.length);
+      } catch (err) {
+        console.error("Dashboard fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
+
+    const handleBellClick = async () => {
+    const newShow = !showDropdown;
+    setShowDropdown(newShow);
+    if (newShow) {
+      try {
+        await Promise.all([
+          axios.put("http://localhost:5000/api/inquiry/mark-seen"),
+          axios.put("http://localhost:5000/api/contact/mark-seen"),
+        ]);
+        setUnreadCount(0);
+      } catch (error) {
+        console.error("Failed to mark notifications as seen", error);
+      }
+    }
+  };
+ 
   return (
     <>
       <div className="d-flex min-vh-100 bg-light">
@@ -123,7 +230,7 @@ const Dashboard = () => {
           <h2 className="mb-4 sidebar-title">Admin Panel</h2>
           <nav className="nav flex-column gap-2">
             <Link
-              href="/auth/admin/dashboard"
+              href="/Dashboard/userDashboard"
               className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
             >
               <LayoutDashboard size={18} />
@@ -206,10 +313,43 @@ const Dashboard = () => {
             {/* Header */}
             <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap">
               <h1 className="h3 fw-bold mb-2 mb-md-0">Dashboard</h1>
-              <div className="d-flex gap-3">
-                <Bell size={22} />
-                <User size={22} />
+               <div className="d-flex gap-3 align-items-center position-relative">
+              <button
+                className="btn btn-link position-relative p-0 border-0"
+                onClick={handleBellClick}
+              >
+                <Bell size={22} className="text-dark" />
+                {unreadCount > 0 && (
+                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+              {showDropdown && (
+                <div
+                  ref={dropdownRef}
+                  className="dropdown-menu dropdown-menu-end show p-2 shadow"
+                  style={{ minWidth: "280px", top: "110%", left: "-230px" }}
+                >
+                  <h6 className="dropdown-header">Notifications</h6>
+                  {[...recentContacts, ...recentInquiries].slice(0, 5).map((item, i) => (
+                    <div key={i} className="dropdown-item small">
+                      <strong>{item.name}</strong> sent a message
+                      <br />
+                      <small className="text-muted">
+                        {new Date(item.createdAt).toLocaleString("en-GB")}
+                      </small>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div
+                className="rounded-circle bg-dark text-white d-flex justify-content-center align-items-center"
+                style={{ width: 32, height: 32, fontSize: 14 }}
+              >
+                {userInitials}
               </div>
+            </div>
             </div>
 
             {/* Stats Cards */}

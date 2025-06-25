@@ -1,14 +1,20 @@
 import express from 'express';
 import {
-  createInquiry,
   getInquiries,
+  createInquiry,
   deleteInquiry,
+  markInquiriesSeen,
+  
+  // ✅ import this
 } from '../controllers/inquiryController.js';
 
 const router = express.Router();
 
-router.post('/', createInquiry);
 router.get('/', getInquiries);
+router.post('/', createInquiry);
 router.delete('/:id', deleteInquiry);
+
+// ✅ new route
+router.put('/mark-seen', markInquiriesSeen);
 
 export default router;

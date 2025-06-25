@@ -7,7 +7,9 @@ const inquirySchema = new mongoose.Schema(
     mobile: { type: String, required: true },
     course: { type: String, required: true },
     message: { type: String, required: true },
+      seen: { type: Boolean, default: false }, // ✅ New field added
   },
+  
   { timestamps: true }
 );
 

@@ -42,3 +42,20 @@ export const deleteInquiry = async (req, res) => {
     res.status(500).json({ message: 'Failed to delete inquiry' });
   }
 };
+
+
+
+// Mark all inquiries as seen
+export const markInquiriesSeen = async (req, res) => {
+  try {
+    await Inquiry.updateMany({ seen: false }, { $set: { seen: true } });
+    res.status(200).json({ message: 'All inquiries marked as seen' });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to mark inquiries as seen' });
+  }
+};
+
+
+
+
+

@@ -9,7 +9,7 @@ dotenv.config();
 
 
 const generateToken = (id, role) => {
-  return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "7d" });
+  return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "1d" });
 };
 
 
@@ -26,12 +26,22 @@ export const registerStudent = async (req, res) => {
     const student = new Student({ username, email, password, role: 'student' });
     await student.save();
 
-    res.status(201).json({ message: 'Student registered successfully!' });
+    // Token generate गर्नुहोस्
+    const token = generateToken(student._id, student.role);
+
+    // Response मा token र user info पठाउनुहोस्
+    res.status(201).json({
+      message: 'Student registered successfully!',
+      token,
+      username: student.username,
+      role: student.role,
+    });
   } catch (error) {
     console.error('Register Error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 
 // GET: Fetch all students
@@ -58,7 +68,7 @@ export const loginStudent = async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, student.password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "Invalid Password" });
     }
 
     const token = generateToken(student._id, student.role);
@@ -166,6 +176,29 @@ export const studentforgotPassword = async (req, res) => {
   }
 };
 
+// export const resetPassword = async (req, res) => {
+//   const { email, otp, newPassword } = req.body;
+
+//   try {
+//     const user = await Student.findOne({ email });
+//     if (!user) return res.status(404).json({ message: "User not found" });
+
+//     if (user.resetOTP !== otp || user.resetOTPExpiry < Date.now()) {
+//       return res.status(400).json({ message: "Invalid or expired OTP" });
+//     }
+
+//     user.password = newPassword;
+//     user.resetOTP = undefined;
+//     user.resetOTPExpiry = undefined;
+//     await user.save();
+
+//     res.status(200).json({ message: "Password reset successful!" });
+//   } catch (error) {
+//     res.status(500).json({ message: "Error resetting password", error: error.message });
+//   }
+// };
+
+
 export const resetPassword = async (req, res) => {
   const { email, otp, newPassword } = req.body;
 
@@ -173,10 +206,53 @@ export const resetPassword = async (req, res) => {
     const user = await Student.findOne({ email });
     if (!user) return res.status(404).json({ message: "User not found" });
 
+    // ✅ Check for invalid or expired OTP
     if (user.resetOTP !== otp || user.resetOTPExpiry < Date.now()) {
+      // Send expired OTP email
+      if (user.resetOTPExpiry < Date.now()) {
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: process.env.GMAIL_USER,
+            pass: process.env.GMAIL_PASS,
+          },
+        });
+
+        const mailOptions = {
+          from: `"Teach Space Support" <${process.env.GMAIL_USER}>`,
+          to: user.email,
+          subject: "⚠️ OTP Expired - Action Required",
+          html: `
+            <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+              <h2 style="color: #d9534f;">Teach Space - Password Reset</h2>
+              <p>Hi ${user.username || 'User'},</p>
+
+              <p>Your OTP has <strong style="color: #d9534f;">expired</strong>.</p>
+              <p>OTP codes are valid for only 10 minutes to protect your account.</p>
+              <p>Please request a new OTP from the password reset page to try again.</p>
+
+              <a href="https://yourdomain.com/auth/studentForgotPassword" 
+                 style="display:inline-block; margin-top:15px; background-color:#007bff; color:#fff; padding:10px 20px; text-decoration:none; border-radius:5px;">
+                 Request New OTP
+              </a>
+
+              <br/><br/>
+              <p style="font-size: 14px; color: #777;">
+                If you did not request a password reset, you can safely ignore this message.
+              </p>
+
+              <p>Thank you,<br/><strong>Teach Space Support Team</strong></p>
+            </div>
+          `,
+        };
+
+        await transporter.sendMail(mailOptions);
+      }
+
       return res.status(400).json({ message: "Invalid or expired OTP" });
     }
 
+    // ✅ Reset the password
     user.password = newPassword;
     user.resetOTP = undefined;
     user.resetOTPExpiry = undefined;
@@ -184,6 +260,7 @@ export const resetPassword = async (req, res) => {
 
     res.status(200).json({ message: "Password reset successful!" });
   } catch (error) {
+    console.error("Reset Password Error:", error);
     res.status(500).json({ message: "Error resetting password", error: error.message });
   }
 };

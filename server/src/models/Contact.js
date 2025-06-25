@@ -1,4 +1,3 @@
-// models/Contact.js
 import mongoose from 'mongoose';
 
 const contactSchema = new mongoose.Schema({
@@ -8,6 +7,7 @@ const contactSchema = new mongoose.Schema({
   course: { type: String, required: true },
   message: { type: String },
   createdAt: { type: Date, default: Date.now },
+  seen: { type: Boolean, default: false }, // ✅ New field added
 });
 
 const Contact = mongoose.model('Contact', contactSchema);

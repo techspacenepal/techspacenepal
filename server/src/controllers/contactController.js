@@ -39,3 +39,17 @@ export const getContacts = async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
+
+
+
+
+// Similarly for contacts
+// Mark all contacts as seen
+export const markContactsSeen = async (req, res) => {
+  try {
+    await Contact.updateMany({ seen: false }, { $set: { seen: true } });
+    res.status(200).json({ message: 'All contacts marked as seen' });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to mark contacts as seen' });
+  }
+};

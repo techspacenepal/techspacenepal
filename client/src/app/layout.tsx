@@ -7,8 +7,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { AuthProvider } from "./context/AuthContext";
-
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import Footer from "./Component/Footer";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,6 +42,7 @@ export default function RootLayout({
           <AuthProvider>
             <Header />
             {children}
+            <Footer/>
           </AuthProvider>
         </GoogleOAuthProvider>
       </body>

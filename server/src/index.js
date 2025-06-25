@@ -8,8 +8,6 @@ import jwt from 'jsonwebtoken';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// Load environment variables
-dotenv.config();
 
 // DB connection function (dummy placeholder, तपाईंले आफैले बनाउनुपर्छ)
 import dbConnect from './db/connection.js';
@@ -39,6 +37,8 @@ const __dirname = path.dirname(__filename);
 // Initialize app
 const app = express();
 
+// Load environment variables
+dotenv.config();
 // Connect DB
 dbConnect();
 
@@ -52,19 +52,17 @@ app.use(express.urlencoded({ extended: true }));
 // ध्यान दिनुहोस्: यो path ले server/src बाट बाहिर server/uploads मा पुग्छ
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-// Session and passport setup
-app.use(
-  session({
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: true,
-  })
-);
 
-app.use(passport.initialize());
-app.use(passport.session());
+//////-----today mobile devices
+app.use(cors({
+  origin: '*', // development मा, production मा specific domain राख्नुहोस्
+  methods: ['GET', 'POST', 'PUT', 'DELETE']
+}));
 
-// Routes
+
+
+
+// Your existing routes
 app.use('/api/inquiry', inquiryRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/contact', contactRoutes);
@@ -76,6 +74,8 @@ app.use('/api/students', studentRoutes);
 app.use('/api/enrolledCourses', enrolledCoursesRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/announcements', announcementRoutes);
+
+
 // Google OAuth login
 app.get(
   '/api/auth/google',
