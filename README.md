@@ -1,16 +1,77 @@
-## Hi there 👋
+# 🌐 Tech Space Nepal
 
-<!--
-**techspacenepal/techspacenepal** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+Welcome to the official GitHub space for **Tech Space Nepal** – a modern digital solutions company focused on building smart, scalable, and meaningful technology for businesses, institutions, and the community.
 
-Here are some ideas to get you started:
+---
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+## 🏢 About Us
+
+**Tech Space Nepal** is a team of developers, designers, and innovators committed to solving real-world problems through clean code, smart design, and intuitive user experiences.
+
+Whether you’re a startup, a clinic, a school, or an enterprise, we help you **build, scale, and succeed** with the right technology.
+
+---
+
+## 🚀 What We Do
+
+- **Healthcare Systems**  
+  From patient records to doctor scheduling and billing – we digitize clinics and hospitals.
+
+- **Web & Mobile App Development**  
+  Custom platforms built with modern stacks for performance and scalability.
+
+- **E-commerce & Business Platforms**  
+  From inventory systems to booking tools – we develop software that drives growth.
+
+- **Design & Branding**  
+  Clean, accessible, and user-first design for modern businesses.
+
+- **Consulting & Automation**  
+  Optimizing your digital workflows with smart tools and integrations.
+
+---
+
+## 📂 Projects
+
+Here are some of our featured projects:
+
+| Project | Description |
+|--------|-------------|
+| [Bista Health Polyclinic](https://github.com/techspacenepal/bistahealthpolyclinic) | A digital healthcare management platform |
+| *(More coming soon...)* | |
+
+---
+
+## 👥 Our Team
+
+We are a passionate team of:
+
+- Full-stack developers
+- UI/UX designers
+- Project managers
+- QA testers
+- Tech consultants
+
+We believe in continuous learning, ethical work, and building solutions that last.
+
+---
+
+## 🤝 Work With Us
+
+Want to collaborate, hire us, or contribute?
+
+- 📧 Email: [info@techspacenepal.com]
+- 🌐 Website: [https://techspacenepal.com](https://techspacenepal.com) *(Update if not live yet)*
+- 📍 Location: Kathmandu, Nepal
+
+---
+
+## 📜 License
+
+This organization hosts multiple private and public repositories.  
+Please refer to individual project licenses.
+
+---
+
+> 💡 *Built with purpose. Backed by code. Inspired by change.*
+
