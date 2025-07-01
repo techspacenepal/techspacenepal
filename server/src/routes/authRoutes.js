@@ -20,6 +20,8 @@ import {
   resetPassword,
   deleteUserById,
   googleLogin,
+  getTeacherById,
+  getAllTeachers,
 } from '../controllers/authController.js';
 
 import { authenticateToken } from '../middlewares/authMiddleware.js';
@@ -44,8 +46,8 @@ router.post('/login-user', login); // renamed to avoid conflict
 router.post('/logout-user', authenticateToken, logout);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
-
-
+router.get('/teacher/:id', getTeacherById);
+router.get('/', getAllTeachers);
 /* ------------------ Google OAuth ------------------ */
 router.post('/google-login', googleLogin);
 

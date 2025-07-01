@@ -327,6 +327,16 @@ const Dashboard = () => {
               <span className="sidebar-text">Testimonial</span>
             </Link>
 
+
+
+            <Link
+              href="/auth/admin/addTeacherCourses"
+              className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
+            >
+              <i className="bi bi-chat-text" style={{ fontSize: "1rem" }}></i>
+              <span className="sidebar-text">Add Teacher Courses</span>
+            </Link>
+
             <Link
               href="/auth/admin/teams"
               className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"

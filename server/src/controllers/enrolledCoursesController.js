@@ -79,51 +79,138 @@ export const upload = multer({ storage, fileFilter });
 
 
 
+// export const createEnrolledCourse = async (req, res) => {
+//   try {
+//     const { studentId, teacherId, courseId, instructor, description } = req.body;
+
+//     if (!studentId || !teacherId || !courseId || !instructor || !description) {
+//       return res.status(400).json({ message: "All fields are required." });
+//     }
+
+//     const newCourse = new EnrolledCourse({
+//       studentId,
+//       teacherId,
+//       courseId,
+//       instructor,
+//       description,
+//       // thumbnail: req.file ? req.file.filename : null,
+//     });
+
+//     await newCourse.save();
+//     res.status(201).json({ message: "✅ Course enrolled successfully", course: newCourse });
+//   } catch (error) {
+//     console.error("❌ Error creating course:", error);
+//     res.status(500).json({ message: "Server error", error: error.message });
+//   }
+// };
+
+// export const createEnrolledCourse = async (req, res) => {
+//   try {
+//     const newEnrolledCourse = new EnrolledCourse({
+//       studentId: req.body.studentId,
+//       teacherId: req.body.teacherId,
+//       courseId: req.body.courseId,
+//       instructor: req.body.instructor,
+//       description: req.body.description,
+//       // enrolledDate: automatic because of default
+//     });
+
+//     const saved = await newEnrolledCourse.save();
+//     res.status(201).json(saved);
+//   } catch (error) {
+//     res.status(500).json({ message: "Failed to enroll course", error });
+//   }
+// };
+
+
+// export const getEnrolledCoursesByStudent = async (req, res) => {
+//   try {
+//     const { studentId } = req.params;
+//     const courses = await EnrolledCourse.find({ studentId });
+
+//     if (!courses || courses.length === 0) {
+//       return res.status(404).json({ message: "No enrolled courses found." });
+//     }
+
+//     res.status(200).json(courses);
+//   } catch (error) {
+//     res.status(500).json({ message: "Server error", error });
+//   }
+// };
+
+
+
+
+// export const getAllEnrolledCourses = async (req, res) => {
+//   try {
+//     const courses = await EnrolledCourse.find().populate("studentId");
+//     res.status(200).json(courses);
+//   } catch (error) {
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
+
+
+
 export const createEnrolledCourse = async (req, res) => {
   try {
-    const { studentId, name, instructor, description } = req.body;
+    const { studentId, teacherId, courseId, instructor, description } = req.body;
 
-    const course = new EnrolledCourse({
+    // Validate required fields
+    if (!studentId || !teacherId || !courseId || !instructor) {
+      return res.status(400).json({ message: "Missing required fields." });
+    }
+
+    const newEnrollment = await EnrolledCourse.create({
       studentId,
-      name,
+      teacherId,
+      courseId,
       instructor,
       description,
-      thumbnail: req.file ? req.file.filename : null,
     });
 
-    await course.save();
-    res.status(201).json(course);
+    res.status(201).json(newEnrollment);
   } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+    console.error("❌ Error creating enrolled course:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
+
 
 export const getEnrolledCoursesByStudent = async (req, res) => {
   try {
-    const { studentId } = req.params;
-    const courses = await EnrolledCourse.find({ studentId });
-
-    if (!courses || courses.length === 0) {
-      return res.status(404).json({ message: "No enrolled courses found." });
-    }
-
+    const studentId = req.params.studentId;
+    const courses = await EnrolledCourse.find({ studentId }).populate("courseId");
     res.status(200).json(courses);
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch student's enrolled courses" });
   }
 };
-
 
 
 
 export const getAllEnrolledCourses = async (req, res) => {
   try {
-    const courses = await EnrolledCourse.find().populate("studentId");
-    res.status(200).json(courses);
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    const enrolled = await EnrolledCourse.find().populate("courseId");
+    res.status(200).json(enrolled);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch enrolled courses" });
   }
 };
+
+
+// export const getAllEnrolledCourses = async (req, res) => {
+//   try {
+//     const courses = await EnrolledCourse.find()
+//       .populate("studentId")
+//       .populate("teacherId")
+//       .populate("courseId"); // ✅ thumbnail ल्याउन यो आवश्यक
+
+//     res.status(200).json(courses);
+//   } catch (error) {
+//     res.status(500).json({ message: "Server error", error });
+//   }
+// };
 
 
 

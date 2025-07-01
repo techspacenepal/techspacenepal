@@ -90,65 +90,84 @@
 
 
 
-import Link from "next/link";
-import { BookOpen } from "lucide-react";
 
-interface Course {
+'use client';
+
+import Link from 'next/link';
+import { BookOpen } from 'lucide-react';
+
+interface EnrolledCourse {
   _id: string;
-  name: string;
-  instructor: string;
-  description?: string;
-  thumbnail?: string;
+  studentId: any;
+  teacherId: any;
+  courseId: {
+    _id: string;
+    title: string;
+    instructor: string;
+    description?: string;
+    image?: string;
+  };
   progress?: number;
 }
 
-export function CourseCard({ course }: { course: Course }) {
+export function CourseCard({ course }: { course: EnrolledCourse }) {
+  const courseInfo = course.courseId;
+
+  const imageUrl = courseInfo?.image
+    ? `http://localhost:5000${encodeURI(courseInfo.image)}`
+    : 'https://placehold.co/600x400.png';
+
+  console.log('🟢 Course Object:', course);
+  console.log('🖼️ Final Image URL:', imageUrl);
+
   return (
     <Link
-      href={`/studentdashboard/courses/${course._id}`}
+      href={`/studentdashboard/courses/${courseInfo._id}`}
       className="card h-100 shadow-sm hover-shadow transition-transform text-decoration-none text-dark d-flex flex-column"
-      style={{ cursor: "pointer" }}
+      style={{ cursor: 'pointer' }}
     >
       {/* Image */}
       <div
         style={{
-          position: "relative",
-          paddingBottom: "56.25%", // 16:9 ratio
+          position: 'relative',
+          paddingBottom: '56.25%',
           height: 0,
-          overflow: "hidden",
-          borderTopLeftRadius: ".25rem",
-          borderTopRightRadius: ".25rem",
+          overflow: 'hidden',
+          borderTopLeftRadius: '.25rem',
+          borderTopRightRadius: '.25rem',
         }}
       >
         <img
-          src={
-            course.thumbnail
-              ? `http://localhost:5000/uploads/${course.thumbnail.replace(
-                  /^\/?uploads\/?/,
-                  ""
-                )}`
-              : "https://placehold.co/600x400.png"
-          }
-          alt={course.name}
+          src={imageUrl}
+          alt={courseInfo.title}
           className="img-fluid"
-          style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover", borderTopLeftRadius: ".25rem", borderTopRightRadius: ".25rem" }}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            borderTopLeftRadius: '.25rem',
+            borderTopRightRadius: '.25rem',
+          }}
         />
       </div>
 
       {/* Card Body */}
       <div className="card-body d-flex flex-column flex-grow-1">
-        <h5 className="card-title text-truncate">{course.name}</h5>
+        <h5 className="card-title text-truncate">{courseInfo.title}</h5>
         <p className="card-subtitle text-muted mb-2 small">By {course.instructor}</p>
         <p
           className="card-text flex-grow-1 text-truncate"
           style={{
             WebkitLineClamp: 3,
-            display: "-webkit-box",
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
+            display: '-webkit-box',
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
           }}
         >
-          {course.description}
+          {courseInfo.description}
         </p>
 
         {/* Progress bar */}
@@ -157,7 +176,7 @@ export function CourseCard({ course }: { course: Course }) {
             <span>Progress</span>
             <span>{course.progress || 0}%</span>
           </small>
-          <div className="progress" style={{ height: "8px" }}>
+          <div className="progress" style={{ height: '8px' }}>
             <div
               className="progress-bar"
               role="progressbar"
@@ -169,7 +188,7 @@ export function CourseCard({ course }: { course: Course }) {
           </div>
         </div>
 
-        {/* View Course Button styled as a div for visual only */}
+        {/* View Button */}
         <div className="btn btn-outline-primary w-100 mt-auto d-flex align-items-center justify-content-center">
           <BookOpen className="me-2" size={16} />
           View Course
@@ -178,5 +197,3 @@ export function CourseCard({ course }: { course: Course }) {
     </Link>
   );
 }
-
-

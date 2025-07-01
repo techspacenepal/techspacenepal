@@ -29,7 +29,7 @@ import courseRoutes from './routes/courseRoutes.js';
 import announcementRoutes from './routes/announcementRoutes.js';
 // Custom error middleware (dummy placeholder)
 import errorMiddleware from './middlewares/errorMiddleware.js';
-
+import teacherCourseRoutes from "./routes/teacherCourseRoutes.js";
 // Passport setup (your own passport config)
 import './utils/passport.js';
 
@@ -50,8 +50,7 @@ app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/uploads', express.static(path.join('public/uploads')));
-app.use('/api/services', serviceRoutes);
+
 
 // Serve static uploads folder
 // ध्यान दिनुहोस्: यो path ले server/src बाट बाहिर server/uploads मा पुग्छ
@@ -59,10 +58,10 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 
 //////-----today mobile devices
-app.use(cors({
-  origin: '*', // development मा, production मा specific domain राख्नुहोस्
-  methods: ['GET', 'POST', 'PUT', 'DELETE']
-}));
+// app.use(cors({
+//   origin: '*', // development मा, production मा specific domain राख्नुहोस्
+//   methods: ['GET', 'POST', 'PUT', 'DELETE']
+// }));
 
 
 
@@ -79,7 +78,11 @@ app.use('/api/students', studentRoutes);
 app.use('/api/enrolledCourses', enrolledCoursesRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/announcements', announcementRoutes);
+app.use('/api/teacherCourses', teacherCourseRoutes);
+app.use('/api/services', serviceRoutes);
 
+
+// app.use('/uploads', express.static(path.join('public/uploads')));
 
 // Google OAuth login
 app.get(

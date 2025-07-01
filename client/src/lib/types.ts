@@ -1,3 +1,10 @@
+export interface Instructor {
+  name: string;
+  title: string;
+  email: string;
+  avatar: string;
+}
+
 export type Student = {
   id: string;
   name: string;

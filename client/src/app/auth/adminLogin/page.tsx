@@ -26,21 +26,44 @@ const AdminLoginPage: React.FC = () => {
 
     try {
       // 🛠️ Login API call
-      const { data } = await axios.post("http://localhost:5000/api/auth/login", {
-        email,
-        password,
-      });
+      const { data } = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        {
+          email,
+          password,
+        }
+      );
 
       // ✅ Set auth context, cookies, and localStorage
       login(data.token, data.role);
       Cookies.set("adminToken", data.token);
       localStorage.setItem("adminToken", data.token);
-      localStorage.setItem("user", JSON.stringify({ username: data.username, role: data.role }));
+
+      localStorage.setItem("teacherId", data.userId);
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          username: data.username,
+          email: data.email,
+          role: data.role,
+        })
+      );
 
       // 🎉 Notify and redirect based on role
       toast.success("Login successful!");
+      // setTimeout(() => {
+      //   router.push(data.role === "admin" ? "/Dashboard/adminDashboard" : "/Dashboard/userDashboard");
+      // }, 100);
+
       setTimeout(() => {
-        router.push(data.role === "admin" ? "/Dashboard/adminDashboard" : "/Dashboard/userDashboard");
+        if (data.role === "admin") {
+          router.push("/Dashboard/adminDashboard");
+        } else if (data.role === "teacher") {
+          router.push("/teacherDashboard");
+        } else {
+          router.push("/Dashboard/userDashboard");
+        }
       }, 100);
     } catch (error: any) {
       // ❌ Error handling
@@ -61,7 +84,7 @@ const AdminLoginPage: React.FC = () => {
   return (
     <div className="container d-flex align-items-center justify-content-center min-vh-100 px-3">
       <Toaster position="top-right" />
-      
+
       <div className="card shadow-lg p-4 w-100" style={{ maxWidth: "400px" }}>
         {/* 🖼️ Logo and Heading */}
         <div className="text-center mb-3">
@@ -110,7 +133,9 @@ const AdminLoginPage: React.FC = () => {
                   color: "#999",
                 }}
               >
-                <i className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"}`} />
+                <i
+                  className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"}`}
+                />
               </span>
             </div>
           </div>

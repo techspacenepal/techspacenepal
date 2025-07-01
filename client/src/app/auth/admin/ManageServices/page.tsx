@@ -240,6 +240,7 @@ export default function ManageServices() {
     }, 100);
   };
 
+  
   if (pageLoading) {
     return (
       <div
@@ -323,11 +324,11 @@ export default function ManageServices() {
         {services.map((service) => (
           <div key={service._id} className="col-md-4">
             <div className="p-4 bg-white shadow-sm h-100 text-center rounded-4">
-              <img
-                src={service.icon}
-                alt={service.title}
-                style={{ width: 60, height: 60, objectFit: "contain" }}
+              {/* 👇 Render icon from icon code input */}
+              <div
                 className="mb-3"
+                style={{ fontSize: "2.5rem", color: "#007bff" }}
+                dangerouslySetInnerHTML={{ __html: service.icon }}
               />
               <h5 className="fw-bold">{service.title}</h5>
               <p className="text-muted small">{service.desc}</p>

@@ -8,11 +8,13 @@ import TeamSection from './(users)/teams/page'
 import UpcomingClassesUser from './(users)/UpcomingClassesUser/page'
 import ServicesSection from '@/pages/ServicesSection'
 
+
 function Page() {
  
 
   return (
     <>
+    
       <HeroSection />
       <ServicesSection />
       <Courses />
@@ -20,6 +22,7 @@ function Page() {
       <Testimonialpage />
       <TeamSection />
       <UpcomingClassesUser />
+      
     </>
   )
 }

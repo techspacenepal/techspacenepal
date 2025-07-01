@@ -74,7 +74,7 @@ export const registerAdmin = async (req, res) => {
       });
     }
 
-    const allowedRoles = ['user', 'admin'];
+    const allowedRoles = ['user', 'admin', 'teacher'];
     const finalRole = allowedRoles.includes(role) ? role : 'user';
 
     const newUser = new Auth({
@@ -90,12 +90,14 @@ export const registerAdmin = async (req, res) => {
     const token = generateToken(newUser._id, newUser.role);
 
     // ✅ Response मा token return गर्नुहोस्
-    res.status(201).json({
-      message: 'Registration successful!',
-      token,
-      role: newUser.role,
-      username: newUser.username,
-    });
+   res.status(201).json({
+  message: 'Registration successful!',
+  token,
+  username: newUser.username,
+  email: newUser.email,  // 👉 यहाँ email थप्नुस्
+  role: newUser.role,
+});
+
 
   } catch (error) {
     console.error('Register Error:', error);
@@ -122,11 +124,15 @@ export const loginAdmin = async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    res.status(200).json({
-      token,
-      username: admin.username, // or name, whatever you use
-      role: admin.role,         // << send this!
-    });
+ res.status(200).json({
+  token,
+   userId: admin._id,  
+  username: admin.username,
+  role: admin.role,
+  email: admin.email // 👈 यो पठाउनुहोस्
+});
+
+
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ message: "Server error" });
@@ -537,5 +543,39 @@ export const googleLogin = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: 'Google login failed', error });
+  }
+};
+
+
+
+// ✅ Get Teacher by ID
+export const getTeacherById = async (req, res) => {
+  try {
+    const teacher = await Auth.findById(req.params.id);
+    if (!teacher || teacher.role !== 'teacher') {
+      return res.status(404).json({ message: 'Teacher not found' });
+    }
+
+    res.status(200).json({
+      _id: teacher._id,
+      username: teacher.username,
+      email: teacher.email,
+      role: teacher.role,
+    });
+  } catch (err) {
+    console.error('Get Teacher Error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+
+export const getAllTeachers = async (req, res) => {
+  try {
+    const teachers = await Auth.find({ role: 'teacher' }, '_id username');
+    res.status(200).json(teachers);
+  } catch (error) {
+    console.error('Error fetching teachers:', error);
+    res.status(500).json({ message: 'Failed to fetch teachers' });
   }
 };

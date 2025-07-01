@@ -418,35 +418,8 @@ export default function TopNavbar() {
                   </a>
                 </li>
 
-                <li className="nav-item">
-                  <a
-                    className="nav-link text-uppercase fw-semibold px-3 py-2 rounded"
-                    style={{
-                      fontFamily: "Poppins, sans-serif",
-                      letterSpacing: "0.5px",
-                      transition: "all 0.3s ease",
-                      color: "#003366",
-                    }}
-                    href="/gallery"
-                  >
-                    Success Gallery
-                  </a>
-                </li>
 
-                <li className="nav-item">
-                  <a
-                    className="nav-link text-uppercase fw-semibold px-3 py-2 rounded"
-                    style={{
-                      fontFamily: "Poppins, sans-serif",
-                      letterSpacing: "0.5px",
-                      transition: "all 0.3s ease",
-                      color: "#003366",
-                    }}
-                    href="/UpcomingClassesUser"
-                  >
-                    Upcoming Classes ({classes.length})
-                  </a>
-                </li>
+
 
                 <li className="nav-item dropdown">
                   <a
@@ -471,6 +444,44 @@ export default function TopNavbar() {
                     <li><a className="dropdown-item" href="#">Something else here</a></li>
                   </ul>
                 </li>
+                <li className="nav-item dropdown">
+                  <a
+                    className="nav-link d-flex align-items-center gap-1 fw-semibold px-3 py-2 rounded text-uppercase fs-6"
+                    href="#"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    style={{
+                      fontFamily: "Poppins, sans-serif",
+                      letterSpacing: "0.5px",
+                      transition: "all 0.3s ease",
+                      color: "#003366",
+                    }}
+                  >
+                    Services <i className="bi bi-chevron-down"></i>
+                  </a>
+                  <ul className="dropdown-menu">
+                    <li><a className="dropdown-item" href="#">Action</a></li>
+                    <li><a className="dropdown-item" href="#">Another action</a></li>
+                    <li><hr className="dropdown-divider" /></li>
+                    <li><a className="dropdown-item" href="#">Something else here</a></li>
+                  </ul>
+                </li>
+                <li className="nav-item">
+                  <a
+                    className="nav-link text-uppercase fw-semibold px-3 py-2 rounded"
+                    style={{
+                      fontFamily: "Poppins, sans-serif",
+                      letterSpacing: "0.5px",
+                      transition: "all 0.3s ease",
+                      color: "#003366",
+                    }}
+                    href="/"
+                  >
+                    Blog
+                  </a>
+                </li>
+               
 
                 <li className="nav-item dropdown">
                   <a
@@ -490,6 +501,11 @@ export default function TopNavbar() {
                   </a>
                   <ul className="dropdown-menu">
                     <li><a className="dropdown-item" href="/testimonial">testimonial</a></li>
+                    <li><a className="dropdown-item" href="/UpcomingClassesUser"> Upcoming Classes ({classes.length})</a></li>
+                    <li><a className="dropdown-item" href="/gallery"> Success Gallery</a></li>
+                    <li><a className="dropdown-item" href="/ContactSection">Contact</a></li>
+                     
+
                   </ul>
                 </li>
               </ul>
