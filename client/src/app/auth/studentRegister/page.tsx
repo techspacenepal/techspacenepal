@@ -13,6 +13,7 @@ const StudentRegisterPage: React.FC = () => {
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [number, setNumber] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -32,6 +33,14 @@ const StudentRegisterPage: React.FC = () => {
       return;
     }
 
+
+
+     if (!/^(98|97|96)[0-9]{8}$/.test(number)) {
+      toast.error("Enter valid 98/97/96 number");
+      setLoading(false);
+      return;
+    }
+
     if (!isStrongPassword(password)) {
       toast.error(
         "Password must be 8+ chars with uppercase, lowercase, number, and symbol"
@@ -44,6 +53,7 @@ const StudentRegisterPage: React.FC = () => {
       await axios.post("http://localhost:5000/api/students/register", {
         username,
         email,
+        number,
         password,
         role: "student", // ✅ Hardcoded role as "student"
       });
@@ -91,6 +101,25 @@ const StudentRegisterPage: React.FC = () => {
             />
           </div>
 
+            <div className="mb-3">
+            <label className="form-label">Number</label>
+            <input
+  type="text"
+  className="form-control"
+  value={number}
+  onChange={(e) => {
+    const input = e.target.value;
+    // Allow only digits and max 10 characters
+    if (/^\d{0,10}$/.test(input)) {
+      setNumber(input);
+    }
+  }}
+  placeholder="Enter 10-digit Nepali number"
+  required
+/>
+
+          </div>
+
           <div className="mb-3">
             <label className="form-label">Password</label>
             <div className="position-relative">
@@ -112,7 +141,9 @@ const StudentRegisterPage: React.FC = () => {
                   color: "#999",
                 }}
               >
-                <i className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"}`} />
+                <i
+                  className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"}`}
+                />
               </span>
             </div>
           </div>

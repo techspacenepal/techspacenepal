@@ -189,10 +189,10 @@ export function CourseCard({ course }: { course: EnrolledCourse }) {
         </div>
 
         {/* View Button */}
-        <div className="btn btn-outline-primary w-100 mt-auto d-flex align-items-center justify-content-center">
+        {/* <div className="btn btn-outline-primary w-100 mt-auto d-flex align-items-center justify-content-center">
           <BookOpen className="me-2" size={16} />
           View Course
-        </div>
+        </div> */}
       </div>
     </Link>
   );

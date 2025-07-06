@@ -94,7 +94,7 @@ export const registerAdmin = async (req, res) => {
   message: 'Registration successful!',
   token,
   username: newUser.username,
-  email: newUser.email,  // 👉 यहाँ email थप्नुस्
+  email: newUser.email,  
   role: newUser.role,
 });
 
@@ -129,7 +129,7 @@ export const loginAdmin = async (req, res) => {
    userId: admin._id,  
   username: admin.username,
   role: admin.role,
-  email: admin.email // 👈 यो पठाउनुहोस्
+  email: admin.email
 });
 
 
@@ -546,28 +546,47 @@ export const googleLogin = async (req, res) => {
   }
 };
 
-
-
 // ✅ Get Teacher by ID
+// export const getTeacherById = async (req, res) => {
+//   try {
+//     const teacher = await Auth.findById(req.params.id);
+//     if (!teacher || teacher.role !== 'teacher') {
+//       return res.status(404).json({ message: 'Teacher not found' });
+//     }
+
+//     res.status(200).json({
+//       _id: teacher._id,
+//       username: teacher.username,
+//       email: teacher.email,
+//       role: teacher.role,
+//     });
+//   } catch (err) {
+//     console.error('Get Teacher Error:', err);
+//     res.status(500).json({ message: 'Server error' });
+//   }
+// };
+
+
+
 export const getTeacherById = async (req, res) => {
   try {
     const teacher = await Auth.findById(req.params.id);
-    if (!teacher || teacher.role !== 'teacher') {
-      return res.status(404).json({ message: 'Teacher not found' });
+
+    if (!teacher || teacher.role !== "teacher") {
+      return res.status(404).json({ message: "Teacher not found" });
     }
 
-    res.status(200).json({
-      _id: teacher._id,
+    res.json({
+      id: teacher._id,
       username: teacher.username,
       email: teacher.email,
       role: teacher.role,
     });
-  } catch (err) {
-    console.error('Get Teacher Error:', err);
-    res.status(500).json({ message: 'Server error' });
+  } catch (error) {
+    console.error("Error fetching teacher:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
-
 
 
 export const getAllTeachers = async (req, res) => {

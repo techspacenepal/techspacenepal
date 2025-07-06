@@ -60,7 +60,7 @@ export function UserNav() {
       {/* 👤 User Dropdown */}
       <div className="dropdown">
         <button
-          className="btn btn-light dropdown-toggle d-flex align-items-center rounded-circle p-0 border-0"
+          className="btn btn-light  d-flex align-items-center rounded-circle p-0 border-0"
           type="button"
           id="userMenu"
           data-bs-toggle="dropdown"
@@ -105,11 +105,11 @@ export function UserNav() {
             </Link>
           </li>
 
-          <li>
+          {/* <li>
             <button className="dropdown-item" onClick={() => setShowSettingsModal(true)}>
               <i className="bi bi-gear me-2"></i> Settings
             </button>
-          </li>
+          </li> */}
 
           <li><hr className="dropdown-divider" /></li>
 

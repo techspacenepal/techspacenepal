@@ -1,5 +1,6 @@
 'use client';
 
+import { Bell } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { House, Book, People, ClipboardCheck, Cpu } from 'react-bootstrap-icons';
@@ -23,7 +24,7 @@ export function MainNav({ collapsed }: MainNavProps) {
     { href: '/teacherDashboard/courses', title: 'Courses', icon: <Book /> },
     { href: '/teacherDashboard/students', title: 'Students', icon: <People /> },
     { href: '/teacherDashboard/grades', title: 'Grades', icon: <ClipboardCheck /> },
-    { href: '/teacherDashboard/ai-improver', title: 'AI Improver', icon: <Cpu /> },
+    { href: '/teacherDashboard/teacherNotification', title: 'send Notification', icon: <Bell /> },
   ];
 
   return (

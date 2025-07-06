@@ -232,8 +232,6 @@
 //                   Send Inquiry
 //                 </Link>
 
-
-
 //                 {isAuthenticated &&
 //                   (user?.role === "admin" ||
 //                     user?.role === "user" ||
@@ -252,7 +250,6 @@
 //                     </Link>
 //                   )}
 
-
 //               </div>
 //             </div>
 
@@ -260,12 +257,9 @@
 //         </nav>
 //       </header>
 
-
 //     </>
 //   );
 // }
-
-
 
 "use client";
 import Link from "next/link";
@@ -273,7 +267,7 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { usePathname } from "next/navigation";
-import Image from 'next/image';
+import Image from "next/image";
 
 export default function TopNavbar() {
   const [classes, setClasses] = useState([]);
@@ -369,10 +363,17 @@ export default function TopNavbar() {
         <nav
           ref={navRef}
           className="navbar navbar-expand-lg py-2"
-          style={{ backgroundColor: "#f0f6ff", borderBottom: "1px solid #dbe9ff" }}
+          style={{
+            backgroundColor: "#f0f6ff",
+            borderBottom: "1px solid #dbe9ff",
+          }}
         >
           <div className="container">
-            <a className="navbar-brand fw-bold fs-4" href="/" style={{ color: "#0056b3" }}>
+            <a
+              className="navbar-brand fw-bold fs-4"
+              href="/"
+              style={{ color: "#0056b3" }}
+            >
               <Image
                 src="/LOGO.png"
                 alt="Logo"
@@ -383,8 +384,8 @@ export default function TopNavbar() {
                   height: "60px",
                   objectFit: "contain",
                   // backgroundColor: "#ffffff",     // 🤍 match with navbar
-                  padding: "2px",                 // optional spacing
-                  borderRadius: "4px",            // smooth corner (optional)
+                  padding: "2px", // optional spacing
+                  borderRadius: "4px", // smooth corner (optional)
                 }}
                 priority
               />
@@ -401,7 +402,10 @@ export default function TopNavbar() {
               <span className="navbar-toggler-icon" />
             </button>
 
-            <div className="collapse navbar-collapse" id="navbarSupportedContent">
+            <div
+              className="collapse navbar-collapse"
+              id="navbarSupportedContent"
+            >
               <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li className="nav-item">
                   <a
@@ -417,9 +421,6 @@ export default function TopNavbar() {
                     Home
                   </a>
                 </li>
-
-
-
 
                 <li className="nav-item dropdown">
                   <a
@@ -438,10 +439,24 @@ export default function TopNavbar() {
                     All courses <i className="bi bi-chevron-down"></i>
                   </a>
                   <ul className="dropdown-menu">
-                    <li><a className="dropdown-item" href="#">Action</a></li>
-                    <li><a className="dropdown-item" href="#">Another action</a></li>
-                    <li><hr className="dropdown-divider" /></li>
-                    <li><a className="dropdown-item" href="#">Something else here</a></li>
+                    <li>
+                      <a className="dropdown-item" href="#">
+                        Action
+                      </a>
+                    </li>
+                    <li>
+                      <a className="dropdown-item" href="#">
+                        Another action
+                      </a>
+                    </li>
+                    <li>
+                      <hr className="dropdown-divider" />
+                    </li>
+                    <li>
+                      <a className="dropdown-item" href="#">
+                        Something else here
+                      </a>
+                    </li>
                   </ul>
                 </li>
                 <li className="nav-item dropdown">
@@ -461,10 +476,24 @@ export default function TopNavbar() {
                     Services <i className="bi bi-chevron-down"></i>
                   </a>
                   <ul className="dropdown-menu">
-                    <li><a className="dropdown-item" href="#">Action</a></li>
-                    <li><a className="dropdown-item" href="#">Another action</a></li>
-                    <li><hr className="dropdown-divider" /></li>
-                    <li><a className="dropdown-item" href="#">Something else here</a></li>
+                    <li>
+                      <a className="dropdown-item" href="#">
+                        Action
+                      </a>
+                    </li>
+                    <li>
+                      <a className="dropdown-item" href="#">
+                        Another action
+                      </a>
+                    </li>
+                    <li>
+                      <hr className="dropdown-divider" />
+                    </li>
+                    <li>
+                      <a className="dropdown-item" href="#">
+                        Something else here
+                      </a>
+                    </li>
                   </ul>
                 </li>
                 <li className="nav-item">
@@ -481,7 +510,6 @@ export default function TopNavbar() {
                     Blog
                   </a>
                 </li>
-               
 
                 <li className="nav-item dropdown">
                   <a
@@ -500,12 +528,28 @@ export default function TopNavbar() {
                     more <i className="bi bi-chevron-down"></i>
                   </a>
                   <ul className="dropdown-menu">
-                    <li><a className="dropdown-item" href="/testimonial">testimonial</a></li>
-                    <li><a className="dropdown-item" href="/UpcomingClassesUser"> Upcoming Classes ({classes.length})</a></li>
-                    <li><a className="dropdown-item" href="/gallery"> Success Gallery</a></li>
-                    <li><a className="dropdown-item" href="/ContactSection">Contact</a></li>
-                     
-
+                    <li>
+                      <a className="dropdown-item" href="/testimonial">
+                        testimonial
+                      </a>
+                    </li>
+                    <li>
+                      <a className="dropdown-item" href="/UpcomingClassesUser">
+                        {" "}
+                        Upcoming Classes ({classes.length})
+                      </a>
+                    </li>
+                    <li>
+                      <a className="dropdown-item" href="/gallery">
+                        {" "}
+                        Success Gallery
+                      </a>
+                    </li>
+                    <li>
+                      <a className="dropdown-item" href="/ContactSection">
+                        Contact
+                      </a>
+                    </li>
                   </ul>
                 </li>
               </ul>
@@ -524,7 +568,7 @@ export default function TopNavbar() {
                   Send Inquiry
                 </Link>
 
-                {isAuthenticated &&
+                {/* {isAuthenticated &&
                   (user?.role === "admin" ||
                     user?.role === "user" ||
                     user?.role === "student") && (
@@ -540,7 +584,26 @@ export default function TopNavbar() {
                     >
                       Dashboard
                     </Link>
-                  )}
+                  )} */}
+
+                {isAuthenticated &&
+  (["admin", "user", "student", "teacher"].includes(user?.role)) && (
+    <Link
+      href={
+        user?.role === "admin"
+          ? "/Dashboard/adminDashboard"
+          : user?.role === "student"
+          ? "/studentdashboard"
+          : user?.role === "teacher"
+          ? "/teacherDashboard"
+          : "/Dashboard/userDashboard"
+      }
+      className="btn btn-outline-primary px-3 py-2 ms-2"
+    >
+      Dashboard
+    </Link>
+  )}
+
               </div>
             </div>
           </div>

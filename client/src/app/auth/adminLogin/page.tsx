@@ -1,3 +1,188 @@
+// "use client";
+
+// import React, { useEffect, useState } from "react";
+// import axios from "axios";
+// import toast, { Toaster } from "react-hot-toast";
+// import { useRouter } from "next/navigation";
+// import Cookies from "js-cookie";
+// import Image from "next/image";
+// import Link from "next/link";
+// import { useAuth } from "@/app/context/AuthContext";
+
+// const AdminLoginPage: React.FC = () => {
+//   const router = useRouter();
+//   const { login } = useAuth(); // 🧠 Custom AuthContext बाट login function
+
+//   // 🔐 Form states
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [loading, setLoading] = useState(false);
+//   const [showPassword, setShowPassword] = useState(false);
+
+//   // 📤 Handle form submit
+//   const handleSubmit = async (e: React.FormEvent) => {
+//     e.preventDefault();
+//     setLoading(true);
+
+//     try {
+//       // 🛠️ Login API call
+//       const { data } = await axios.post(
+//         "http://localhost:5000/api/auth/login",
+//         {
+//           email,
+//           password,
+//         }
+//       );
+
+//       // ✅ Set auth context, cookies, and localStorage
+//       login(data.token, data.role);
+//       Cookies.set("adminToken", data.token);
+//       localStorage.setItem("adminToken", data.token);
+
+//       localStorage.setItem("teacherId", data.userId);
+
+//       localStorage.setItem(
+//         "user",
+//         JSON.stringify({
+//           username: data.username,
+//           email: data.email,
+//           role: data.role,
+//         })
+//       );
+
+//       // 🎉 Notify and redirect based on role
+//       toast.success("Login successful!");
+//       // setTimeout(() => {
+//       //   router.push(data.role === "admin" ? "/Dashboard/adminDashboard" : "/Dashboard/userDashboard");
+//       // }, 100);
+
+//       setTimeout(() => {
+//         if (data.role === "admin") {
+//           router.push("/Dashboard/adminDashboard");
+//         } else if (data.role === "teacher") {
+//           router.push("/teacherDashboard");
+//         } else {
+//           router.push("/Dashboard/userDashboard");
+//         }
+//       }, 100);
+//     } catch (error: any) {
+//       // ❌ Error handling
+//       toast.error(error.response?.data?.message || "Login failed!");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   // ❌ Remove auto-redirect logic to prevent automatic login bypassing form
+//   // useEffect(() => {
+//   //   const token = Cookies.get("adminToken");
+//   //   if (token) {
+//   //     router.push("/Dashboard/adminDashboard");
+//   //   }
+//   // }, []);
+
+//   return (
+//     <div className="container d-flex align-items-center justify-content-center min-vh-100 px-3">
+//       <Toaster position="top-right" />
+
+//       <div className="card shadow-lg p-4 w-100" style={{ maxWidth: "400px" }}>
+//         {/* 🖼️ Logo and Heading */}
+//         <div className="text-center mb-3">
+//           <Image src="/logo.jpg" alt="Logo" width={90} height={80} />
+//           <p className="text-muted">Please login to continue</p>
+//         </div>
+
+//         {/* 🔐 Login Form */}
+//         <form onSubmit={handleSubmit}>
+//           {/* 📧 Email Input */}
+//           <div className="mb-3">
+//             <label className="form-label">Email address</label>
+//             <input
+//               type="email"
+//               className="form-control"
+//               placeholder="admin@example.com"
+//               value={email}
+//               onChange={(e) => setEmail(e.target.value)}
+//               required
+//               autoComplete="email"
+//             />
+//           </div>
+
+//           {/* 🔑 Password Input */}
+//           <div className="mb-3">
+//             <label className="form-label">Password</label>
+//             <div className="position-relative">
+//               <input
+//                 type={showPassword ? "text" : "password"}
+//                 className="form-control"
+//                 placeholder="********"
+//                 value={password}
+//                 onChange={(e) => setPassword(e.target.value)}
+//                 required
+//                 autoComplete="current-password"
+//               />
+//               {/* 👁️ Toggle password visibility */}
+//               <span
+//                 onClick={() => setShowPassword(!showPassword)}
+//                 style={{
+//                   position: "absolute",
+//                   top: "50%",
+//                   right: "10px",
+//                   transform: "translateY(-50%)",
+//                   cursor: "pointer",
+//                   color: "#999",
+//                 }}
+//               >
+//                 <i
+//                   className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"}`}
+//                 />
+//               </span>
+//             </div>
+//           </div>
+
+//           {/* 🔘 Submit Button */}
+//           <div className="d-grid mb-3">
+//             <button type="submit" className="btn btn-danger" disabled={loading}>
+//               {loading ? (
+//                 <>
+//                   <span
+//                     className="spinner-border spinner-border-sm me-2"
+//                     role="status"
+//                     aria-hidden="true"
+//                   ></span>
+//                   Logging in...
+//                 </>
+//               ) : (
+//                 "Login"
+//               )}
+//             </button>
+//           </div>
+
+//           {/* 🔗 Forgot Password Link */}
+//           <div className="text-end mb-2">
+//             <Link
+//               href="/auth/forgot-password"
+//               className="text-danger text-decoration-none"
+//             >
+//               Forgot Password?
+//             </Link>
+//           </div>
+
+//           {/* 🔗 Back to home */}
+//           <p className="text-center">
+//             <Link href="/" className="text-primary text-decoration-none">
+//               ← Back to Home
+//             </Link>
+//           </p>
+//         </form>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default AdminLoginPage;
+
+
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -11,90 +196,122 @@ import { useAuth } from "@/app/context/AuthContext";
 
 const AdminLoginPage: React.FC = () => {
   const router = useRouter();
-  const { login } = useAuth(); // 🧠 Custom AuthContext बाट login function
+  const { login } = useAuth(); // Custom AuthContext login
 
-  // 🔐 Form states
+  // 🔐 Form state
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  // 📤 Handle form submit
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+
+  //   try {
+  //     const { data } = await axios.post("http://localhost:5000/api/auth/login", {
+  //       email,
+  //       password,
+  //     });
+
+
+  //     console.log("Login response data:", data);
+
+  //     // 🌐 Save data
+  //     login(data.token, data.role); // Context update
+  //     localStorage.setItem("user", JSON.stringify({
+  //       username: data.username,
+  //       email: data.email,
+  //       role: data.role,
+  //     }));
+
+
+
+  //     // 🍪 Token and Role-wise setup
+  //     if (data.role === "admin") {
+  //       Cookies.set("adminToken", data.token);
+  //       localStorage.setItem("adminToken", data.token);
+  //     } else if (data.role === "teacher") {
+  //       Cookies.set("teacherToken", data.token);
+  //       localStorage.setItem("teacherToken", data.token);
+  //       localStorage.setItem("teacherId", data.userId);
+  //     }
+
+  //     toast.success("Login successful!");
+
+  //     // 🔁 Redirect by role
+  //     setTimeout(() => {
+  //       if (data.role === "admin") {
+  //         router.push("/Dashboard/adminDashboard");
+  //       } else if (data.role === "teacher") {
+  //         router.push("/teacherDashboard");
+  //       } else {
+  //         router.push("/Dashboard/userDashboard");
+  //       }
+  //     }, 200);
+  //   } catch (error: any) {
+  //     toast.error(error.response?.data?.message || "Login failed!");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
+
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  e.preventDefault();
+  setLoading(true);
+  try {
+    const { data } = await axios.post("http://localhost:5000/api/auth/login", { email, password });
+    console.log("Login response data:", data);
+    login(data.token, {
+  username: data.username,
+  role: data.role,
+});
+    localStorage.setItem("user", JSON.stringify({ username: data.username, email: data.email, role: data.role }));
 
-    try {
-      // 🛠️ Login API call
-      const { data } = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        {
-          email,
-          password,
-        }
-      );
-
-      // ✅ Set auth context, cookies, and localStorage
-      login(data.token, data.role);
+    if (data.role === "admin") {
       Cookies.set("adminToken", data.token);
       localStorage.setItem("adminToken", data.token);
-
+      console.log("Admin token saved:", Cookies.get("adminToken"), localStorage.getItem("adminToken"));
+    } else if (data.role === "teacher") {
+      Cookies.set("teacherToken", data.token);
+      localStorage.setItem("teacherToken", data.token);
       localStorage.setItem("teacherId", data.userId);
-
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          username: data.username,
-          email: data.email,
-          role: data.role,
-        })
-      );
-
-      // 🎉 Notify and redirect based on role
-      toast.success("Login successful!");
-      // setTimeout(() => {
-      //   router.push(data.role === "admin" ? "/Dashboard/adminDashboard" : "/Dashboard/userDashboard");
-      // }, 100);
-
-      setTimeout(() => {
-        if (data.role === "admin") {
-          router.push("/Dashboard/adminDashboard");
-        } else if (data.role === "teacher") {
-          router.push("/teacherDashboard");
-        } else {
-          router.push("/Dashboard/userDashboard");
-        }
-      }, 100);
-    } catch (error: any) {
-      // ❌ Error handling
-      toast.error(error.response?.data?.message || "Login failed!");
-    } finally {
-      setLoading(false);
+      console.log("Teacher token saved:", Cookies.get("teacherToken"), localStorage.getItem("teacherToken"));
     }
-  };
 
-  // ❌ Remove auto-redirect logic to prevent automatic login bypassing form
-  // useEffect(() => {
-  //   const token = Cookies.get("adminToken");
-  //   if (token) {
-  //     router.push("/Dashboard/adminDashboard");
-  //   }
-  // }, []);
+    toast.success("Login successful!");
+
+    setTimeout(() => {
+      if (data.role === "admin") {
+        router.push("/Dashboard/adminDashboard");
+      } else if (data.role === "teacher") {
+        router.push("/teacherDashboard");
+      } else {
+        router.push("/Dashboard/userDashboard");
+      }
+    }, 200);
+  } catch (error: any) {
+    toast.error(error.response?.data?.message || "Login failed!");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="container d-flex align-items-center justify-content-center min-vh-100 px-3">
       <Toaster position="top-right" />
 
       <div className="card shadow-lg p-4 w-100" style={{ maxWidth: "400px" }}>
-        {/* 🖼️ Logo and Heading */}
         <div className="text-center mb-3">
           <Image src="/logo.jpg" alt="Logo" width={90} height={80} />
           <p className="text-muted">Please login to continue</p>
         </div>
 
-        {/* 🔐 Login Form */}
         <form onSubmit={handleSubmit}>
-          {/* 📧 Email Input */}
+          {/* Email Input */}
           <div className="mb-3">
             <label className="form-label">Email address</label>
             <input
@@ -108,7 +325,7 @@ const AdminLoginPage: React.FC = () => {
             />
           </div>
 
-          {/* 🔑 Password Input */}
+          {/* Password Input */}
           <div className="mb-3">
             <label className="form-label">Password</label>
             <div className="position-relative">
@@ -121,7 +338,6 @@ const AdminLoginPage: React.FC = () => {
                 required
                 autoComplete="current-password"
               />
-              {/* 👁️ Toggle password visibility */}
               <span
                 onClick={() => setShowPassword(!showPassword)}
                 style={{
@@ -133,14 +349,12 @@ const AdminLoginPage: React.FC = () => {
                   color: "#999",
                 }}
               >
-                <i
-                  className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"}`}
-                />
+                <i className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"}`} />
               </span>
             </div>
           </div>
 
-          {/* 🔘 Submit Button */}
+          {/* Submit Button */}
           <div className="d-grid mb-3">
             <button type="submit" className="btn btn-danger" disabled={loading}>
               {loading ? (
@@ -158,17 +372,14 @@ const AdminLoginPage: React.FC = () => {
             </button>
           </div>
 
-          {/* 🔗 Forgot Password Link */}
+          {/* Forgot Password Link */}
           <div className="text-end mb-2">
-            <Link
-              href="/auth/forgot-password"
-              className="text-danger text-decoration-none"
-            >
+            <Link href="/auth/forgot-password" className="text-danger text-decoration-none">
               Forgot Password?
             </Link>
           </div>
 
-          {/* 🔗 Back to home */}
+          {/* Back to Home */}
           <p className="text-center">
             <Link href="/" className="text-primary text-decoration-none">
               ← Back to Home

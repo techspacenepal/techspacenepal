@@ -34,7 +34,7 @@ export function UserNav() {
 
    const logout = () => {
     Cookies.remove('adminToken');
-    router.push('/auth/studentLogin');
+    router.push('/auth/adminLogin');
   };
 
   if (!user) return null;

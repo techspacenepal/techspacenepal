@@ -7,7 +7,7 @@ import passport from 'passport';
 import jwt from 'jsonwebtoken';
 import path from 'path';
 import { fileURLToPath } from 'url';
-
+import './utils/passport.js';
 
 // DB connection function (dummy placeholder, तपाईंले आफैले बनाउनुपर्छ)
 import dbConnect from './db/connection.js';
@@ -30,8 +30,12 @@ import announcementRoutes from './routes/announcementRoutes.js';
 // Custom error middleware (dummy placeholder)
 import errorMiddleware from './middlewares/errorMiddleware.js';
 import teacherCourseRoutes from "./routes/teacherCourseRoutes.js";
-// Passport setup (your own passport config)
-import './utils/passport.js';
+
+import { sendNotificationToCourseStudents } from './controllers/teacherNotificationController.js';
+ import notificationRoutes from "./routes/teacherNotificationRoutes.js";
+import teacherNotificationRoutes from './routes/teacherNotificationRoutes.js';
+
+
 
 // __dirname define for ES module
 const __filename = fileURLToPath(import.meta.url);
@@ -64,6 +68,8 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 // }));
 
 
+// certificates 
+app.use('/certificates', express.static(path.join(__dirname, 'public/certificates')));
 
 
 // Your existing routes
@@ -79,10 +85,15 @@ app.use('/api/enrolledCourses', enrolledCoursesRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/announcements', announcementRoutes);
 app.use('/api/teacherCourses', teacherCourseRoutes);
+
 app.use('/api/services', serviceRoutes);
+app.post("/api/notifications/sendToCourse", sendNotificationToCourseStudents);
+app.use("/api/notifications", notificationRoutes);
+app.use('/api/teacherNotifications', teacherNotificationRoutes);
 
 
-// app.use('/uploads', express.static(path.join('public/uploads')));
+
+
 
 // Google OAuth login
 app.get(

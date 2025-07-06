@@ -7,8 +7,10 @@ import {
   addCourse,
   updateCourse,
   deleteCourse,
-  getCourseById
+  getCourseById,
+  
 } from '../controllers/courseController.js';
+
 
 const router = express.Router();
 
@@ -25,8 +27,12 @@ router.post('/', upload.single('image'), addCourse);     // ADD
 router.put('/:id', upload.single('image'), updateCourse); // UPDATE ✅
 router.delete('/:id', deleteCourse);                      // DELETE ✅
 
-router.get("/api/courses/:courseId", getCourseById);
+// router.get("/api/courses/:courseId", getCourseById);
+router.get('/:id', getCourseById);
 
+
+
+// router.put('/publish/:id', protect, publishCourse);
 
 
 export default router;
