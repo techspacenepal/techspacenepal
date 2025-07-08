@@ -6,13 +6,20 @@ import {
   getCoursesByTeacherIdFromEnrollments,
   getEnrolledCoursesByStudent,
   getEnrolledCoursesByTeacher,
+  getEnrollmentByCourseAndStudent,
   getStudentCountByCourseAndTeacher,
   getStudentsByCourseId,
   getStudentsByTeacherWithProgress,
   markQuizPassed,
   markVideoWatched,
   publishEnrolledCourse,
+  
+  
+  
   updateProgress,
+  
+  
+  
   upload,
 } from "../controllers/enrolledCoursesController.js";
 
@@ -28,7 +35,9 @@ router.get("/", getAllEnrolledCourses);
 
 router.post("/", upload.single("thumbnail"), createEnrolledCourse);
 router.get("/:studentId", getEnrolledCoursesByStudent);
+
 router.get("/course/:courseId", getStudentsByCourseId);
+
 
 // router.get("/:courseId/students", getCourseStudentsByTeacher);
 router.get("/course/:courseId/count", getStudentCountByCourseAndTeacher);
@@ -40,7 +49,7 @@ router.get('/coursesByTeacher/:teacherId', getCoursesByTeacherIdFromEnrollments)
 
 router.get("/teacher/:teacherId", getEnrolledCoursesByTeacher);
 
-router.put("/:id/progress", protect, updateProgress);
+// router.put("/:id/progress", protect, updateProgress);
 
 router.put("/:id/video", protect, markVideoWatched);
 router.put("/:id/quiz", protect, markQuizPassed);
@@ -50,6 +59,11 @@ router.put("/:id/quiz", protect, markQuizPassed);
 
 // routes/enrolledCourseRoutes.js
 router.put("/publish/:teacherId/:courseId", publishEnrolledCourse);
+
+
+router.get("/byCourseAndStudent/:courseId/:studentId", getEnrollmentByCourseAndStudent);
+router.put("/updateProgress/:studentId/:courseId",  updateProgress);
+
 
 
 

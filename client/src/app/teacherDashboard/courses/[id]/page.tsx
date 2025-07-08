@@ -3,107 +3,6 @@
 // import { useEffect, useState } from "react";
 // import { useParams } from "next/navigation";
 // import axios from "axios";
-
-// interface EnrolledStudent {
-//   studentId: string;
-//   name: string;
-//   email: string;
-//   enrolledDate: string;
-// }
-// interface CourseInfo {
-//   title: string;
-//   description?: string;
-// }
-// export default function CourseDetailsPage() {
-//   const { id: courseId } = useParams();
-//   const [teacherId, setTeacherId] = useState<string | null>(null);
-//   const [students, setStudents] = useState<EnrolledStudent[]>([]);
-//   const [course, setCourse] = useState<CourseInfo | null>(null);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState("");
-
-//   useEffect(() => {
-//     const id = localStorage.getItem("teacherId");
-//     if (id && id !== "undefined") {
-//       setTeacherId(id);
-//     } else {
-//       setError("❌ Teacher ID not found.");
-//       setLoading(false);
-//     }
-//   }, []);
-
-//   useEffect(() => {
-//     if (!teacherId || !courseId) return;
-
-//     const fetchData = async () => {
-//       try {
-//         const [studentsRes, courseRes] = await Promise.all([
-//           axios.get(
-//             `http://localhost:5000/api/teacherCourses/students/${teacherId}/${courseId}`
-//           ),
-//           axios.get(`http://localhost:5000/api/courses/${courseId}`),
-//         ]);
-
-//         setStudents(studentsRes.data);
-//         setCourse(courseRes.data);
-//       } catch (err) {
-//         setError("❌ Failed to load course or students.");
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchData();
-//   }, [teacherId, courseId]);
-
-//   if (loading) return <div className="text-center mt-5 text-primary">Loading...</div>;
-//   if (error) return <div className="text-danger text-center mt-4">{error}</div>;
-
-//   return (
-//     <div className="container mt-4">
-//       <h3>👨‍🎓 Enrolled Students</h3>
-//       <p className="text-muted">
-//         Course: <strong>{course?.title || "Untitled"}</strong>
-//       </p>
-
-//       {students.length === 0 ? (
-//         <p>No students enrolled in this course.</p>
-//       ) : (
-//         <table className="table table-bordered mt-3">
-//           <thead>
-//             <tr>
-//               <th>#</th>
-//               <th>Name</th>
-//               <th>Email</th>
-//               <th>Enrolled Date</th>
-//             </tr>
-//           </thead>
-//           <tbody>
-//             {students.map((student, index) => (
-//               <tr key={student.studentId}>
-//                 <td>{index + 1}</td>
-//                 <td>{student.name}</td>
-//                 <td>{student.email}</td>
-//                 <td>{new Date(student.enrolledDate).toLocaleDateString()}</td>
-//               </tr>
-//             ))}
-//           </tbody>
-//         </table>
-//       )}
-//     </div>
-//   );
-// }
-
-
-
-
-
-
-// "use client";
-
-// import { useEffect, useState } from "react";
-// import { useParams } from "next/navigation";
-// import axios from "axios";
 // import Cookies from "js-cookie";
 
 // interface EnrolledStudent {
@@ -155,7 +54,6 @@
 //   //   }
 //   // };
 
-
 //   const fetchData = async () => {
 //   try {
 //     const [studentsRes, courseRes] = await Promise.all([
@@ -197,8 +95,6 @@
 //   //   }
 //   // };
 
-
-
 // // const handlePublish = async () => {
 // //   const token = Cookies.get("teacherToken");
 // //   const teacherId = localStorage.getItem("teacherId");
@@ -231,9 +127,6 @@
 // //   }
 // // };
 
-
-
-
 // // const handlePublish = async () => {
 // //   const token = Cookies.get("teacherToken");
 // //   const teacherId = localStorage.getItem("teacherId");
@@ -242,7 +135,7 @@
 // //     // ✅ Update TeacherCourse
 // //     await axios.put(
 // //       `http://localhost:5000/api/teacherCourses/publish/${teacherId}/${courseId}`,
-      
+
 // //       {},
 // //       {
 // //         headers: { Authorization: `Bearer ${token}` },
@@ -265,8 +158,6 @@
 // //     alert("❌ Failed to publish course");
 // //   }
 // // };
-
-
 
 // const handlePublish = async () => {
 //   const token = Cookies.get("teacherToken");
@@ -292,8 +183,6 @@
 //     alert("❌ Failed to publish course");
 //   }
 // };
-
-
 
 //   if (loading) return <div className="text-center mt-5 text-primary">Loading...</div>;
 //   if (error) return <div className="text-danger text-center mt-4">{error}</div>;
@@ -352,14 +241,13 @@
 //   );
 // }
 
-
-
 "use client";
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import axios from "axios";
 import Cookies from "js-cookie";
+import TeachersVideoUploadForm from "@/app/Component/teachersVideoUpload";
 
 interface EnrolledStudent {
   studentId: string;
@@ -381,6 +269,7 @@ export default function CourseDetailsPage() {
   const [course, setCourse] = useState<CourseInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
     const id = localStorage.getItem("teacherId");
@@ -395,8 +284,12 @@ export default function CourseDetailsPage() {
   const fetchData = async () => {
     try {
       const [studentsRes, courseRes] = await Promise.all([
-        axios.get(`http://localhost:5000/api/teacherCourses/students/${teacherId}/${courseId}`),
-        axios.get(`http://localhost:5000/api/teacherCourses/details/${teacherId}/${courseId}`),
+        axios.get(
+          `http://localhost:5000/api/teacherCourses/students/${teacherId}/${courseId}`
+        ),
+        axios.get(
+          `http://localhost:5000/api/teacherCourses/details/${teacherId}/${courseId}`
+        ),
       ]);
       setStudents(studentsRes.data);
       setCourse(courseRes.data);
@@ -432,7 +325,8 @@ export default function CourseDetailsPage() {
     }
   };
 
-  if (loading) return <div className="text-center mt-5 text-primary">Loading...</div>;
+  if (loading)
+    return <div className="text-center mt-5 text-primary">Loading...</div>;
   if (error) return <div className="text-danger text-center mt-4">{error}</div>;
 
   return (
@@ -445,7 +339,13 @@ export default function CourseDetailsPage() {
         </p>
         <p className="mb-0">
           Status:{" "}
-          <span className={`badge ${course?.status === "published" ? "bg-success" : "bg-warning text-dark"}`}>
+          <span
+            className={`badge ${
+              course?.status === "published"
+                ? "bg-success"
+                : "bg-warning text-dark"
+            }`}
+          >
             {course?.status?.toUpperCase() || "DRAFT"}
           </span>
         </p>
@@ -480,6 +380,23 @@ export default function CourseDetailsPage() {
             ))}
           </tbody>
         </table>
+      )}
+
+      {/* ------------------ Video Upload Section ------------------ */}
+      {/* ------------------ Video Upload Section ------------------ */}
+      <hr className="my-4" />
+      <h5>📹 Course Video Upload</h5>
+
+      {course?.status !== "published" ? (
+        <p className="alert alert-warning">
+          ⚠️ You must <strong>publish</strong> the course before uploading
+          videos.
+        </p>
+      ) : (
+        <TeachersVideoUploadForm
+          teacherId={teacherId!}
+          courseId={courseId as string}
+        />
       )}
     </div>
   );

@@ -34,7 +34,7 @@ import teacherCourseRoutes from "./routes/teacherCourseRoutes.js";
 import { sendNotificationToCourseStudents } from './controllers/teacherNotificationController.js';
  import notificationRoutes from "./routes/teacherNotificationRoutes.js";
 import teacherNotificationRoutes from './routes/teacherNotificationRoutes.js';
-
+import videoRoutes from "./routes/courseVideoRoutes.js";
 
 
 // __dirname define for ES module
@@ -90,7 +90,7 @@ app.use('/api/services', serviceRoutes);
 app.post("/api/notifications/sendToCourse", sendNotificationToCourseStudents);
 app.use("/api/notifications", notificationRoutes);
 app.use('/api/teacherNotifications', teacherNotificationRoutes);
-
+app.use("/api/videos", videoRoutes);
 
 
 

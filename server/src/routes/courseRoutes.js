@@ -32,6 +32,7 @@ router.get('/:id', getCourseById);
 
 
 
+
 // router.put('/publish/:id', protect, publishCourse);
 
 

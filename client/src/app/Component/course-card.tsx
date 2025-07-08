@@ -96,6 +96,20 @@
 import Link from 'next/link';
 import { BookOpen } from 'lucide-react';
 
+// interface EnrolledCourse {
+//   _id: string;
+//   studentId: any;
+//   teacherId: any;
+//   courseId: {
+//     _id: string;
+//     title: string;
+//     instructor: string;
+//     description?: string;
+//     image?: string;
+//   };
+//   progress?: number;
+// }
+
 interface EnrolledCourse {
   _id: string;
   studentId: any;
@@ -106,9 +120,11 @@ interface EnrolledCourse {
     instructor: string;
     description?: string;
     image?: string;
+    duration?: number; // ✅ Make sure duration is here
   };
   progress?: number;
 }
+
 
 export function CourseCard({ course }: { course: EnrolledCourse }) {
   const courseInfo = course.courseId;
@@ -121,8 +137,12 @@ export function CourseCard({ course }: { course: EnrolledCourse }) {
   console.log('🖼️ Final Image URL:', imageUrl);
 
   return (
-    <Link
-      href={`/studentdashboard/courses/${courseInfo._id}`}
+   <Link href={{
+    pathname: `/studentdashboard/courses/${courseInfo._id}`,
+    query: {
+      teacherId: course.teacherId,  
+    },
+  }}
       className="card h-100 shadow-sm hover-shadow transition-transform text-decoration-none text-dark d-flex flex-column"
       style={{ cursor: 'pointer' }}
     >

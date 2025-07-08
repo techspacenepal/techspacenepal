@@ -215,6 +215,10 @@ export const getCourseById = async (req, res) => {
 
 
 
+
+
+
+
 // controllers/courseController.js
 // export const publishCourse = async (req, res) => {
 //   const { id } = req.params;

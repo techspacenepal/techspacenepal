@@ -380,6 +380,8 @@ useEffect(() => {
       const studentData = profileRes.data;
       setStudent(studentData);
 
+        localStorage.setItem("studentId", studentData._id);
+
       const courseRes = await axios.get(
         `http://localhost:5000/api/enrolledCourses/${studentData._id}`,
         {

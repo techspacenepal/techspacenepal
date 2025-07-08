@@ -1,18 +1,22 @@
 import express from "express";
-
+import { deleteCourseVideo, getCourseVideos, upload, uploadCourseVideo } from "../controllers/videoUploadController.js";
 import {
   createTeacherCourse,
   deleteTeacherCourse,
   getAllTeacherCourses,
   getCoursesByTeacher,
+  
   getStudentsByTeacherAndCourse,
   getTeacherCourseDetails,
   getTeacherCoursesWithEnrollments,
-  getTeacherCourseWithStudentCount,
+ 
   getTotalStudentsByTeacher,
+  
   publishTeacherCourse,
+  
 } from "../controllers/teacherCourseController.js";
 import { protect } from "../middlewares/authMiddleware.js";
+
 
 const router = express.Router();
 
@@ -41,6 +45,24 @@ router.put(
 
 router.get("/details/:teacherId/:courseId", getTeacherCourseDetails);
 
-//router.get("/:teacherId/:courseId", getTeacherCourseDetails);
+
+
+
+// POST: Upload Video
+router.post(
+  "/upload/:teacherId/:courseId",
+  protect, // optional
+  upload.single("video"),
+  uploadCourseVideo
+);
+
+router.get("/videos/:courseId", getCourseVideos);
+router.delete("/videos/:videoId", protect, deleteCourseVideo);
+
+// router.get('/videos/:courseId', getVideosByCourseAndTeacher);
+
+
+
+
 
 export default router;

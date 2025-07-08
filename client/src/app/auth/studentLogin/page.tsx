@@ -26,41 +26,38 @@ const AdminLoginPage: React.FC = () => {
 
   const { login } = useAuth();
 
-  // Form-based login
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-
-  //   try {
-  //     const { data } = await axios.post("http://localhost:5000/api/students/login", {
-  //       email,
-  //       password,
-  //     });
-
-  //     console.log(" Received Token:", data.token);
-
-  //     login(data.token, data.role);
-  //     Cookies.set("adminToken", data.token);
-  //     localStorage.setItem("adminToken", data.token);
-  //     localStorage.setItem("user", JSON.stringify({ username: data.username, role: data.role }));
-
-  //     toast.success("Login successful! Redirecting...");
-
-      
-
-  //     setTimeout(() => {
-  //       router.push(data.role === "student" ? "/studentdashboard" : "/studentdashboard");
-  //     }, 100);
-  //   } catch (error: any) {
-  //     toast.error(error.response?.data?.message || "Login failed!");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-
  
-  const handleSubmit = async (e: React.FormEvent) => {
+//   const handleSubmit = async (e: React.FormEvent) => {
+//   e.preventDefault();
+//   setLoading(true);
+
+//   try {
+//     const { data } = await axios.post("http://localhost:5000/api/students/login", {
+//       email,
+//       password,
+//     });
+
+//     if (!data.token) throw new Error("No token received");
+
+//     login(data.token, data.role);
+//     Cookies.set("studentToken", data.token);
+//     localStorage.setItem("studentToken", data.token);
+//     localStorage.setItem("user", JSON.stringify({ username: data.username, role: data.role }));
+
+//     toast.success("Login successful! Redirecting...");
+
+//     setTimeout(() => {
+//       router.push(data.role === "student" ? "/studentdashboard" : "/studentdashboard");
+//     }, 100);
+//   } catch (error: any) {
+//     toast.error(error.response?.data?.message || error.message || "Login failed!");
+//   } finally {
+//     setLoading(false);
+//   }
+// };
+
+
+const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   setLoading(true);
 
@@ -73,8 +70,21 @@ const AdminLoginPage: React.FC = () => {
     if (!data.token) throw new Error("No token received");
 
     login(data.token, data.role);
+
     Cookies.set("studentToken", data.token);
     localStorage.setItem("studentToken", data.token);
+
+    // यहाँ studentId save गरौं (data.student मा ID आउँछ भनी मान्दै)
+    // backend बाट login response मा student info पनि आउनुपर्छ जस्तो छ
+    if (data.student && data.student._id) {
+      localStorage.setItem("studentId", data.student._id);
+    } else if (data._id) {
+      // कहिलेकाहीं data मा _id सिधै आउन सक्छ
+      localStorage.setItem("studentId", data._id);
+    } else {
+      console.warn("Student ID not found in login response");
+    }
+
     localStorage.setItem("user", JSON.stringify({ username: data.username, role: data.role }));
 
     toast.success("Login successful! Redirecting...");
@@ -93,6 +103,38 @@ const AdminLoginPage: React.FC = () => {
 
 
 
+// const handleFirebaseGoogleLogin = async () => {
+//   try {
+//     const result = await signInWithPopup(auth, googleProvider);
+//     const user = result.user;
+
+//     toast.success("Google login successful!");
+
+//     const { data } = await axios.post("http://localhost:5000/api/students/google-login", {
+//       email: user.email,
+//       name: user.displayName,
+//     });
+
+//     if (!data.token) throw new Error("No token received");
+
+//     login(data.token, data.role);
+
+//    Cookies.set("studentToken", data.token);
+//     localStorage.setItem("studentToken", data.token);
+//     localStorage.setItem("user", JSON.stringify({ username: data.username, role: data.role }));
+
+//     setTimeout(() => {
+//       router.push(data.role === "student" ? "/studentdashboard" : "/studentdashboard");
+//     }, 100);
+//   } catch (error) {
+//     console.error("Firebase error:", error);
+//     toast.error("Firebase Google login failed!");
+//   }
+// };
+
+
+
+
 const handleFirebaseGoogleLogin = async () => {
   try {
     const result = await signInWithPopup(auth, googleProvider);
@@ -108,9 +150,17 @@ const handleFirebaseGoogleLogin = async () => {
     if (!data.token) throw new Error("No token received");
 
     login(data.token, data.role);
-
-   Cookies.set("studentToken", data.token);
+    Cookies.set("studentToken", data.token);
     localStorage.setItem("studentToken", data.token);
+
+    if (data.student && data.student._id) {
+      localStorage.setItem("studentId", data.student._id);
+    } else if (data._id) {
+      localStorage.setItem("studentId", data._id);
+    } else {
+      console.warn("Student ID not found in Google login response");
+    }
+
     localStorage.setItem("user", JSON.stringify({ username: data.username, role: data.role }));
 
     setTimeout(() => {

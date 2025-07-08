@@ -152,11 +152,6 @@
 //   );
 // }
 
-
-
-
-
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -207,20 +202,19 @@ export default function TeacherProfilePage() {
     //   }
     // };
 
-
     const fetchEnrolledCourses = async () => {
-  try {
-    const res = await axios.get(
-      `http://localhost:5000/api/teacherCourses/teacher/${teacherId}/enrollments`
-    );
-    console.log("✅ Profile Enrolled Courses:", res.data);
-    setCourses(res.data); // use new structure: title, studentCount, etc.
-  } catch (err) {
-    console.error("❌ Failed to fetch enrolled courses:", err);
-  } finally {
-    setLoading(false);
-  }
-};
+      try {
+        const res = await axios.get(
+          `http://localhost:5000/api/teacherCourses/teacher/${teacherId}/enrollments`
+        );
+        console.log("✅ Profile Enrolled Courses:", res.data);
+        setCourses(res.data); // use new structure: title, studentCount, etc.
+      } catch (err) {
+        console.error("❌ Failed to fetch enrolled courses:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
     fetchTeacherProfile();
     fetchEnrolledCourses();
@@ -298,30 +292,28 @@ export default function TeacherProfilePage() {
                 );
               })} */}
 
-
               {courses.map((course) => (
-  <div key={course.courseId} className="col">
-    <div className="card h-100 shadow-sm border-0">
-      {course.image && (
-        <img
-          src={`http://localhost:5000${course.image}`}
-          className="card-img-top"
-          style={{ height: 150, objectFit: "cover" }}
-          alt={course.title}
-        />
-      )}
-      <div className="card-body">
-        <h6 className="card-title fw-bold">
-          {course.title || "Untitled Course"}
-        </h6>
-        <span className="badge bg-info text-dark">
-          Students: {course.studentCount ?? 0}
-        </span>
-      </div>
-    </div>
-  </div>
-))}
-
+                <div key={course.courseId} className="col">
+                  <div className="card h-100 shadow-sm border-0">
+                    {course.image && (
+                      <img
+                        src={`http://localhost:5000${course.image}`}
+                        className="card-img-top"
+                        style={{ height: 150, objectFit: "cover" }}
+                        alt={course.title}
+                      />
+                    )}
+                    <div className="card-body">
+                      <h6 className="card-title fw-bold">
+                        {course.title || "Untitled Course"}
+                      </h6>
+                      <span className="badge bg-info text-dark">
+                        Students: {course.studentCount ?? 0}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           ) : (
             <p className="text-muted">No enrolled courses found.</p>

@@ -13,7 +13,6 @@
 //   const [loading, setLoading] = useState(true);
 //   const [enrolledCourses, setEnrolledCourses] = useState([]);
 
-
 //   const router = useRouter();
 
 //   useEffect(() => {
@@ -28,7 +27,6 @@
 //       try {
 //         const token = Cookies.get("adminToken");
 //         console.log("🧪 Token from cookie:", token);
-
 
 //         // Student profile
 //         const { data: studentData } = await axios.get(
@@ -196,7 +194,6 @@
 //   );
 // }
 
-
 "use client";
 
 // 🧩 Imports
@@ -259,7 +256,10 @@ export default function DashboardPage() {
       setError(message);
 
       // ❌ Handle expired or invalid token
-      if (message.toLowerCase().includes("expired") || message.toLowerCase().includes("not authorized")) {
+      if (
+        message.toLowerCase().includes("expired") ||
+        message.toLowerCase().includes("not authorized")
+      ) {
         Cookies.remove("studentToken");
         localStorage.removeItem("studentToken");
         localStorage.removeItem("user");
@@ -305,8 +305,10 @@ export default function DashboardPage() {
   const averageProgress =
     enrolledCourses.length > 0
       ? Math.round(
-          enrolledCourses.reduce((sum: number, c: any) => sum + (c.progress || 0), 0) /
-            enrolledCourses.length
+          enrolledCourses.reduce(
+            (sum: number, c: any) => sum + (c.progress || 0),
+            0
+          ) / enrolledCourses.length
         )
       : 0;
   const coursesInProgress = enrolledCourses.filter(
@@ -346,7 +348,9 @@ export default function DashboardPage() {
             </div>
             <div className="card-body">
               <h2 className="fw-bold">{completedCourses.length}</h2>
-              <p className="small text-muted mb-0">Congratulations on your achievements!</p>
+              <p className="small text-muted mb-0">
+                Congratulations on your achievements!
+              </p>
             </div>
           </div>
         </div>
@@ -360,7 +364,9 @@ export default function DashboardPage() {
             </div>
             <div className="card-body">
               <h2 className="fw-bold">{averageProgress}%</h2>
-              <p className="small text-muted mb-0">Across all enrolled courses.</p>
+              <p className="small text-muted mb-0">
+                Across all enrolled courses.
+              </p>
             </div>
           </div>
         </div>
@@ -387,10 +393,17 @@ export default function DashboardPage() {
                     >
                       <div>
                         <h6 className="mb-1">{course.name}</h6>
-                        <small className="text-muted">{course.progress}% complete</small>
+                        <small className="text-muted">
+                          {course.progress}% complete
+                        </small>
                       </div>
                       <Link
-                        href={`/Dashboard/student/courses/${course._id}`}
+                        href={{
+                          pathname: `/studentdashboard/courses/${course.courseId._id}`,
+                          query: {
+                            teacherId: course.teacherId, // if needed
+                          },
+                        }}
                         className="btn btn-outline-primary btn-sm"
                       >
                         View Course
@@ -399,7 +412,9 @@ export default function DashboardPage() {
                   ))}
                 </>
               ) : (
-                <p className="small text-muted">No courses currently in progress.</p>
+                <p className="small text-muted">
+                  No courses currently in progress.
+                </p>
               )}
             </div>
           </div>
@@ -410,7 +425,9 @@ export default function DashboardPage() {
           <div className="card shadow-sm h-100">
             <div className="card-header">
               <h5 className="mb-1">Recent Announcements</h5>
-              <small className="text-muted">Stay updated with the latest news.</small>
+              <small className="text-muted">
+                Stay updated with the latest news.
+              </small>
             </div>
             <div className="card-body">
               <p>Coming soon or integrate real announcements here.</p>

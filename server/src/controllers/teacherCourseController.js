@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import TeacherCourse from '../models/TeacherCourse.js';
 import EnrolledCourse from "../models/enrolledCourses.js";
 import Course from "../models/Course.js";
-
+import CourseVideo from "../models/CourseVideo.js"; 
 
 // 🔸 शिक्षकद्वारा course सिर्जना गर्ने
 export const createTeacherCourse = async (req, res) => {
@@ -177,26 +177,7 @@ export const getTotalStudentsByTeacher = async (req, res) => {
 
 
 
-// ✅ Publish Course for a specific teacher
-// export const publishTeacherCourse = async (req, res) => {
-//   const { teacherId, courseId } = req.params;
 
-//   try {
-//     const existing = await TeacherCourse.findOne({ teacherId, courseId });
-
-//     if (!existing) {
-//       return res.status(404).json({ message: "Teacher-course not found." });
-//     }
-
-//     existing.status = "published";
-//     await existing.save();
-
-//     res.json({ message: "✅ Course published for teacher." });
-//   } catch (err) {
-//     console.error("❌ Publish Error:", err);
-//     res.status(500).json({ message: "❌ Failed to publish." });
-//   }
-// };
 
 
 
@@ -233,65 +214,6 @@ export const publishTeacherCourse = async (req, res) => {
   }
 };
 
-
-// export const publishTeacherCourse = async (req, res) => {
-//   const { teacherId, courseId } = req.params;
-
-
-//      // 👉 Debugging logs
-//   console.log("📥 Publish Route Hit!");
-//   console.log("🔍 teacherId:", teacherId);
-//   console.log("🔍 courseId:", courseId);
-//   console.log("🧪 teacherId typeof:", typeof teacherId);
-//   console.log("🧪 courseId typeof:", typeof courseId);
-
-//   try {
-//     // ✅ Update in TeacherCourse
-//     const teacherCourse = await TeacherCourse.findOneAndUpdate(
-//       { teacherId, courseId },
-//       { status: "published" },
-//       { new: true }
-//     );
-
-//     console.log("🔎 Found record:", record);
-
-
-//     // ✅ ALSO update in Course model
-//     await Course.findByIdAndUpdate(courseId, { status: "published" });
-
-//     res.status(200).json({
-//       message: "Course published successfully!",
-//       teacherCourse,
-//     });
-//   } catch (err) {
-//     console.error("❌ Error publishing course:", err);
-//     res.status(500).json({ message: "Internal Server Error" });
-//   }
-// };
-
-
-
-
-
-// controller/teacherCourseController.js
-
-
-
-// export const getTeacherCourseDetails = async (req, res) => {
-//   const { teacherId, courseId } = req.params;
-
-//   try {
-//     const course = await TeacherCourse.findOne({ teacherId, courseId });
-
-//     if (!course) {
-//       return res.status(404).json({ message: "Course not found" });
-//     }
-
-//     res.json(course);
-//   } catch (err) {
-//     res.status(500).json({ message: "Server error" });
-//   }
-// };
 
 
 
@@ -402,3 +324,27 @@ export const getTeacherCoursesWithEnrollments = async (req, res) => {
     res.status(500).json({ message: "Failed to load courses with enrollments" });
   }
 };
+
+export const getVideosByCourseAndTeacher = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const { teacherId } = req.query;
+
+    if (!teacherId) {
+      return res.status(400).json({ message: "Missing teacherId" });
+    }
+
+    // Video fetching from CourseVideo collection
+    const videos = await CourseVideo.find({ courseId, teacherId });
+
+    if (!videos || videos.length === 0) {
+      return res.status(404).json({ message: "No videos found for this course and teacher." });
+    }
+
+    res.json(videos);
+  } catch (err) {
+    console.error("Error fetching videos:", err);
+    res.status(500).json({ message: "Error fetching videos", error: err.message });
+  }
+};
+
