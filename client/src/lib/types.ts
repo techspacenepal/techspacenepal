@@ -17,6 +17,8 @@ export type Student = {
 export type Course = {
   id: string;
   name: string;
+  title: string;       
+  content?: string;
   description: string;
   instructor: string;
   progress: number; // percentage, 0-100
@@ -45,3 +47,7 @@ export type GradeEntry = {
   grade: string;
   progress: number;
 };
+
+
+
+

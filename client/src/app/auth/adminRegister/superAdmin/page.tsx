@@ -24,32 +24,6 @@ const AdminRegisterPage: React.FC = () => {
   }, []);
   
 
-  ///-------authorixed code 
-  // useEffect(() => {
-  //   const token = Cookies.get("adminToken");
-  //   const role = Cookies.get("userRole");
-
-  //       console.log("Token:", token); // Debugging purpose
-  //   console.log("Role:", role);
-
-
-  //   if (!token) {
-  //     toast.error("Token missing!");
-  //     router.push("/auth/adminLogin");
-  //     return;
-  //   }
-
-  //   if (role !== "admin") {
-  //     toast.error("Unauthorized access!");
-  //     router.push("/auth/adminLogin");
-  //   }
-  // }, []);
-
-
-
-  ///----------------------------
-
-
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -111,7 +85,7 @@ const AdminRegisterPage: React.FC = () => {
         style={{ maxWidth: "500px" }}
       >
         <div className="text-center mb-3">
-          <Image src="/logo.jpg" alt="Logo" width={90} height={80} />
+          <Image src="/logo.png" alt="Logo" width={90} height={80} />
           <p className="fw-bold text-muted mt-2">
             Please sign in to access your account
           </p>
@@ -189,23 +163,7 @@ const AdminRegisterPage: React.FC = () => {
           </button>
         </form>
 
-        {/* <div className="d-flex gap-3 my-3 justify-content-center align-items-center flex-wrap">
-          <button
-            className="btn btn-outline-danger d-flex justify-content-center align-items-center"
-            onClick={handleFirebaseGoogleLogin}
-            type="button"
-          >
-            <FcGoogle size={24} />
-          </button>
-
-          <button
-            className="btn btn-outline-danger d-flex justify-content-center align-items-center"
-            onClick={handleFirebaseGithubLogin}
-            type="button"
-          >
-            <GithubIcon size={22} />
-          </button>
-        </div> */}
+      
 
         <p className="text-center mt-3 ">
           Already have an account?{" "}

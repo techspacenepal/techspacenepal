@@ -33,9 +33,21 @@ export function UserNav() {
   }, []);
 
    const logout = () => {
-    Cookies.remove('adminToken');
-    router.push('/auth/adminLogin');
-  };
+  // ✅ Remove all possible tokens and user info
+  Cookies.remove('teacherToken');
+  Cookies.remove('adminToken');
+  Cookies.remove('studentToken');
+
+  localStorage.removeItem('teacherToken');
+  localStorage.removeItem('adminToken');
+  localStorage.removeItem('studentToken');
+  localStorage.removeItem('user');
+  localStorage.removeItem('teacherId');  // if stored
+
+  // 🔁 Redirect to login
+  router.push('/auth/adminLogin');
+};
+
 
   if (!user) return null;
 
@@ -80,10 +92,16 @@ export function UserNav() {
           <hr className="dropdown-divider" />
         </li>
         <li>
-          <button onClick={logout} className="dropdown-item text-danger d-flex align-items-center gap-2">
-            <LogOut size={18} />
-            Logout
-          </button>
+          <button
+  onClick={() => {
+    if (confirm("Are you sure you want to logout?")) logout();
+  }}
+  className="dropdown-item text-danger d-flex align-items-center gap-2"
+>
+  <LogOut size={18} />
+  Logout
+</button>
+
         </li>
       </ul>
     </div>

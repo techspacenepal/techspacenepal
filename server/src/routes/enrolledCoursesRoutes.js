@@ -6,20 +6,15 @@ import {
   getCoursesByTeacherIdFromEnrollments,
   getEnrolledCoursesByStudent,
   getEnrolledCoursesByTeacher,
+  getEnrolledStudentCount,
   getEnrollmentByCourseAndStudent,
   getStudentCountByCourseAndTeacher,
   getStudentsByCourseId,
   getStudentsByTeacherWithProgress,
   markQuizPassed,
   markVideoWatched,
-  publishEnrolledCourse,
-  
-  
-  
-  updateProgress,
-  
-  
-  
+  publishEnrolledCourse,  
+  updateProgress,  
   upload,
 } from "../controllers/enrolledCoursesController.js";
 
@@ -30,8 +25,6 @@ import { protect } from "../middlewares/authMiddleware.js";
 const router = express.Router();
 
 router.get("/", getAllEnrolledCourses);
-// router.get("/:id", getEnrolledCourseById);
-// router.post("/", upload.single("thumbnail"), addEnrolledCourse);
 
 router.post("/", upload.single("thumbnail"), createEnrolledCourse);
 router.get("/:studentId", getEnrolledCoursesByStudent);
@@ -39,17 +32,17 @@ router.get("/:studentId", getEnrolledCoursesByStudent);
 router.get("/course/:courseId", getStudentsByCourseId);
 
 
-// router.get("/:courseId/students", getCourseStudentsByTeacher);
+
 router.get("/course/:courseId/count", getStudentCountByCourseAndTeacher);
 
 router.get("/students/teacher/:teacherId", getStudentsByTeacherWithProgress);
 
-// router.get("/teacher/:teacherId", getCoursesByTeacherIdFromEnrollments);
+
 router.get('/coursesByTeacher/:teacherId', getCoursesByTeacherIdFromEnrollments);
 
 router.get("/teacher/:teacherId", getEnrolledCoursesByTeacher);
 
-// router.put("/:id/progress", protect, updateProgress);
+
 
 router.put("/:id/video", protect, markVideoWatched);
 router.put("/:id/quiz", protect, markQuizPassed);
@@ -64,6 +57,9 @@ router.put("/publish/:teacherId/:courseId", publishEnrolledCourse);
 router.get("/byCourseAndStudent/:courseId/:studentId", getEnrollmentByCourseAndStudent);
 router.put("/updateProgress/:studentId/:courseId",  updateProgress);
 
+
+// 🔢 Count enrolled students in a course
+router.get('/count/:courseId', getEnrolledStudentCount);
 
 
 

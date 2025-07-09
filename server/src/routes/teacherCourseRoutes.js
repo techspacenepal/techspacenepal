@@ -16,6 +16,7 @@ import {
   
 } from "../controllers/teacherCourseController.js";
 import { protect } from "../middlewares/authMiddleware.js";
+import checkEnrollmentBeforeUpload from "../middlewares/checkEnrollmentBeforeUpload.js";
 
 
 const router = express.Router();
@@ -28,9 +29,9 @@ router.get("/teacher/:teacherId", getCoursesByTeacher);
 
 router.get("/students/:teacherId/:courseId", getStudentsByTeacherAndCourse);
 router.get("/teacher/:teacherId/total-students", getTotalStudentsByTeacher);
-//router.get("/teacher/:teacherId/enrollments", getTeacherCourseWithStudentCount);
+
 router.get("/teacher/:teacherId/enrollments", getTeacherCoursesWithEnrollments);
-// router.put("/publish/:teacherId/:courseId", publishTeacherCourse);
+
 
 // teacherCourseRoutes.js
 router.put(
@@ -53,13 +54,14 @@ router.post(
   "/upload/:teacherId/:courseId",
   protect, // optional
   upload.single("video"),
-  uploadCourseVideo
+  uploadCourseVideo,
+  checkEnrollmentBeforeUpload
 );
 
 router.get("/videos/:courseId", getCourseVideos);
 router.delete("/videos/:videoId", protect, deleteCourseVideo);
 
-// router.get('/videos/:courseId', getVideosByCourseAndTeacher);
+
 
 
 

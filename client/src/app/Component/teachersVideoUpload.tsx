@@ -30,18 +30,17 @@ export default function TeachersVideoUploadForm({
     fetchVideos();
   }, [courseId]);
 
- // 👇 fetchVideos function
-const fetchVideos = async () => {
-  try {
-    const res = await axios.get(
-      `http://localhost:5000/api/teacherCourses/videos/${courseId}?teacherId=${teacherId}`
-    );
-    setVideos(res.data);
-  } catch (error) {
-    toast.error("Failed to load videos");
-  }
-};
-
+  // 👇 fetchVideos function
+  const fetchVideos = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/api/teacherCourses/videos/${courseId}?teacherId=${teacherId}`
+      );
+      setVideos(res.data);
+    } catch (error) {
+      toast.error("Failed to load videos");
+    }
+  };
 
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,26 +85,38 @@ const fetchVideos = async () => {
     }
   };
 
-
   const handleDelete = async (videoId: string) => {
-  const token = Cookies.get("teacherToken");
-  const confirmed = confirm("Are you sure you want to delete this video?");
-  if (!confirmed) return;
+    const token = Cookies.get("teacherToken");
+    const confirmed = confirm("Are you sure you want to delete this video?");
+    if (!confirmed) return;
 
-  try {
-    await axios.delete(`http://localhost:5000/api/teacherCourses/videos/${videoId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    toast.success("Video deleted");
-    fetchVideos(); // refresh list
-  } catch (error) {
-    toast.error("Failed to delete video");
-    console.error(error);
-  }
-};
+    try {
+      await axios.delete(
+        `http://localhost:5000/api/teacherCourses/videos/${videoId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success("Video deleted");
+      fetchVideos(); // refresh list
+    } catch (error) {
+      toast.error("Failed to delete video");
+      console.error(error);
+    }
+  };
 
+  const [studentCount, setStudentCount] = useState(0);
+
+useEffect(() => {
+  const fetchStudentCount = async () => {
+    const res = await axios.get(`http://localhost:5000/api/enrolledCourses/count/${courseId}`);
+    setStudentCount(res.data.count);
+  };
+
+  fetchStudentCount();
+}, [courseId]);
 
 
   return (
@@ -153,9 +164,18 @@ const fetchVideos = async () => {
           />
         </div>
 
-        <button type="submit" className="btn btn-primary" disabled={uploading}>
+        {/* <button type="submit" className="btn btn-primary" disabled={uploading}>
           {uploading ? "Uploading..." : "⬆️ Upload Video"}
+        </button> */}
+
+        <button className="btn btn-primary" disabled={studentCount === 0}>
+          Upload Video
         </button>
+        {studentCount === 0 && (
+          <p className="text-danger mt-2">
+            ⚠️ No student enrolled yet. Upload not allowed.
+          </p>
+        )}
       </form>
 
       <hr className="my-4" />
@@ -163,8 +183,6 @@ const fetchVideos = async () => {
       <h5>Uploaded Videos</h5>
       {videos.length === 0 && <p>No videos uploaded yet.</p>}
       <div className="d-flex flex-wrap gap-3">
-       
-
         {videos.map((video) => {
           const isExternal = video.videoUrl.startsWith("http");
 
@@ -199,11 +217,11 @@ const fetchVideos = async () => {
               </p>
 
               <button
-        onClick={() => handleDelete(video._id)}
-        className="btn btn-sm btn-danger"
-      >
-        🗑️ Delete
-      </button>
+                onClick={() => handleDelete(video._id)}
+                className="btn btn-sm btn-danger"
+              >
+                🗑️ Delete
+              </button>
             </div>
           );
         })}

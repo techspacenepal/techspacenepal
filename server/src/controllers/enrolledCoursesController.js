@@ -3,15 +3,12 @@ import path from "path";
 import mongoose from "mongoose";
 import EnrolledCourse from "../models/enrolledCourses.js";
 import Student from "../models/student.js";
+import { generateCertificate } from './generateCertificate.js';
 
 
-import fs from 'fs';
 
-import PDFDocument from 'pdfkit';
 
 const CERT_DIR = path.join('public', 'certificates');
-if (!fs.existsSync(CERT_DIR)) fs.mkdirSync(CERT_DIR, { recursive: true });
-// ----------------- Multer Config -----------------
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
@@ -296,30 +293,33 @@ export const getEnrolledCoursesByTeacher = async (req, res) => {
 
 
 
-// export const updateProgress = async (req, res) => {
+
+
+
+// export const markVideoWatched = async (req, res) => {
+//   const { id } = req.params;
+//   const { videoProgress } = req.body;
+
 //   try {
-//     const { id } = req.params; // enrollment ID
-//     const { progress } = req.body;
+//     const enrolled = await EnrolledCourse.findById(id).populate('studentId courseId');
+//     if (!enrolled) return res.status(404).json({ message: 'Not found' });
 
-//     const enrolled = await EnrolledCourse.findById(id);
-//     if (!enrolled) return res.status(404).json({ message: "Enrollment not found" });
+//     if (!enrolled.startDate) enrolled.startDate = new Date();
+//     enrolled.progress = Math.min(enrolled.progress + videoProgress, 100);
 
-//     // If progress > 0 and no startDate yet, set it
-//     if (progress > 0 && !enrolled.startDate) {
-//       enrolled.startDate = new Date();
+//     if (enrolled.progress === 100 && !enrolled.certificateUrl) {
+//       const certPath = path.join(CERT_DIR, `${id}.pdf`);
+//       const certUrl = `/certificates/${id}.pdf`;
+//       await generateCertificate(enrolled.studentId.name, enrolled.courseId.title, certPath);
+//       enrolled.certificateUrl = certUrl;
 //     }
 
-//     enrolled.progress = progress;
 //     await enrolled.save();
-
-//     res.json({ message: "Progress updated", enrolled });
+//     res.json({ message: 'Video progress updated', enrolled });
 //   } catch (err) {
-//     res.status(500).json({ message: "Server error", error: err.message });
+//     res.status(500).json({ error: err.message });
 //   }
 // };
-
-
-
 
 export const markVideoWatched = async (req, res) => {
   const { id } = req.params;
@@ -335,7 +335,9 @@ export const markVideoWatched = async (req, res) => {
     if (enrolled.progress === 100 && !enrolled.certificateUrl) {
       const certPath = path.join(CERT_DIR, `${id}.pdf`);
       const certUrl = `/certificates/${id}.pdf`;
-      await generateCertificate(enrolled.studentId.name, enrolled.courseId.title, certPath);
+
+      // ✅ FIXED HERE
+      await generateCertificate(enrolled.studentId.username, enrolled.courseId.title, certPath);
       enrolled.certificateUrl = certUrl;
     }
 
@@ -373,47 +375,112 @@ export const markQuizPassed = async (req, res) => {
 
 
 
-export const generateCertificate = async (studentName, courseTitle, filePath) => {
-  return new Promise((resolve, reject) => {
-    const doc = new PDFDocument();
+// export const generateCertificate = async (studentName, courseTitle, filePath) => {
+//   return new Promise((resolve, reject) => {
+//     try {
+//       const doc = new PDFDocument({ size: "A4", margin: 50 });
 
-    doc.pipe(fs.createWriteStream(filePath));
+//       const logoPath = path.resolve("server/uploads/logo.png");
+//       const signaturePath = path.resolve("server/uploads/signature.png");
 
-    doc
-      .fontSize(24)
-      .text('🎓 Certificate of Completion', { align: 'center' })
-      .moveDown(2);
+//       const stream = fs.createWriteStream(filePath);
+//       doc.pipe(stream);
 
-    doc
-      .fontSize(18)
-      .text(`This is to certify that`, { align: 'center' })
-      .moveDown(1);
+//       // Background (light gray optional)
+//       doc.rect(0, 0, doc.page.width, doc.page.height).fill("#f7f9fb");
+//       doc.fillColor("black");
 
-    doc
-      .fontSize(22)
-      .fillColor('blue')
-      .text(studentName, { align: 'center' })
-      .fillColor('black')
-      .moveDown(1);
+//       // 🏫 Logo
+//       if (fs.existsSync(logoPath)) {
+//         doc.image(logoPath, doc.page.width / 2 - 50, 40, { width: 100 });
+//       }
 
-    doc
-      .fontSize(18)
-      .text(`has successfully completed the course`, { align: 'center' })
-      .moveDown(1);
+//       // 🏫 Institute Name
+//       doc
+//         .font("Helvetica-Bold")
+//         .fontSize(22)
+//         .fillColor("#2c3e50")
+//         .text("Teach Space Nepal Institute", {
+//           align: "center",
+//         });
 
-    doc
-      .fontSize(20)
-      .text(`"${courseTitle}"`, { align: 'center', italic: true })
-      .moveDown(2);
+//       doc.moveDown(2);
 
-    doc
-      .fontSize(14)
-      .text(`Date: ${new Date().toLocaleDateString()}`, { align: 'center' });
+//       // 🏅 Certificate Title
+//       doc
+//         .fontSize(20)
+//         .fillColor("black")
+//         .text("🎓 Certificate of Completion", { align: "center" });
 
-    doc.end();
-    resolve(true);
-  });
-};
+//       doc.moveDown();
+
+//       // 👤 Student Name
+//       doc
+//         .font("Helvetica")
+//         .fontSize(14)
+//         .text(`This is to certify that`, { align: "center" })
+//         .moveDown(0.5)
+//         .font("Helvetica-Bold")
+//         .fontSize(18)
+//         .text(`${studentName}`, { align: "center" });
+
+//       doc.moveDown(0.5);
+
+//       // 📚 Course Title
+//       doc
+//         .font("Helvetica")
+//         .fontSize(14)
+//         .text(`has successfully completed the course`, { align: "center" })
+//         .moveDown(0.3)
+//         .font("Helvetica-Bold")
+//         .fontSize(16)
+//         .text(`"${courseTitle}"`, { align: "center" });
+
+//       doc.moveDown(2);
+
+//       // 📆 Issue Date
+//       doc
+//         .font("Helvetica")
+//         .fontSize(12)
+//         .text(`Issued on: ${new Date().toLocaleDateString()}`, { align: "center" });
+
+//       doc.moveDown(3);
+
+//       // ✍️ Digital Signature
+//       if (fs.existsSync(signaturePath)) {
+//         doc.image(signaturePath, doc.page.width / 2 - 50, doc.y, {
+//           width: 100,
+//         });
+//         doc.moveDown(1);
+//         doc
+//           .fontSize(10)
+//           .fillColor("gray")
+//           .text("Authorized Signature", { align: "center" });
+//       } else {
+//         doc
+//           .fontSize(10)
+//           .fillColor("red")
+//           .text("[Signature missing]", { align: "center" });
+//       }
+
+//       doc.end();
+
+//       stream.on("finish", () => {
+//         console.log("✅ Certificate generated:", filePath);
+//         resolve(true);
+//       });
+
+//       stream.on("error", (err) => {
+//         console.error("❌ Stream error:", err);
+//         reject(err);
+//       });
+//     } catch (err) {
+//       console.error("❌ Certificate generation failed:", err);
+//       reject(err);
+//     }
+//   });
+// };
+
 
 
 
@@ -423,6 +490,9 @@ export const generateCertificate = async (studentName, courseTitle, filePath) =>
 
 
 // ✅ Publish all enrolledCourses for a specific teacher and course
+
+
+
 export const publishEnrolledCourse = async (req, res) => {
   const { teacherId, courseId } = req.params;
 
@@ -493,5 +563,18 @@ export const updateProgress = async (req, res) => {
     res.status(200).json({ message: "Progress updated", progress: enrollment.progress });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
+
+
+export const getEnrolledStudentCount = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const count = await EnrolledCourse.countDocuments({ courseId });
+    res.status(200).json({ count });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to count students' });
   }
 };

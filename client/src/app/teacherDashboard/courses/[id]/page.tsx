@@ -241,6 +241,8 @@
 //   );
 // }
 
+
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -387,7 +389,7 @@ export default function CourseDetailsPage() {
       <hr className="my-4" />
       <h5>📹 Course Video Upload</h5>
 
-      {course?.status !== "published" ? (
+      {/* {course?.status !== "published" ? (
         <p className="alert alert-warning">
           ⚠️ You must <strong>publish</strong> the course before uploading
           videos.
@@ -397,7 +399,25 @@ export default function CourseDetailsPage() {
           teacherId={teacherId!}
           courseId={courseId as string}
         />
-      )}
+      )} */}
+
+
+
+      {course?.status !== "published" ? (
+  <p className="alert alert-warning">
+    ⚠️ You must <strong>publish</strong> the course before uploading videos.
+  </p>
+) : students.length === 0 ? (
+  <p className="alert alert-danger">
+    ⚠️ No students enrolled. Please wait until at least one student is enrolled to upload videos.
+  </p>
+) : (
+  <TeachersVideoUploadForm
+    teacherId={teacherId!}
+    courseId={courseId as string}
+  />
+)}
+
     </div>
   );
 }

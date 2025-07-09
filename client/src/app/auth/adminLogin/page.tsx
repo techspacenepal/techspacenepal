@@ -306,7 +306,7 @@ const AdminLoginPage: React.FC = () => {
 
       <div className="card shadow-lg p-4 w-100" style={{ maxWidth: "400px" }}>
         <div className="text-center mb-3">
-          <Image src="/logo.jpg" alt="Logo" width={90} height={80} />
+          <Image src="/logo.png" alt="Logo" width={90} height={80} />
           <p className="text-muted">Please login to continue</p>
         </div>
 

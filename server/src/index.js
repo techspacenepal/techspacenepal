@@ -35,7 +35,7 @@ import { sendNotificationToCourseStudents } from './controllers/teacherNotificat
  import notificationRoutes from "./routes/teacherNotificationRoutes.js";
 import teacherNotificationRoutes from './routes/teacherNotificationRoutes.js';
 import videoRoutes from "./routes/courseVideoRoutes.js";
-
+import certificateRoutes from "./routes/certificateRoutes.js";
 
 // __dirname define for ES module
 const __filename = fileURLToPath(import.meta.url);
@@ -54,6 +54,7 @@ app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public')); 
 
 
 // Serve static uploads folder
@@ -69,7 +70,9 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 
 // certificates 
-app.use('/certificates', express.static(path.join(__dirname, 'public/certificates')));
+// app.use('/certificates', express.static(path.join(__dirname, 'public/certificates')));
+// Serve static PDF files
+app.use("/certificates", express.static(path.join(process.cwd(), "public", "certificates")));
 
 
 // Your existing routes
@@ -92,8 +95,8 @@ app.use("/api/notifications", notificationRoutes);
 app.use('/api/teacherNotifications', teacherNotificationRoutes);
 app.use("/api/videos", videoRoutes);
 
-
-
+// app.use("/api", certificateRoutes);
+app.use("/api/certificates", certificateRoutes);
 
 // Google OAuth login
 app.get(

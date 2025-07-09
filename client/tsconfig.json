@@ -32,4 +32,8 @@
     ".next/types/**/*.ts",
     "src/types"
   ]
+
+  
 }
+
+

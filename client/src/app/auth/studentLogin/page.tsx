@@ -260,7 +260,7 @@ localStorage.setItem("studentToken", data.token);
       <div className="card shadow-lg p-4 w-100" style={{ maxWidth: "400px" }}>
         <div className="text-center mb-3">
           <Image
-            src="/logo.jpg"
+            src="/logo.png"
             alt=" Logo"
             width={90}
             height={80}

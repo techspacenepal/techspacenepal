@@ -180,7 +180,7 @@ export function AiImproverForm() {
             )}
 
             {!isLoading && !result && (
-              <div className="text-muted text-center p-5 border border-2 border-dashed rounded">
+              <div className="text-muted text-center p-5  border-2 border-dashed rounded">
                 <Sparkles size={32} className="mb-3" />
                 <p className="mb-0">Your improvement suggestions will appear here.</p>
               </div>

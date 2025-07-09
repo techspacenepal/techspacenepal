@@ -60,7 +60,7 @@
 import type { ReactNode } from "react";
 import { GraduationCap } from "lucide-react";
 import { DashboardNav } from "@/app/Component/dashboard-nav";
-import { UserNav } from "@/app/Component/user-nav";
+import { UserNav } from "@/app/Component/student-nav";
 import Link from "next/link";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {

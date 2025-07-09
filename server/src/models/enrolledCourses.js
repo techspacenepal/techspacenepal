@@ -167,8 +167,6 @@ const enrolledCourseSchema = new mongoose.Schema(
     progress: { type: Number, default: 0 },
     startDate: { type: Date, default: null },
     certificateUrl: { type: String, default: null },
-
-
     
       status: {
       type: String,

@@ -72,7 +72,7 @@ const StudentRegisterPage: React.FC = () => {
       <Toaster position="top-right" />
       <div className="card shadow p-4 w-100" style={{ maxWidth: "500px" }}>
         <div className="text-center mb-3">
-          <Image src="/logo.jpg" alt="Logo" width={90} height={80} />
+          <Image src="/logo.png" alt="Logo" width={90} height={80} />
           <p className="fw-bold text-muted mt-2">
             Please register as a student
           </p>

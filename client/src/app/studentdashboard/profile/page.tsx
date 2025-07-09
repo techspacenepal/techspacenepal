@@ -661,7 +661,7 @@ useEffect(() => {
                         {course.instructor}
                       </span>
                     </p>
-                    <p
+                    {/* <p
                       className="text-muted small flex-grow-1 mb-3"
                       style={{
                         overflow: "hidden",
@@ -669,7 +669,7 @@ useEffect(() => {
                       }}
                     >
                       {course.description || "No description available."}
-                    </p>
+                    </p> */}
                     <div className="d-flex justify-content-between align-items-center text-muted small border-top pt-2">
                       <span className="fst-italic">
                         Course: {course.courseInfo?.title}
