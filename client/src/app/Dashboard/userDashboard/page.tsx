@@ -24,6 +24,7 @@ interface Inquiry {
   course: string;
   message?: string;
   createdAt: string;
+  seen?: boolean;
 }
 
 interface Contact {
@@ -34,6 +35,7 @@ interface Contact {
   course: string;
   message?: string;
   createdAt: string;
+  seen?: boolean;
 }
 
 interface UserType {
@@ -43,7 +45,6 @@ interface UserType {
   role: string;
   createdAt: string;
 }
-
 
 const getInitials = (name: string) => {
   const parts = name.trim().split(" ");
@@ -55,9 +56,8 @@ const getInitials = (name: string) => {
   return "";
 };
 
-
 const Dashboard = () => {
-    const [inquiryCount, setInquiryCount] = useState(0);
+  const [inquiryCount, setInquiryCount] = useState(0);
   const [contactCount, setContactCount] = useState(0);
   const [userCount, setUserCount] = useState(0);
   const [recentInquiries, setRecentInquiries] = useState<Inquiry[]>([]);
@@ -70,7 +70,7 @@ const Dashboard = () => {
 
   const router = useRouter();
 
-    // login vayesi matra dashboard dekhine
+  // login vayesi matra dashboard dekhine
   const { isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
@@ -79,7 +79,6 @@ const Dashboard = () => {
       router.push("/auth/adminLogin");
     }
   }, [router]);
-
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -93,7 +92,6 @@ const Dashboard = () => {
       }
     }
   }, []);
-
 
   // Fetch contact and inquiry counts
   useEffect(() => {
@@ -135,8 +133,7 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
-
-   useEffect(() => {
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         dropdownRef.current &&
@@ -155,7 +152,7 @@ const Dashboard = () => {
     };
   }, [showDropdown]);
 
-    useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const [inquiryRes, contactRes, userRes] = await Promise.all([
@@ -204,9 +201,7 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
-
-
-    const handleBellClick = async () => {
+  const handleBellClick = async () => {
     const newShow = !showDropdown;
     setShowDropdown(newShow);
     if (newShow) {
@@ -221,7 +216,7 @@ const Dashboard = () => {
       }
     }
   };
- 
+
   return (
     <>
       <div className="d-flex min-vh-100 bg-light">
@@ -313,43 +308,45 @@ const Dashboard = () => {
             {/* Header */}
             <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap">
               <h1 className="h3 fw-bold mb-2 mb-md-0">Dashboard</h1>
-               <div className="d-flex gap-3 align-items-center position-relative">
-              <button
-                className="btn btn-link position-relative p-0 border-0"
-                onClick={handleBellClick}
-              >
-                <Bell size={22} className="text-dark" />
-                {unreadCount > 0 && (
-                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    {unreadCount}
-                  </span>
-                )}
-              </button>
-              {showDropdown && (
-                <div
-                  ref={dropdownRef}
-                  className="dropdown-menu dropdown-menu-end show p-2 shadow"
-                  style={{ minWidth: "280px", top: "110%", left: "-230px" }}
+              <div className="d-flex gap-3 align-items-center position-relative">
+                <button
+                  className="btn btn-link position-relative p-0 border-0"
+                  onClick={handleBellClick}
                 >
-                  <h6 className="dropdown-header">Notifications</h6>
-                  {[...recentContacts, ...recentInquiries].slice(0, 5).map((item, i) => (
-                    <div key={i} className="dropdown-item small">
-                      <strong>{item.name}</strong> sent a message
-                      <br />
-                      <small className="text-muted">
-                        {new Date(item.createdAt).toLocaleString("en-GB")}
-                      </small>
-                    </div>
-                  ))}
+                  <Bell size={22} className="text-dark" />
+                  {unreadCount > 0 && (
+                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                      {unreadCount}
+                    </span>
+                  )}
+                </button>
+                {showDropdown && (
+                  <div
+                    ref={dropdownRef}
+                    className="dropdown-menu dropdown-menu-end show p-2 shadow"
+                    style={{ minWidth: "280px", top: "110%", left: "-230px" }}
+                  >
+                    <h6 className="dropdown-header">Notifications</h6>
+                    {[...recentContacts, ...recentInquiries]
+                      .slice(0, 5)
+                      .map((item, i) => (
+                        <div key={i} className="dropdown-item small">
+                          <strong>{item.name}</strong> sent a message
+                          <br />
+                          <small className="text-muted">
+                            {new Date(item.createdAt).toLocaleString("en-GB")}
+                          </small>
+                        </div>
+                      ))}
+                  </div>
+                )}
+                <div
+                  className="rounded-circle bg-dark text-white d-flex justify-content-center align-items-center"
+                  style={{ width: 32, height: 32, fontSize: 14 }}
+                >
+                  {userInitials}
                 </div>
-              )}
-              <div
-                className="rounded-circle bg-dark text-white d-flex justify-content-center align-items-center"
-                style={{ width: 32, height: 32, fontSize: 14 }}
-              >
-                {userInitials}
               </div>
-            </div>
             </div>
 
             {/* Stats Cards */}
@@ -395,7 +392,7 @@ const Dashboard = () => {
                         <h6 className="text-muted small">{stat.title}</h6>
                         <h4 className="fw-bold mb-0">{stat.value}</h4>
                       </div>
-                    </div> 
+                    </div>
                   )}
                 </div>
               ))}
@@ -409,7 +406,7 @@ const Dashboard = () => {
                   <div className="card-body">
                     <h5 className="card-title mb-3">Recent Contacts</h5>
                     <ul className="list-group list-group-flush">
-                      {recentContacts
+                      {/* {recentContacts
                         .sort(
                           (a, b) =>
                             new Date(b.createdAt) - new Date(a.createdAt)
@@ -423,7 +420,25 @@ const Dashboard = () => {
                               {new Date(con.createdAt).toLocaleDateString()}
                             </small>
                           </li>
+                        ))} */}
+
+                      {recentContacts
+                        .sort(
+                          (a, b) =>
+                            new Date(b.createdAt).getTime() -
+                            new Date(a.createdAt).getTime()
+                        )
+                        .slice(0, 3)
+                        .map((con) => (
+                          <li key={con._id} className="list-group-item">
+                            <strong>{con.name}</strong> - {con.course}
+                            <br />
+                            <small className="text-muted">
+                              {new Date(con.createdAt).toLocaleDateString()}
+                            </small>
+                          </li>
                         ))}
+
                       {recentContacts.length === 0 && (
                         <li className="list-group-item text-muted">
                           No recent contacts found.

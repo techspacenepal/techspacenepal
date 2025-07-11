@@ -913,13 +913,13 @@ const Dashboard = () => {
               <i className="bi bi-images" style={{ fontSize: "1rem" }}></i>
               <span className="sidebar-text">Success Gallery</span>
             </Link>
-            <Link
+            {/* <Link
               href="/auth/admin/generatecertificate"
               className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
             >
               <i className="bi bi-images" style={{ fontSize: "1rem" }}></i>
               <span className="sidebar-text">CertificateForm</span>
-            </Link>
+            </Link> */}
 
             <Link
               href="/auth/admin/testimonial"
@@ -933,7 +933,7 @@ const Dashboard = () => {
               href="/auth/admin/addTeacherCourses"
               className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"
             >
-              <i className="bi bi-chat-text" style={{ fontSize: "1rem" }}></i>
+              <i className="bi bi-journal-plus" style={{ fontSize: "1rem" }}></i>
               <span className="sidebar-text">Add Teacher Courses</span>
             </Link>
 
@@ -1188,6 +1188,7 @@ const Dashboard = () => {
                 </div>
               </div>
 
+
               {/* Services Panel */}
               <div className="col-12 col-lg-6">
                 <div className="card shadow-sm h-100">
@@ -1209,10 +1210,24 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
+
+                            <h4>Certificate Background</h4>
+<a
+  href="http://localhost:5000/api/certificates/template"
+  download
+  className="btn btn-outline-primary"
+>
+  📄 Download Certificate Template
+</a>
             </div>
           </div>
         </main>
+
+
+        
       </div>
+
+      
     </>
   );
 };

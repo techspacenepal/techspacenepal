@@ -25,6 +25,9 @@ export type Course = {
   grade?: string; // e.g., "A", "B+", "In Progress"
   modules: Module[];
   imageUrl?: string;
+   studentCount?: number; 
+     status?: string;  
+     thumbnail?: string;    
 };
 
 export type Module = {

@@ -360,7 +360,7 @@ const generateToken = (id, role) => {
 // Student Registration Handler
 export const registerStudent = async (req, res) => {
   try {
-    const { username, email, number, password } = req.body;
+    const {fullName, username, email, number, password } = req.body;
 
     // Check if user with given email already exists
     const existing = await Student.findOne({ email });
@@ -369,7 +369,7 @@ export const registerStudent = async (req, res) => {
     }
 
     // Create new student with given data, role hardcoded to 'student'
-    const student = new Student({ username, email, number, password, role: 'student' });
+    const student = new Student({fullName, username, email, number, password, role: 'student' });
     await student.save();
 
     // Generate JWT token after successful registration

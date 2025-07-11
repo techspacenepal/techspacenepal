@@ -64,6 +64,10 @@
 // export default router;
 
 
+
+
+
+
 import express from "express";
 import path from "path";
 import fs from "fs";
@@ -72,6 +76,7 @@ import { generateCertificatePDF } from "../controllers/generateCertificatePDF.js
 import { generateCertificate } from "../controllers/generateCertificate.js";
 import Student from "../models/student.js";
 import Course from "../models/Course.js";
+
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -150,4 +155,30 @@ router.get("/:studentId/:courseId", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+
+router.get('/template', async (req, res) => {
+  const certPath = path.join("temp", `template_certificate.pdf`);
+  const certDir = path.dirname(certPath);
+
+  if (!fs.existsSync(certDir)) {
+    fs.mkdirSync(certDir, { recursive: true });
+  }
+
+  try {
+    await generateCertificatePDF('', '', certPath, '', true); 
+    res.download(certPath, 'Blank_Certificate_Template.pdf', (err) => {
+      if (!err) fs.unlink(certPath, () => {});
+    });
+  } catch (err) {
+    console.error("❌ Error generating template PDF:", err);
+    res.status(500).send("Failed to generate template.");
+  }
+});
+
+
+
+
+
+
 export default router;

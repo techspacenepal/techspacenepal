@@ -1,18 +1,29 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
+interface Student {
+  _id: string;
+  username: string;
+}
+
+interface Course {
+  _id: string;
+  title: string;
+}
+
 export default function CertificateForm() {
   const [studentId, setStudentId] = useState("");
   const [courseId, setCourseId] = useState("");
   const [description, setDescription] = useState("");
-  const [students, setStudents] = useState([]);
-  const [courses, setCourses] = useState([]);
+  //   const [students, setStudents] = useState([]);
+  //   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [certLink, setCertLink] = useState<string | null>(null);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
 
   // Fetch students and courses
   useEffect(() => {

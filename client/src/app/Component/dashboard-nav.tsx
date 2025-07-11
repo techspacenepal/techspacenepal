@@ -20,7 +20,7 @@ const navItems = [
   { href: "/studentdashboard/courses", label: "Courses", icon: BookOpen },
   { href: "/studentdashboard/gradebook", label: "Gradebook", icon: ClipboardList },
   { href: "/studentdashboard/announcements", label: "Announcements", icon: Megaphone },
-  { href: "/studentdashboard/recommendations", label: "Recommendations", icon: Sparkles },
+
  
 
 ];

@@ -18,7 +18,8 @@ interface Student {
 }
 
 export default function StudentDetailPage() {
-  const { id } = useParams();
+  // const { id } = useParams();
+  const { id } = useParams() as { id: string };
   const [student, setStudent] = useState<Student | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

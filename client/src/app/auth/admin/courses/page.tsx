@@ -1,147 +1,3 @@
-// 'use client';
-
-// import { useState, useEffect } from 'react';
-// import axios from 'axios';
-// import { toast, ToastContainer } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';
-
-// export default function Courses() {
-//   const [selectedCategory, setSelectedCategory] = useState('All');
-//   const [courses, setCourses] = useState([]);
-//   const [filteredCourses, setFilteredCourses] = useState([]);
-//   const [form, setForm] = useState({
-//     title: '',
-//     category: '',
-//     duration: '',
-//     image: null,
-//   });
-//   const [editId, setEditId] = useState(null);
-
-//   // Fetch all courses
-//   const fetchCourses = async () => {
-//     const res = await axios.get('http://localhost:5000/api/courses');
-//     setCourses(res.data);
-//   };
-
-//   useEffect(() => {
-//     fetchCourses();
-//   }, []);
-
-//   useEffect(() => {
-//     if (selectedCategory === 'All') setFilteredCourses(courses);
-//     else setFilteredCourses(courses.filter(c => c.category === selectedCategory));
-//   }, [selectedCategory, courses]);
-
-//   const categories = ['All', ...new Set(courses.map(c => c.category))];
-
-//   const handleChange = e => {
-//     if (e.target.name === 'image') {
-//       setForm({ ...form, image: e.target.files[0] });
-//     } else {
-//       setForm({ ...form, [e.target.name]: e.target.value });
-//     }
-//   };
-
-//   const handleSubmit = async e => {
-//     e.preventDefault();
-//     const formData = new FormData();
-//     formData.append('title', form.title);
-//     formData.append('category', form.category);
-//     formData.append('duration', form.duration);
-//     if (form.image) formData.append('image', form.image);
-
-//     try {
-//       if (editId) {
-//         await axios.put(`http://localhost:5000/api/courses/${editId}`, formData);
-//         toast.success('Course updated!');
-//       } else {
-//         await axios.post('http://localhost:5000/api/courses', formData);
-//         toast.success('Course added!');
-//       }
-//       setForm({ title: '', category: '', duration: '', image: null });
-//       setEditId(null);
-//       fetchCourses();
-//     } catch (err) {
-//       toast.error('Failed to submit course');
-//     }
-//   };
-
-//   const handleEdit = course => {
-//     setForm({
-//       title: course.title,
-//       category: course.category,
-//       duration: course.duration,
-//       image: null,
-//     });
-//     setEditId(course._id);
-//     window.scrollTo({ top: 0, behavior: 'smooth' });
-
-//   };
-
-//   const handleDelete = async id => {
-//     if (!confirm('Are you sure you want to delete this course?')) return;
-//     try {
-//       await axios.delete(`http://localhost:5000/api/courses/${id}`);
-//       toast.success('Course deleted!');
-//       fetchCourses();
-//     } catch (err) {
-//       toast.error('Failed to delete course');
-//     }
-//   };
-
-//   return (
-//     <div className="container my-4">
-//       <ToastContainer />
-
-//       {/* Add/Edit Form */}
-//       <form onSubmit={handleSubmit} className="mb-5">
-//         <input name="title" type="text" placeholder="Title" value={form.title} onChange={handleChange} className="form-control mb-2" required />
-//         <input name="category" type="text" placeholder="Category" value={form.category} onChange={handleChange} className="form-control mb-2" required />
-//         <input name="duration" type="text" placeholder="Duration" value={form.duration} onChange={handleChange} className="form-control mb-2" required />
-//         <input name="image" type="file" onChange={handleChange} className="form-control mb-2" accept="image/*" />
-//         {form.image && <img src={URL.createObjectURL(form.image)} alt="Preview" style={{ maxWidth: '200px', marginBottom: '10px' }} />}
-//         <button type="submit" className="btn btn-primary">
-//           {editId ? 'Update Course' : 'Add Course'}
-//         </button>
-//         {editId && (
-//           <button type="button" className="btn btn-secondary ms-2" onClick={() => { setEditId(null); setForm({ title: '', category: '', duration: '', image: null }); }}>
-//             Cancel
-//           </button>
-//         )}
-//       </form>
-
-//       {/* Category Filter */}
-//       <div className="mb-3">
-//         <div className="d-flex overflow-auto" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
-//           <style>{`div::-webkit-scrollbar { display: none; }`}</style>
-//           {categories.map(cat => (
-//             <button key={cat} className={`btn btn-${selectedCategory === cat ? 'primary' : 'outline-primary'} me-2 mb-2`} onClick={() => setSelectedCategory(cat)}>
-//               {cat}
-//             </button>
-//           ))}
-//         </div>
-//       </div>
-
-//       {/* Course Grid */}
-//       <div className="row">
-//         {filteredCourses.map(c => (
-//           <div className="col-md-4 col-sm-6 mb-4" key={c._id}>
-//             <div className="card h-100">
-//               <img src={`http://localhost:5000${c.image}`} alt={c.title} className="card-img-top rounded-2 p-3" style={{ objectFit: 'cover', height: '200px' }} />
-//               <div className="card-body">
-//                 <h5 className="card-title">{c.title}</h5>
-//                 <p className="card-text">{c.category} | {c.duration}</p>
-//                 <button className="btn btn-sm btn-warning me-2" onClick={() => handleEdit(c)}>Edit</button>
-//                 <button className="btn btn-sm btn-danger" onClick={() => handleDelete(c._id)}>Delete</button>
-//               </div>
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// }
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -151,19 +7,44 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import "react-toastify/dist/ReactToastify.css";
 
+interface Course {
+  _id: string;
+  title: string;
+  category: string;
+  duration: string;
+  coursesdescription: string;
+  description: string;
+  image: string;
+}
+
+interface CourseForm {
+  title: string;
+  category: string;
+  duration: string;
+  coursesdescription: string;
+  description: string;
+  image: File | null;
+}
+
 export default function Courses() {
   const router = useRouter();
 
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [courses, setCourses] = useState([]);
-  const [filteredCourses, setFilteredCourses] = useState([]);
-  const [form, setForm] = useState({
+  // const [courses, setCourses] = useState([]);
+  const [courses, setCourses] = useState<Course[]>([]);
+  // const [filteredCourses, setFilteredCourses] = useState([]);\
+  const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
+
+  const [form, setForm] = useState<CourseForm>({
     title: "",
     category: "",
     duration: "",
+    coursesdescription: "",
+    description: "",
     image: null,
   });
-  const [editId, setEditId] = useState(null);
+  //const [editId, setEditId] = useState(null);
+  const [editId, setEditId] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(false); // spinner during fetch
   const [pageLoading, setPageLoading] = useState(true); // full-page loading on mount
@@ -190,7 +71,7 @@ export default function Courses() {
         toast.error("Please login to access this page");
         router.push("/auth/adminLogin");
       } else {
-        fetchCourses(); // 🔁 FIXED THIS
+        fetchCourses();
       }
       setPageLoading(false);
     }, 1000);
@@ -207,19 +88,34 @@ export default function Courses() {
 
   const categories = ["All", ...new Set(courses.map((c) => c.category))];
 
-  const handleChange = (e) => {
+  // const handleChange = (e) => {
+  //   if (e.target.name === "image") {
+  //     setForm({ ...form, image: e.target.files[0] });
+  //   } else {
+  //     setForm({ ...form, [e.target.name]: e.target.value });
+  //   }
+  // };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     if (e.target.name === "image") {
-      setForm({ ...form, image: e.target.files[0] });
+      setForm({
+        ...form,
+        image: (e.target as HTMLInputElement).files?.[0] || null,
+      });
     } else {
       setForm({ ...form, [e.target.name]: e.target.value });
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("title", form.title);
     formData.append("category", form.category);
+    formData.append("description", form.description);
+    formData.append("coursesdescription", form.coursesdescription);
     formData.append("duration", form.duration);
     if (form.image) formData.append("image", form.image);
 
@@ -234,7 +130,14 @@ export default function Courses() {
         await axios.post("http://localhost:5000/api/courses", formData);
         toast.success("Course added!");
       }
-      setForm({ title: "", category: "", duration: "", image: null });
+      setForm({
+        title: "",
+        category: "",
+        duration: "",
+        coursesdescription: "",
+        description: "",
+        image: null,
+      });
       setEditId(null);
       fetchCourses();
     } catch (err) {
@@ -242,18 +145,20 @@ export default function Courses() {
     }
   };
 
-  const handleEdit = (course) => {
+  const handleEdit = (course: Course) => {
     setForm({
       title: course.title,
       category: course.category,
       duration: course.duration,
+      coursesdescription: course.coursesdescription,
+      description: course.description,
       image: null,
     });
     setEditId(course._id);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this course?")) return;
     try {
       await axios.delete(`http://localhost:5000/api/courses/${id}`);
@@ -331,6 +236,25 @@ export default function Courses() {
           className="form-control mb-2"
           required
         />
+        <textarea
+          name="coursesdescription"
+          placeholder="Courses Description"
+          value={form.coursesdescription}
+          onChange={handleChange}
+          className="form-control mb-2"
+          rows={3}
+          required
+        />
+
+        <textarea
+          name="description"
+          placeholder="Certificate Description"
+          value={form.description}
+          onChange={handleChange}
+          className="form-control mb-2 fw-bold font-monospace"
+          rows={3}
+          required
+        />
         <input
           name="image"
           type="file"
@@ -354,7 +278,14 @@ export default function Courses() {
             className="btn btn-secondary ms-2"
             onClick={() => {
               setEditId(null);
-              setForm({ title: "", category: "", duration: "", image: null });
+              setForm({
+                title: "",
+                category: "",
+                duration: "",
+                description: "",
+                coursesdescription: "",
+                image: null,
+              });
             }}
             disabled={loading}
           >
@@ -405,12 +336,27 @@ export default function Courses() {
                   className="card-img-top rounded-2 p-3"
                   style={{ objectFit: "cover", height: "200px" }}
                 />
+
                 <div className="card-body">
                   <h5 className="card-title">{c.title}</h5>
                   <p className="card-text">
                     {c.category} | {c.duration}
                   </p>
                   <small className="text-muted">ID: {c._id}</small>
+                  <p
+                    className="card-text text-muted"
+                    style={{ fontSize: "0.9rem" }}
+                  >
+                    {c.coursesdescription?.substring(0, 500) ||
+                      "No description available."}
+                  </p>
+                  <p
+                    className="card-text text-muted"
+                    style={{ fontSize: "0.9rem" }}
+                  >
+                    {c.description?.substring(0, 100) ||
+                      "No description available."}
+                  </p>
                   <div className="mt-2">
                     <button
                       className="btn btn-sm btn-warning me-2"

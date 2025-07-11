@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 const courseSchema = new mongoose.Schema({
   title: String,
   category: String,
+  coursesdescription: String,
   description: String, 
   duration: String,
   image: String, 

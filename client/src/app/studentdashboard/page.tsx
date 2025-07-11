@@ -1,6 +1,4 @@
-
 "use client";
-
 
 import { PageHeader } from "@/app/Component/page-header";
 import { BookOpen, CheckCircle, TrendingUp } from "lucide-react";
@@ -11,12 +9,21 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import DownloadCertificate from "../Component/DownloadCertificate";
 
+interface Announcement {
+  _id: string;
+  title: string;
+  content: string;
+  author: string;
+  date: string;
+}
+
 export default function DashboardPage() {
   // 🔐 States for authentication and user data
   const [student, setStudent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   const [error, setError] = useState<string | null>(null);
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
 
   const router = useRouter();
 
@@ -26,6 +33,26 @@ export default function DashboardPage() {
     if (!token) {
       router.push("/auth/studentLogin");
     }
+  }, []);
+
+  const fetchAnnouncements = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/announcements");
+      const today = new Date().toISOString().split("T")[0];
+
+      const todaysAnnouncements = res.data.filter((ann: Announcement) =>
+        ann.date.startsWith(today)
+      );
+
+      setAnnouncements(todaysAnnouncements);
+    } catch (error) {
+      console.error("Failed to fetch announcements", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchStudent();
+    fetchAnnouncements();
   }, []);
 
   // Fetch function बाहिर निकालियो ताकि retry मा पनि चलाउन सकियोस्
@@ -179,22 +206,24 @@ export default function DashboardPage() {
       </div>
 
       {completedCourses.length > 0 && (
-  <div className="alert alert-success mt-3">
-    🎉 You’ve completed {completedCourses.length} course(s). Don’t forget to download your certificates!
-  </div>
-)}
-
+        <div className="alert alert-success mt-3">
+          🎉 You’ve completed {completedCourses.length} course(s). Don’t forget
+          to download your certificates!
+        </div>
+      )}
 
       {/* 🎓 Completed Courses & Certificate Download */}
-<div className="row g-2 mt-2">
-  <div className="col-md-12">
-    <div className="card shadow-sm h-100">
-      <div className="card-header">
-        <h5 className="mb-1">🎓 Completed Courses</h5>
-        <small className="text-muted">Download your course certificates here.</small>
-      </div>
-      <div className="card-body">
-        {/* {completedCourses.length === 0 ? (
+      <div className="row g-2 mt-2">
+        <div className="col-md-12">
+          <div className="card shadow-sm h-100">
+            <div className="card-header">
+              <h5 className="mb-1">🎓 Completed Courses</h5>
+              <small className="text-muted">
+                Download your course certificates here.
+              </small>
+            </div>
+            <div className="card-body">
+              {/* {completedCourses.length === 0 ? (
           <p className="small text-muted">No completed courses yet.</p>
         ) : (
           completedCourses.map((course: any) => (
@@ -218,32 +247,31 @@ export default function DashboardPage() {
           ))
         )} */}
 
-
-        
-{completedCourses.length === 0 ? (
-  <p className="small text-muted">No completed courses yet.</p>
-) : (
-  completedCourses.map((course: any) => (
-    <div
-      key={course._id}
-      className="d-flex justify-content-between align-items-center mb-3 p-3 border rounded"
-    >
-      <div>
-        <h6 className="mb-1">{course.courseId?.title || "Untitled Course"}</h6>
-        <small className="text-muted">100% completed</small>
+              {completedCourses.length === 0 ? (
+                <p className="small text-muted">No completed courses yet.</p>
+              ) : (
+                completedCourses.map((course: any) => (
+                  <div
+                    key={course._id}
+                    className="d-flex justify-content-between align-items-center mb-3 p-3 border rounded"
+                  >
+                    <div>
+                      <h6 className="mb-1">
+                        {course.courseId?.title || "Untitled Course"}
+                      </h6>
+                      <small className="text-muted">100% completed</small>
+                    </div>
+                    <DownloadCertificate
+                      studentId={course.studentId}
+                      courseId={course.courseId._id}
+                    />
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
       </div>
-      <DownloadCertificate
-        studentId={course.studentId}
-        courseId={course.courseId._id}
-      />
-    </div>
-  ))
-)} 
-      </div>
-    </div>
-  </div>
-</div>
-
 
       {/* 📚 In Progress Courses */}
       <div className="row g-2 mt-2">
@@ -265,7 +293,9 @@ export default function DashboardPage() {
                       style={{ cursor: "pointer" }}
                     >
                       <div>
-                        <h6 className="mb-1">{course.courseId?.title || "Untitled Course"}</h6>
+                        <h6 className="mb-1">
+                          {course.courseId?.title || "Untitled Course"}
+                        </h6>
 
                         <small className="text-muted">
                           {course.progress}% complete
@@ -275,7 +305,7 @@ export default function DashboardPage() {
                         href={{
                           pathname: `/studentdashboard/courses/${course.courseId._id}`,
                           query: {
-                            teacherId: course.teacherId, 
+                            teacherId: course.teacherId,
                           },
                         }}
                         className="btn btn-outline-primary btn-sm"
@@ -305,6 +335,20 @@ export default function DashboardPage() {
             </div>
             <div className="card-body">
               <p>Coming soon or integrate real announcements here.</p>
+              {announcements.length === 0 ? (
+                <p className="small text-muted">No announcements today.</p>
+              ) : (
+                announcements.map((ann) => (
+                  <div key={ann._id} className="mb-3">
+                    <h6 className="mb-1">{ann.title}</h6>
+                    <small className="text-muted">
+                      {new Date(ann.date).toLocaleTimeString()}
+                    </small>
+                    <p className="mb-1">{ann.content}</p>
+                    <hr />
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>

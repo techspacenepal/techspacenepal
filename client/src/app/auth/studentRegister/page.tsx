@@ -10,7 +10,7 @@ import { HomeIcon } from "lucide-react";
 
 const StudentRegisterPage: React.FC = () => {
   const router = useRouter();
-
+  const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [number, setNumber] = useState("");
@@ -33,9 +33,7 @@ const StudentRegisterPage: React.FC = () => {
       return;
     }
 
-
-
-     if (!/^(98|97|96)[0-9]{8}$/.test(number)) {
+    if (!/^(98|97|96)[0-9]{8}$/.test(number)) {
       toast.error("Enter valid 98/97/96 number");
       setLoading(false);
       return;
@@ -50,12 +48,27 @@ const StudentRegisterPage: React.FC = () => {
     }
 
     try {
+ 
+  const usernameCheck = await axios.get(`http://localhost:5000/api/students/check-username/${username}`);
+  if (usernameCheck.data.exists) {
+    toast.error("Username already exits. Try a different one.");
+    setLoading(false);
+    return;
+  }
+} catch (checkError) {
+  toast.error("Failed to verify username uniqueness.");
+  setLoading(false);
+  return;
+}
+
+    try {
       await axios.post("http://localhost:5000/api/students/register", {
+        fullName,
         username,
         email,
         number,
         password,
-        role: "student", // ✅ Hardcoded role as "student"
+        role: "student", 
       });
 
       toast.success("Registration successful! Please login.");
@@ -74,11 +87,22 @@ const StudentRegisterPage: React.FC = () => {
         <div className="text-center mb-3">
           <Image src="/logo.png" alt="Logo" width={90} height={80} />
           <p className="fw-bold text-muted mt-2">
-            Please register as a student
+            Create your student account to begin your learning journey. 
           </p>
         </div>
 
         <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label className="form-label">Full Name</label>
+            <input
+              type="text"
+              className="form-control"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+            />
+          </div>
+
           <div className="mb-3">
             <label className="form-label">Username</label>
             <input
@@ -101,23 +125,22 @@ const StudentRegisterPage: React.FC = () => {
             />
           </div>
 
-            <div className="mb-3">
+          <div className="mb-3">
             <label className="form-label">Number</label>
             <input
-  type="text"
-  className="form-control"
-  value={number}
-  onChange={(e) => {
-    const input = e.target.value;
-    // Allow only digits and max 10 characters
-    if (/^\d{0,10}$/.test(input)) {
-      setNumber(input);
-    }
-  }}
-  placeholder="Enter 10-digit Nepali number"
-  required
-/>
-
+              type="text"
+              className="form-control"
+              value={number}
+              onChange={(e) => {
+                const input = e.target.value;
+                // Allow only digits and max 10 characters
+                if (/^\d{0,10}$/.test(input)) {
+                  setNumber(input);
+                }
+              }}
+              placeholder="Enter 10-digit Nepali number"
+              required
+            />
           </div>
 
           <div className="mb-3">

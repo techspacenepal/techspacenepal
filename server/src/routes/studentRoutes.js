@@ -54,4 +54,16 @@ const upload = multer({ storage });
 router.put('/upload-avatar', protect, uploadAvatar);
 
 
+// studentRoutes.js
+router.get("/check-username/:username", async (req, res) => {
+  try {
+    const student = await Student.findOne({ username: req.params.username });
+    res.json({ exists: !!student });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+
 export default router;

@@ -241,8 +241,6 @@
 //   );
 // }
 
-
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -265,7 +263,9 @@ interface CourseInfo {
 }
 
 export default function CourseDetailsPage() {
-  const { id: courseId } = useParams();
+  // const { id: courseId } = useParams();
+  const params = useParams() as { id: string };
+  const courseId = params.id;
   const [teacherId, setTeacherId] = useState<string | null>(null);
   const [students, setStudents] = useState<EnrolledStudent[]>([]);
   const [course, setCourse] = useState<CourseInfo | null>(null);
@@ -401,23 +401,22 @@ export default function CourseDetailsPage() {
         />
       )} */}
 
-
-
       {course?.status !== "published" ? (
-  <p className="alert alert-warning">
-    ⚠️ You must <strong>publish</strong> the course before uploading videos.
-  </p>
-) : students.length === 0 ? (
-  <p className="alert alert-danger">
-    ⚠️ No students enrolled. Please wait until at least one student is enrolled to upload videos.
-  </p>
-) : (
-  <TeachersVideoUploadForm
-    teacherId={teacherId!}
-    courseId={courseId as string}
-  />
-)}
-
+        <p className="alert alert-warning">
+          ⚠️ You must <strong>publish</strong> the course before uploading
+          videos.
+        </p>
+      ) : students.length === 0 ? (
+        <p className="alert alert-danger">
+          ⚠️ No students enrolled. Please wait until at least one student is
+          enrolled to upload videos.
+        </p>
+      ) : (
+        <TeachersVideoUploadForm
+          teacherId={teacherId!}
+          courseId={courseId as string}
+        />
+      )}
     </div>
   );
 }

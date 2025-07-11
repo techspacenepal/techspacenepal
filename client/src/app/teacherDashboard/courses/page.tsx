@@ -203,8 +203,6 @@
 //   );
 // }
 
-
-
 // "use client";
 
 // import React, { useEffect, useState } from "react";
@@ -234,9 +232,7 @@
 //   const [loading, setLoading] = useState(true);
 //   const [error, setError] = useState("");
 
-
 //   const [publishingId, setPublishingId] = useState<string | null>(null);
-
 
 //   // ✅ Get teacher ID from localStorage
 //   useEffect(() => {
@@ -490,11 +486,6 @@
 //   );
 // }
 
-
-
-
-
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -589,7 +580,8 @@ export default function TeacherCourseList() {
     }
   };
 
-  if (loading) return <div className="text-center mt-5 text-primary">Loading...</div>;
+  if (loading)
+    return <div className="text-center mt-5 text-primary">Loading...</div>;
   if (error) return <div className="text-danger text-center mt-4">{error}</div>;
 
   return (
@@ -657,13 +649,22 @@ export default function TeacherCourseList() {
                 </td>
                 <td>
                   {course.studentCount}
-                  {course.students?.length > 0 && (
+                  {/* {course.students?.length > 0 && (
                     <ul className="list-unstyled small mt-1">
                       {course.students.map((student, idx) => (
                         <li key={student._id + idx}>{student.username}</li>
                       ))}
                     </ul>
-                  )}
+                  )} */}
+
+                  {Array.isArray(course.students) &&
+                    course.students.length > 0 && (
+                      <ul className="list-unstyled small mt-1">
+                        {course.students.map((student, idx) => (
+                          <li key={student._id + idx}>{student.username}</li>
+                        ))}
+                      </ul>
+                    )}
                 </td>
                 <td className="text-end">
                   <Dropdown align="end" autoClose="outside">
@@ -671,7 +672,10 @@ export default function TeacherCourseList() {
                       ⋮
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
-                      <Dropdown.Item as={Link} href={`/teacherDashboard/courses/${course.courseId}`}>
+                      <Dropdown.Item
+                        as={Link}
+                        href={`/teacherDashboard/courses/${course.courseId}`}
+                      >
                         View
                       </Dropdown.Item>
                       <Dropdown.Item

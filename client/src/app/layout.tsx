@@ -7,6 +7,9 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import { AuthProvider } from "./context/AuthContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import LoadingWrapper from "./loadingWrapper"; // Client loader import
+import Footer from "./Component/Footer";
+import Header from "./Component/Header";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +39,9 @@ export default function RootLayout({
           clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
         >
           <AuthProvider>
-            <LoadingWrapper>{children}</LoadingWrapper>
+            <Header/>
+              {children}
+              <Footer/>
           </AuthProvider>
         </GoogleOAuthProvider>
       </body>

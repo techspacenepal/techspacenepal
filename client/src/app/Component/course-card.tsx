@@ -114,13 +114,14 @@ interface EnrolledCourse {
   _id: string;
   studentId: any;
   teacherId: any;
+  instructor: string;
   courseId: {
     _id: string;
     title: string;
     instructor: string;
-    description?: string;
+    coursesdescription?: string;
     image?: string;
-    duration?: number; // ✅ Make sure duration is here
+    duration?: number; 
   };
   progress?: number;
 }
@@ -178,6 +179,8 @@ export function CourseCard({ course }: { course: EnrolledCourse }) {
       <div className="card-body d-flex flex-column flex-grow-1">
         <h5 className="card-title text-truncate">{courseInfo.title}</h5>
         <p className="card-subtitle text-muted mb-2 small">By {course.instructor}</p>
+        
+
         <p
           className="card-text flex-grow-1 text-truncate"
           style={{
@@ -187,7 +190,7 @@ export function CourseCard({ course }: { course: EnrolledCourse }) {
             overflow: 'hidden',
           }}
         >
-          {courseInfo.description}
+          {courseInfo.coursesdescription}
         </p>
 
         {/* Progress bar */}

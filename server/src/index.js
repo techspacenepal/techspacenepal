@@ -54,24 +54,13 @@ app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public')); 
 
 
-// Serve static uploads folder
-// ध्यान दिनुहोस्: यो path ले server/src बाट बाहिर server/uploads मा पुग्छ
+
+
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
-
-
-//////-----today mobile devices
-// app.use(cors({
-//   origin: '*', // development मा, production मा specific domain राख्नुहोस्
-//   methods: ['GET', 'POST', 'PUT', 'DELETE']
-// }));
-
-
-// certificates 
-// app.use('/certificates', express.static(path.join(__dirname, 'public/certificates')));
-// Serve static PDF files
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+  
 app.use("/certificates", express.static(path.join(process.cwd(), "public", "certificates")));
 
 
@@ -97,6 +86,7 @@ app.use("/api/videos", videoRoutes);
 
 // app.use("/api", certificateRoutes);
 app.use("/api/certificates", certificateRoutes);
+
 
 // Google OAuth login
 app.get(
