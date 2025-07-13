@@ -1323,7 +1323,7 @@ export default function LogoLoader({ children, size = 120 }: { children: React.R
     return () => clearInterval(interval);
   }, []);
 
-  const styles = {
+ const styles: { [key: string]: React.CSSProperties } = {
     container: {
       display: "flex",
       flexDirection: "column",
@@ -1359,10 +1359,17 @@ export default function LogoLoader({ children, size = 120 }: { children: React.R
       background: "linear-gradient(135deg, #6BCF7F, #4CAF50)",
       boxShadow: "0 4px 20px rgba(76, 175, 80, 0.3)",
       ...(phase === "start"
-        ? { transform: "translate(-400px, -400px) rotate(-180deg) scale(0.3)", opacity: 0 }
+        ? {
+            transform: "translate(-400px, -400px) rotate(-180deg) scale(0.3)",
+            opacity: 0,
+          }
         : phase === "flying"
         ? { animation: "flyInGreen 3s ease forwards" }
-        : { top: "0px", left: `${size * 0.125}px`, transform: "rotate(0deg) scale(1)" }),
+        : {
+            top: "0px",
+            left: `${size * 0.125}px`,
+            transform: "rotate(0deg) scale(1)",
+          }),
       zIndex: 3,
     },
     orange: {
@@ -1371,10 +1378,17 @@ export default function LogoLoader({ children, size = 120 }: { children: React.R
       background: "linear-gradient(135deg, #FF9500, #FF6F00)",
       boxShadow: "0 4px 20px rgba(255, 149, 0, 0.3)",
       ...(phase === "start"
-        ? { transform: "translate(-500px, 0px) rotate(270deg) scale(0.2)", opacity: 0 }
+        ? {
+            transform: "translate(-500px, 0px) rotate(270deg) scale(0.2)",
+            opacity: 0,
+          }
         : phase === "flying"
         ? { animation: "flyInOrange 3s ease 0.5s forwards" }
-        : { top: `${size * 0.125}px`, left: "0px", transform: "rotate(0deg) scale(1)" }),
+        : {
+            top: `${size * 0.125}px`,
+            left: "0px",
+            transform: "rotate(0deg) scale(1)",
+          }),
       zIndex: 2,
     },
     blue: {
@@ -1383,10 +1397,17 @@ export default function LogoLoader({ children, size = 120 }: { children: React.R
       background: "linear-gradient(135deg, #4A90E2, #1976D2)",
       boxShadow: "0 4px 20px rgba(74, 144, 226, 0.3)",
       ...(phase === "start"
-        ? { transform: "translate(400px, -400px) rotate(90deg) scale(0.3)", opacity: 0 }
+        ? {
+            transform: "translate(400px, -400px) rotate(90deg) scale(0.3)",
+            opacity: 0,
+          }
         : phase === "flying"
         ? { animation: "flyInBlue 3s ease 1s forwards" }
-        : { top: `${size * 0.125}px`, right: "0px", transform: "rotate(0deg) scale(1)" }),
+        : {
+            top: `${size * 0.125}px`,
+            right: "0px",
+            transform: "rotate(0deg) scale(1)",
+          }),
       zIndex: 2,
     },
     red: {
@@ -1395,10 +1416,17 @@ export default function LogoLoader({ children, size = 120 }: { children: React.R
       background: "linear-gradient(135deg, #FF5252, #D32F2F)",
       boxShadow: "0 4px 20px rgba(255, 82, 82, 0.3)",
       ...(phase === "start"
-        ? { transform: "translate(500px, 500px) rotate(180deg) scale(0.2)", opacity: 0 }
+        ? {
+            transform: "translate(500px, 500px) rotate(180deg) scale(0.2)",
+            opacity: 0,
+          }
         : phase === "flying"
         ? { animation: "flyInRed 3s ease 1.5s forwards" }
-        : { bottom: "0px", left: `${size * 0.125}px`, transform: "rotate(0deg) scale(1)" }),
+        : {
+            bottom: "0px",
+            left: `${size * 0.125}px`,
+            transform: "rotate(0deg) scale(1)",
+          }),
       zIndex: 3,
     },
     loadingText: {
@@ -1409,6 +1437,8 @@ export default function LogoLoader({ children, size = 120 }: { children: React.R
       animation: "textPulse 2s ease-in-out infinite",
     },
   };
+
+
 
   const getPhaseText = () => {
     switch (phase) {

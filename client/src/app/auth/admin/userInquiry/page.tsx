@@ -92,7 +92,7 @@ const InquiryTable = () => {
       ) : filteredInquiries.length === 0 ? (
         <p className="text-muted">No inquiries found.</p>
       ) : (
-        <div className="bg-white rounded-4 shadow border border-2 overflow-auto">
+        <div className="bg-white rounded-4 shadow  border-2 overflow-auto">
           <table
             className="table table-striped table-hover align-middle mb-0 w-100"
             style={{

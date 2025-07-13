@@ -1,6 +1,6 @@
 'use client';
 
-import { Bell } from 'lucide-react';
+import { Bell, ListCheck } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { House, Book, People, ClipboardCheck, Cpu } from 'react-bootstrap-icons';
@@ -8,7 +8,8 @@ import { House, Book, People, ClipboardCheck, Cpu } from 'react-bootstrap-icons'
 interface NavItem {
   href: string;
   title: string;
-  icon: JSX.Element;
+  // icon: JSX.Element;
+   icon: React.ReactNode; 
 }
 
 interface MainNavProps {
@@ -19,12 +20,13 @@ export function MainNav({ collapsed }: MainNavProps) {
   const pathname = usePathname();
 
   const navItems: NavItem[] = [
-    { href: '/teacherDashboard', title: 'Dashboard', icon: <House /> },
+    { href: '/auth/Dashboard/teacherDashboard', title: 'Dashboard', icon: <House /> },
     
-    { href: '/teacherDashboard/courses', title: 'Courses', icon: <Book /> },
-    { href: '/teacherDashboard/students', title: 'Students', icon: <People /> },
-    { href: '/teacherDashboard/grades', title: 'Grades', icon: <ClipboardCheck /> },
-    { href: '/teacherDashboard/teacherNotification', title: 'send Notification', icon: <Bell /> },
+    { href: '/auth/Dashboard/teacherDashboard/courses', title: 'Courses', icon: <Book /> },
+    { href: '/auth/Dashboard/teacherDashboard/students', title: 'Students', icon: <People /> },
+    { href: '/auth/Dashboard/teacherDashboard/grades', title: 'Grades', icon: <ClipboardCheck /> },
+    { href: '/auth/Dashboard/teacherDashboard/teacherNotification', title: 'send Notification', icon: <Bell /> },
+    { href: '/auth/Dashboard/teacherDashboard/todolist', title: 'Todo List', icon: <ListCheck />},
   ];
 
   return (

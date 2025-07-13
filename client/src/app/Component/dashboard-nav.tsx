@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BookOpen,
+  CheckSquare,
   ClipboardList,
   GraduationCap,
   LayoutDashboard,
@@ -20,8 +21,7 @@ const navItems = [
   { href: "/studentdashboard/courses", label: "Courses", icon: BookOpen },
   { href: "/studentdashboard/gradebook", label: "Gradebook", icon: ClipboardList },
   { href: "/studentdashboard/announcements", label: "Announcements", icon: Megaphone },
-
- 
+    { href: "/studentdashboard/todoList", label: "To Do List", icon: CheckSquare },
 
 ];
 

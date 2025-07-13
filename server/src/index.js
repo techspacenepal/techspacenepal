@@ -23,6 +23,7 @@ import classRoutes from './routes/classRoutes.js';
 import studentRoutes from './routes/studentRoutes.js';
 import enrolledCoursesRoutes from './routes/enrolledCoursesRoutes.js';
 import serviceRoutes from './routes/serviceRoutes.js';
+import todoRoutes from './routes/todoRoutes.js';
 
 
 import courseRoutes from './routes/courseRoutes.js';
@@ -87,6 +88,7 @@ app.use("/api/videos", videoRoutes);
 // app.use("/api", certificateRoutes);
 app.use("/api/certificates", certificateRoutes);
 
+app.use('/api/todos', todoRoutes);
 
 // Google OAuth login
 app.get(

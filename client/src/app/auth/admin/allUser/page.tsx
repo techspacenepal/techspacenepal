@@ -9,13 +9,16 @@ import { useRouter } from "next/navigation";
 // 🔰 Common user interface
 interface User {
   _id: string;
+  fullName: string;
   username: string;
+  number: string;
   email: string;
   role: string;
-  createdAt?: string; // Optional in case students don't have it
+  createdAt?: string; 
 }
 
 export default function UserManagementPage() {
+  
   const [users, setUsers] = useState<User[]>([]); // all users from /api/auth/users
   const [students, setStudents] = useState<User[]>([]); // students from /api/students
   const [loading, setLoading] = useState(true);
@@ -35,7 +38,7 @@ export default function UserManagementPage() {
         router.push("/auth/adminLogin");
       } else {
         fetchUsers();
-        fetchStudents(); // 👈 fetch student list separately
+        fetchStudents(); 
       }
       setPageLoading(false);
     }, 1000);
@@ -255,7 +258,7 @@ function UserTable({
   data,
   handleDelete,
   showId,
-  hideActions = false, // ✅ new prop with default value false
+  hideActions = false, 
 }: {
   data: User[];
   handleDelete: (id: string) => void;
@@ -269,11 +272,13 @@ function UserTable({
           <tr>
             <th>#</th>
             {showId && <th>ID</th>}
+            <th>Full Name</th>
             <th>Username</th>
+            <th>Number</th>
             <th>Email</th>
             <th>Role</th>
             <th>Date</th>
-            {!hideActions && <th>Actions</th>} {/* ✅ Hide column header */}
+            {!hideActions && <th>Actions</th>}
           </tr>
         </thead>
         <tbody>
@@ -281,7 +286,9 @@ function UserTable({
             <tr key={user._id} className="text-center">
               <td>{idx + 1}</td>
               {showId && <td>{user._id}</td>}
+              <td>{user.fullName}</td>
               <td>{user.username}</td>
+               <td>{user.number}</td>
               <td>{user.email}</td>
               <td>{user.role}</td>
               <td>{new Date(user.createdAt || "").toLocaleDateString()}</td>

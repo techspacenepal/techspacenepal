@@ -7,9 +7,10 @@ import { z } from 'zod';
 import { courses } from '@/lib/placeholder-data';
 import type { Course } from '@/lib/types';
 import type { ImproveCourseContentOutput } from '@/ai/flows/improve-course-content';
-import { getImprovedContent } from '../teacherDashboard/actions';
+
 import { Sparkles } from 'lucide-react';
 import { toast } from 'react-toastify';
+import { getImprovedContent } from '../auth/Dashboard/teacherDashboard/actions';
 
 const formSchema = z.object({
   courseId: z.string().min(1, 'Please select a course.'),

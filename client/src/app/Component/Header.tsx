@@ -314,12 +314,12 @@ export default function TopNavbar() {
                     <Link
                       href={
                         user?.role === "admin"
-                          ? "/Dashboard/adminDashboard"
+                          ? "/auth/Dashboard/adminDashboard"
                           : user?.role === "student"
                           ? "/studentdashboard"
                           : user?.role === "teacher"
-                          ? "/teacherDashboard"
-                          : "/Dashboard/userDashboard"
+                          ? "/auth/Dashboard/teacherDashboard"
+                          : "/auth/Dashboard/userDashboard"
                       }
                       className="btn btn-outline-primary px-3 py-2 ms-2"
                     >

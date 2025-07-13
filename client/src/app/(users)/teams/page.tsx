@@ -5,8 +5,19 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+
+interface TeamMember {
+  _id: string;
+  name: string;
+  role: string;
+  bio: string;
+  image: string;
+}
+
+
 export default function TeamListPage() {
-  const [team, setTeam] = useState([]);
+  // const [team, setTeam] = useState([]);
+  const [team, setTeam] = useState<TeamMember[]>([]);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -30,7 +41,7 @@ export default function TeamListPage() {
     }
   };
 
-  const renderCard = (member) => (
+  const renderCard = (member: TeamMember) => (
     <div
       className={`d-flex ${isMobile ? "me-3" : "col-md-4"}`}
       key={member._id}

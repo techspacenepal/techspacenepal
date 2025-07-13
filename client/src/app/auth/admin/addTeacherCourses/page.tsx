@@ -5,11 +5,19 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
+interface Course {
+  _id: string;
+  title: string;
+}
+
+
 export default function AddTeacherCourseForm() {
   const router = useRouter();
 
   const [teacherId, setTeacherId] = useState('');
-  const [courses, setCourses] = useState([]);
+  // const [courses, setCourses] = useState([]);
+  const [courses, setCourses] = useState<Course[]>([]);
+
   const [formData, setFormData] = useState({
     name: '',
     description: '',

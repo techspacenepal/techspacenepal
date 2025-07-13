@@ -2,8 +2,21 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+
+interface ClassItem {
+  _id: string;
+  title: string;
+  imageUrl: string;
+  duration: string;
+  date: string;
+  time: string;
+}
+
+
 export default function UpcomingClassesUserPanel() {
-  const [classes, setClasses] = useState([]);
+  // const [classes, setClasses] = useState([]);
+  const [classes, setClasses] = useState<ClassItem[]>([]);
+
 
   useEffect(() => {
     axios

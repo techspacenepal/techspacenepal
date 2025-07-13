@@ -11,6 +11,8 @@ interface User {
   email: string;
 }
 
+
+
 export function UserNav() {
   const [user, setUser] = useState<User | null>(null);
   const [circleColor, setCircleColor] = useState('bg-primary'); // default blue
@@ -81,7 +83,7 @@ export function UserNav() {
           <hr className="dropdown-divider" />
         </li>
         <li>
-          <Link href={'/teacherDashboard/profile'} className='text-decoration-none'>
+          <Link href={'/auth/Dashboard/teacherDashboard/profile'} className='text-decoration-none'>
           <button className="dropdown-item ">Profile</button>
           </Link>
         </li>
@@ -107,3 +109,4 @@ export function UserNav() {
     </div>
   );
 }
+

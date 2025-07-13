@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /auth/
+Disallow: /api/
+Disallow: /auth/Dashboard/
+Disallow: /auth/Dashboard/teacherDashboard

@@ -354,7 +354,7 @@ dotenv.config();
 
 // Helper function to generate JWT token with user ID and role, expires in 1 day
 const generateToken = (id, role) => {
-  return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "1d" });
+  return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "30d" });
 };
 
 // Student Registration Handler
@@ -414,7 +414,7 @@ export const loginStudent = async (req, res) => {
     // Compare entered password with stored hashed password
     const isMatch = await bcrypt.compare(password, student.password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid Password" });
+      return res.status(401).json({ message: "Invalid email or password" });
     }
 
     // Generate JWT token on successful login
