@@ -401,6 +401,34 @@ export const getAllStudents = async (req, res) => {
 };
 
 // Student login handler
+// export const loginStudent = async (req, res) => {
+//   const { email, password } = req.body;
+
+//   try {
+//     // Find student by email
+//     const student = await Student.findOne({ email });
+//     if (!student) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
+
+//     // Compare entered password with stored hashed password
+//     const isMatch = await bcrypt.compare(password, student.password);
+//     if (!isMatch) {
+//       return res.status(401).json({ message: "Invalid email or password" });
+//     }
+
+//     // Generate JWT token on successful login
+//     const token = generateToken(student._id, student.role);
+//     res.status(200).json({
+//       token,
+//       username: student.username,
+//       role: student.role,
+//     });
+//   } catch (error) {
+//     console.error("Login error:", error);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
 export const loginStudent = async (req, res) => {
   const { email, password } = req.body;
 
@@ -419,10 +447,28 @@ export const loginStudent = async (req, res) => {
 
     // Generate JWT token on successful login
     const token = generateToken(student._id, student.role);
+
+     // Cookie set गर्नुहोस्
+   res.cookie("token", token, {
+  httpOnly: true,              
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "strict",
+  // maxAge: 30 * 24 * 60 * 60 * 1000 ,
+  maxAge: 86400000,
+  path: "/",
+});
+
+    // Send student info along with token for frontend usage
     res.status(200).json({
       token,
       username: student.username,
       role: student.role,
+      student: {
+        _id: student._id,  // Add this line
+        email: student.email,
+        username: student.username,
+        role: student.role,
+      },
     });
   } catch (error) {
     console.error("Login error:", error);
@@ -430,10 +476,31 @@ export const loginStudent = async (req, res) => {
   }
 };
 
+
 // Get logged-in student's profile
+// export const getStudentProfile = async (req, res) => {
+//   try {
+//     // Fetch student by ID stored in the authenticated request (req.user)
+//     const student = await Student.findById(req.user._id).select("-password");
+
+//     if (!student) {
+//       return res.status(404).json({ message: "Student not found" });
+//     }
+
+//     res.status(200).json(student);
+//   } catch (error) {
+//     console.error("Profile Fetch Error:", error);
+//     res.status(500).json({ message: "Server Error" });
+//   }
+// };
+
+
 export const getStudentProfile = async (req, res) => {
   try {
-    // Fetch student by ID stored in the authenticated request (req.user)
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized. No user found." });
+    }
+
     const student = await Student.findById(req.user._id).select("-password");
 
     if (!student) {
@@ -446,6 +513,7 @@ export const getStudentProfile = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
 
 // Get courses a student is enrolled in
 export const getEnrolledCourses = async (req, res) => {
@@ -664,23 +732,59 @@ export const githubLogin = async (req, res) => {
 };
 
 // Facebook OAuth login or registration
+// export const facebookLogin = async (req, res) => {
+//   const { email, name } = req.body;
+
+//   try {
+//     let student = await Student.findOne({ email });
+
+//     // If student not found, create with dummy password
+//     if (!student) {
+//       student = await Student.create({
+//         email,
+//         username: name,
+//         password: "facebook-login",
+//         role: "student",
+//       });
+//     }
+
+//     // Generate JWT token valid for 7 days
+//     const token = jwt.sign(
+//       { id: student._id, role: student.role },
+//       process.env.JWT_SECRET,
+//       { expiresIn: "7d" }
+//     );
+
+//     res.status(200).json({
+//       token,
+//       role: student.role,
+//       username: student.username,
+//     });
+//   } catch (error) {
+//     console.error("Facebook login error:", error);
+//     res.status(500).json({ message: "Facebook login failed" });
+//   }
+// };
+
 export const facebookLogin = async (req, res) => {
   const { email, name } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: "Facebook login requires email permission." });
+  }
 
   try {
     let student = await Student.findOne({ email });
 
-    // If student not found, create with dummy password
     if (!student) {
       student = await Student.create({
         email,
-        username: name,
-        password: "facebook-login",
+        username: name || email.split('@')[0], // fallback username
+        password: Math.random().toString(36).slice(-8), // dummy unique password
         role: "student",
       });
     }
 
-    // Generate JWT token valid for 7 days
     const token = jwt.sign(
       { id: student._id, role: student.role },
       process.env.JWT_SECRET,
@@ -697,6 +801,7 @@ export const facebookLogin = async (req, res) => {
     res.status(500).json({ message: "Facebook login failed" });
   }
 };
+
 
 // Get detailed student info by student ID, including course and progress
 export const getStudentById = async (req, res) => {

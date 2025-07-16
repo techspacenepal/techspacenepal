@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import cookieParser from 'cookie-parser';
+import cookieParser from "cookie-parser";
 import session from 'express-session';
 import passport from 'passport';
 import jwt from 'jsonwebtoken';
@@ -42,6 +42,7 @@ import certificateRoutes from "./routes/certificateRoutes.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+
 // Initialize app
 const app = express();
 
@@ -55,7 +56,7 @@ app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(cookieParser());
 
 
 
@@ -74,6 +75,7 @@ app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/team', teamRoutes);
 app.use('/api/classes', classRoutes);
 app.use('/api/students', studentRoutes);
+
 app.use('/api/enrolledCourses', enrolledCoursesRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/announcements', announcementRoutes);
@@ -87,8 +89,8 @@ app.use("/api/videos", videoRoutes);
 
 // app.use("/api", certificateRoutes);
 app.use("/api/certificates", certificateRoutes);
-
 app.use('/api/todos', todoRoutes);
+
 
 // Google OAuth login
 app.get(

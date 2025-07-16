@@ -5,11 +5,12 @@ import Student from "../models/student.js";
 import multer from "multer";
 
 
+
 const router = express.Router();
 
 router.post('/register', registerStudent);
 router.post("/login", loginStudent);
-router.get('/profile', protect, getStudentProfile);
+router.get("/profile", protect, getStudentProfile);
 router.get("/", getAllStudents);
 router.post("/forgot-password", studentforgotPassword);
 router.post('/reset-password', resetPassword);

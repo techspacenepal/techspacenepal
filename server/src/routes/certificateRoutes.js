@@ -103,8 +103,28 @@ router.get("/courses", async (req, res) => {
 });
 
 // POST generate certificate
+// router.post("/generate", async (req, res) => {
+//   const { studentName, courseTitle, description, grade } = req.body;
+//   const fileName = `${studentName}_${Date.now()}.pdf`;
+//   const certPath = path.join(process.cwd(), "public", "certificates", fileName);
+
+//   if (!fs.existsSync(path.dirname(certPath))) {
+//     fs.mkdirSync(path.dirname(certPath), { recursive: true });
+//   }
+
+//   await generateCertificatePDF(studentName, courseTitle, certPath, description);
+
+//   res.status(200).json({
+//     success: true,
+//     link: `/certificates/${fileName}`,
+//   });
+// });
+
+
+// Update this route:
 router.post("/generate", async (req, res) => {
-  const { studentName, courseTitle, description } = req.body;
+  const { studentName, courseTitle, description, grade } = req.body;
+
   const fileName = `${studentName}_${Date.now()}.pdf`;
   const certPath = path.join(process.cwd(), "public", "certificates", fileName);
 
@@ -112,7 +132,9 @@ router.post("/generate", async (req, res) => {
     fs.mkdirSync(path.dirname(certPath), { recursive: true });
   }
 
-  await generateCertificatePDF(studentName, courseTitle, certPath, description);
+  const displayGrade = grade && grade.trim() !== '' ? grade : 'N/A';
+
+  await generateCertificatePDF(studentName, courseTitle, certPath, description, displayGrade);
 
   res.status(200).json({
     success: true,
@@ -120,7 +142,43 @@ router.post("/generate", async (req, res) => {
   });
 });
 
+
 router.get("/:studentId/:courseId", generateCertificate);
+
+
+// router.get("/:studentId/:courseId", async (req, res) => {
+//   try {
+//     const { studentId, courseId } = req.params;
+
+//     const enrollment = await EnrolledCourse.findOne({ studentId, courseId })
+//       .populate("studentId")
+//       .populate("courseId");
+
+//     if (!enrollment || enrollment.progress < 100) {
+//       return res.status(400).json({ message: "Course not completed yet" });
+//     }
+
+//     const studentName = enrollment.studentId.username;
+//     const courseTitle = enrollment.courseId.title;
+//     const description = enrollment.description || "has successfully completed the course.";
+
+//     const certDir = path.resolve("public", "certificates");
+//     const fileName = `${studentId}_${courseId}.pdf`;
+//     const certPath = path.join(certDir, fileName);
+
+//     if (!fs.existsSync(certDir)) {
+//       fs.mkdirSync(certDir, { recursive: true });
+//     }
+
+//     await generateCertificatePDF(studentName, courseTitle, certPath, description);
+
+//     res.download(certPath, `${studentName}_certificate.pdf`);
+//   } catch (error) {
+//     console.error("Certificate download error:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// });
+
 
 
 router.get("/:studentId/:courseId", async (req, res) => {
@@ -137,7 +195,8 @@ router.get("/:studentId/:courseId", async (req, res) => {
 
     const studentName = enrollment.studentId.username;
     const courseTitle = enrollment.courseId.title;
-    const description = enrollment.description || "has successfully completed the course.";
+    const description = "has successfully completed the course.";
+    const grade = enrollment.grade || 'N/A';
 
     const certDir = path.resolve("public", "certificates");
     const fileName = `${studentId}_${courseId}.pdf`;
@@ -147,7 +206,7 @@ router.get("/:studentId/:courseId", async (req, res) => {
       fs.mkdirSync(certDir, { recursive: true });
     }
 
-    await generateCertificatePDF(studentName, courseTitle, certPath, description);
+    await generateCertificatePDF(studentName, courseTitle, certPath, description, grade);
 
     res.download(certPath, `${studentName}_certificate.pdf`);
   } catch (error) {

@@ -11,7 +11,7 @@ import { useAuth } from "@/app/context/AuthContext";
 
 const AdminLoginPage: React.FC = () => {
   const router = useRouter();
-  const { login } = useAuth(); // Custom AuthContext login
+  const { login } = useAuth(); 
 
   // 🔐 Form state
   const [email, setEmail] = useState("");
@@ -19,49 +19,90 @@ const AdminLoginPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
- 
+
+
+  useEffect(() => {
+    const token = Cookies.get("adminToken") || Cookies.get("teacherToken");
+
+    if (token) {
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+      if (user.role === "admin") {
+        router.push("/auth/Dashboard/adminDashboard");
+      } else if (user.role === "teacher") {
+        router.push("/auth/Dashboard/teacherDashboard");
+      }
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setLoading(true);
-  try {
-    const { data } = await axios.post("http://localhost:5000/api/auth/login", { email, password });
-    console.log("Login response data:", data);
-    login(data.token, {
-  username: data.username,
-  role: data.role,
-});
-    localStorage.setItem("user", JSON.stringify({ username: data.username, email: data.email, role: data.role }));
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const { data } = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        { email, password }
+      );
+      console.log("Login response data:", data);
+      login(data.token, {
+        username: data.username,
+        role: data.role,
+      });
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          username: data.username,
+          email: data.email,
+          role: data.role,
+        })
+      );
 
-    if (data.role === "admin") {
-      Cookies.set("adminToken", data.token);
-      localStorage.setItem("adminToken", data.token);
-      console.log("Admin token saved:", Cookies.get("adminToken"), localStorage.getItem("adminToken"));
-    } else if (data.role === "teacher") {
-      Cookies.set("teacherToken", data.token);
-      localStorage.setItem("teacherToken", data.token);
-      localStorage.setItem("teacherId", data.userId);
-      console.log("Teacher token saved:", Cookies.get("teacherToken"), localStorage.getItem("teacherToken"));
-    }
-
-    toast.success("Login successful!");
-
-    setTimeout(() => {
       if (data.role === "admin") {
-        router.push("/auth/Dashboard/adminDashboard");
-      } else if (data.role === "teacher") {
-        router.push("/auth/Dashboard/teacherDashboard");
-      } else {
-        router.push("/auth/Dashboard/userDashboard");
-      }
-    }, 200);
-  } catch (error: any) {
-    toast.error(error.response?.data?.message || "Login failed!");
-  } finally {
-    setLoading(false);
-  }
-};
+        Cookies.set("adminToken", data.token, {
+          expires: 30,
+          secure: true,
+          sameSite: "strict",
+        });
 
+        localStorage.setItem("adminToken", data.token);
+        console.log(
+          "Admin token saved:",
+          Cookies.get("adminToken"),
+          localStorage.getItem("adminToken")
+        );
+      } else if (data.role === "teacher") {
+        Cookies.set("teacherToken", data.token, {
+          expires: 30,
+          secure: true,
+          sameSite: "strict",
+        });
+
+        localStorage.setItem("teacherToken", data.token);
+        localStorage.setItem("teacherId", data.userId);
+        console.log(
+          "Teacher token saved:",
+          Cookies.get("teacherToken"),
+          localStorage.getItem("teacherToken")
+        );
+      }
+
+      toast.success("Login successful!");
+
+      setTimeout(() => {
+        if (data.role === "admin") {
+          router.push("/auth/Dashboard/adminDashboard");
+        } else if (data.role === "teacher") {
+          router.push("/auth/Dashboard/teacherDashboard");
+        } else {
+          router.push("/auth/Dashboard/userDashboard");
+        }
+      }, 200);
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Login failed!");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="container d-flex align-items-center justify-content-center min-vh-100 px-3">
@@ -112,7 +153,9 @@ const AdminLoginPage: React.FC = () => {
                   color: "#999",
                 }}
               >
-                <i className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"}`} />
+                <i
+                  className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"}`}
+                />
               </span>
             </div>
           </div>
@@ -137,7 +180,10 @@ const AdminLoginPage: React.FC = () => {
 
           {/* Forgot Password Link */}
           <div className="text-end mb-2">
-            <Link href="/auth/forgot-password" className="text-danger text-decoration-none">
+            <Link
+              href="/auth/forgot-password"
+              className="text-danger text-decoration-none"
+            >
               Forgot Password?
             </Link>
           </div>

@@ -60,7 +60,6 @@ export const deleteTeacherCourse = async (req, res) => {
   }
 };
 
-
 // 🔸 कुनै शिक्षकले बनाएका सबै course हरु ल्याउने
 export const getCoursesByTeacher = async (req, res) => {
   const { teacherId } = req.params;
@@ -131,7 +130,6 @@ export const getTeacherCourseWithStudentCount = async (req, res) => {
   }
 };
 
-
 // GET students by teacherId and courseId
 export const getStudentsByTeacherAndCourse = async (req, res) => {
   const { teacherId, courseId } = req.params;
@@ -154,10 +152,6 @@ export const getStudentsByTeacherAndCourse = async (req, res) => {
   }
 };
 
-
-
-
-
 // Total unique students per teacher
 export const getTotalStudentsByTeacher = async (req, res) => {
   try {
@@ -174,12 +168,6 @@ export const getTotalStudentsByTeacher = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
-
-
-
-
-
-
 
 export const publishTeacherCourse = async (req, res) => {
   const { teacherId, courseId } = req.params;
@@ -214,9 +202,6 @@ export const publishTeacherCourse = async (req, res) => {
   }
 };
 
-
-
-
 export const getTeacherCourseDetails = async (req, res) => {
   const { teacherId, courseId } = req.params;
 
@@ -236,40 +221,6 @@ export const getTeacherCourseDetails = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
-
-
-
-
-// ✅ Controller Function: Get teacher courses with student count
-// export const getTeacherCoursesWithEnrollments = async (req, res) => {
-//   try {
-//     const { teacherId } = req.params;
-
-//     const enrollments = await TeacherCourse.find({ teacherId })
-//       .populate("courseId")
-//       .populate("students") // optional
-//       .lean();
-
-//     const result = enrollments.map((course) => ({
-//       courseId: course.courseId._id,
-//       title: course.courseId.title,
-//       image: course.courseId.image,
-//       studentCount: course.students?.length || 0,
-//       status: course.status, // ✅ यहींबाट सही status जान्छ
-//       students: course.students, // optional if needed
-//     }));
-
-//     res.json(result);
-//   } catch (err) {
-//     console.error("❌ Error fetching enrollments:", err);
-//     res.status(500).json({ message: "Failed to load enrollments" });
-//   }
-// };
-
-
-
-
 
 export const getTeacherCoursesWithEnrollments = async (req, res) => {
   const { teacherId } = req.params;

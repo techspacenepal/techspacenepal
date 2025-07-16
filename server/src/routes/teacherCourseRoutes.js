@@ -4,14 +4,11 @@ import {
   createTeacherCourse,
   deleteTeacherCourse,
   getAllTeacherCourses,
-  getCoursesByTeacher,
-  
+  getCoursesByTeacher,  
   getStudentsByTeacherAndCourse,
   getTeacherCourseDetails,
-  getTeacherCoursesWithEnrollments,
- 
-  getTotalStudentsByTeacher,
-  
+  getTeacherCoursesWithEnrollments, 
+  getTotalStudentsByTeacher,  
   publishTeacherCourse,
   
 } from "../controllers/teacherCourseController.js";
@@ -52,10 +49,10 @@ router.get("/details/:teacherId/:courseId", getTeacherCourseDetails);
 // POST: Upload Video
 router.post(
   "/upload/:teacherId/:courseId",
-  protect, // optional
-  upload.single("video"),
-  uploadCourseVideo,
-  checkEnrollmentBeforeUpload
+  protect,
+  upload, 
+  checkEnrollmentBeforeUpload,
+  uploadCourseVideo
 );
 
 router.get("/videos/:courseId", getCourseVideos);

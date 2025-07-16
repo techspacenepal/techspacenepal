@@ -3,6 +3,7 @@ import express from "express";
 import {
   createEnrolledCourse,
   getAllEnrolledCourses,
+  getAllStudentsByTeacher,
   getCoursesByTeacherIdFromEnrollments,
   getEnrolledCoursesByStudent,
   getEnrolledCoursesByTeacher,
@@ -10,10 +11,12 @@ import {
   getEnrollmentByCourseAndStudent,
   getStudentCountByCourseAndTeacher,
   getStudentsByCourseId,
-  getStudentsByTeacherWithProgress,
+  getStudentsByTeacherWithProgress,  
+  markAssignmentComplete,
   markQuizPassed,
   markVideoWatched,
   publishEnrolledCourse,  
+  submitGrade,  
   updateProgress,  
   upload,
 } from "../controllers/enrolledCoursesController.js";
@@ -60,6 +63,11 @@ router.put("/updateProgress/:studentId/:courseId",  updateProgress);
 
 // 🔢 Count enrolled students in a course
 router.get('/count/:courseId', getEnrolledStudentCount);
+
+ //router.get('/students-with-assignments/:teacherId', getStudentsWithCompletedAssignments);
+router.get('/students-with-assignments/:teacherId', getAllStudentsByTeacher);
+router.put("/mark-assignment-complete/:studentId/:courseId", markAssignmentComplete);
+router.put('/submit-grade/:studentId/:courseId', submitGrade);
 
 
 

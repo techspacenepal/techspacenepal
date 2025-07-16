@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import EnrolledCourse from "../models/enrolledCourses.js";
 import Student from "../models/student.js";
 import { generateCertificate } from './generateCertificate.js';
-
+import Course from '../models/Course.js';
 
 
 
@@ -87,33 +87,6 @@ export const getEnrolledCoursesByStudent = async (req, res) => {
 
 
 
-
-// export const getEnrolledCoursesByStudent = async (req, res) => {
-//   try {
-//     const { studentId } = req.params;
-
-//     const enrollments = await EnrolledCourse.find({ studentId })
-//       .populate({
-//         path: "courseId",
-//         select: "title status", // course को title र status मात्रै ल्याउने
-//       })
-//       .lean();
-
-//     // ✅ केवल published course मात्र पठाउने
-//     const filtered = enrollments.filter(
-//       (e) => e.courseId && e.courseId.status === "published"
-//     );
-
-//     res.status(200).json(filtered);
-//   } catch (error) {
-//     console.error("❌ Error fetching enrolled courses by student:", error);
-//     res.status(500).json({ message: "Server Error" });
-//   }
-// };
-
-
-
-// Get enrolled students by course ID (returns student basic info)
 export const getStudentsByCourseId = async (req, res) => {
   try {
     const { courseId } = req.params;
@@ -251,75 +224,6 @@ export const getEnrolledCoursesByTeacher = async (req, res) => {
   }
 };
 
-// export const getCoursesByTeacherIdFromEnrollments = async (req, res) => {
-//   try {
-//     const { teacherId } = req.params;
-
-//     if (!mongoose.Types.ObjectId.isValid(teacherId)) {
-//       return res.status(400).json({ message: "Invalid teacher ID" });
-//     }
-
-//     const enrollments = await EnrolledCourse.find({ teacherId })
-//       .populate("courseId");
-
-//     // Map courseId => { courseId, studentCount }
-//     const courseMap = new Map();
-
-//     enrollments.forEach(({ courseId }) => {
-//       if (!courseId?._id) return;
-//       const key = courseId._id.toString();
-
-//       if (!courseMap.has(key)) {
-//         courseMap.set(key, {
-//           courseId: courseId._id,
-//           title: courseId.title,
-//           studentCount: 1,
-//         });
-//       } else {
-//         courseMap.get(key).studentCount += 1;
-//       }
-//     });
-
-//     res.status(200).json(Array.from(courseMap.values()));
-//   } catch (error) {
-//     console.error("Error fetching courses by teacher:", error);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// };
-
-
-
-
-
-
-
-
-
-
-// export const markVideoWatched = async (req, res) => {
-//   const { id } = req.params;
-//   const { videoProgress } = req.body;
-
-//   try {
-//     const enrolled = await EnrolledCourse.findById(id).populate('studentId courseId');
-//     if (!enrolled) return res.status(404).json({ message: 'Not found' });
-
-//     if (!enrolled.startDate) enrolled.startDate = new Date();
-//     enrolled.progress = Math.min(enrolled.progress + videoProgress, 100);
-
-//     if (enrolled.progress === 100 && !enrolled.certificateUrl) {
-//       const certPath = path.join(CERT_DIR, `${id}.pdf`);
-//       const certUrl = `/certificates/${id}.pdf`;
-//       await generateCertificate(enrolled.studentId.name, enrolled.courseId.title, certPath);
-//       enrolled.certificateUrl = certUrl;
-//     }
-
-//     await enrolled.save();
-//     res.json({ message: 'Video progress updated', enrolled });
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// };
 
 export const markVideoWatched = async (req, res) => {
   const { id } = req.params;
@@ -373,123 +277,6 @@ export const markQuizPassed = async (req, res) => {
   }
 };
 
-
-
-// export const generateCertificate = async (studentName, courseTitle, filePath) => {
-//   return new Promise((resolve, reject) => {
-//     try {
-//       const doc = new PDFDocument({ size: "A4", margin: 50 });
-
-//       const logoPath = path.resolve("server/uploads/logo.png");
-//       const signaturePath = path.resolve("server/uploads/signature.png");
-
-//       const stream = fs.createWriteStream(filePath);
-//       doc.pipe(stream);
-
-//       // Background (light gray optional)
-//       doc.rect(0, 0, doc.page.width, doc.page.height).fill("#f7f9fb");
-//       doc.fillColor("black");
-
-//       // 🏫 Logo
-//       if (fs.existsSync(logoPath)) {
-//         doc.image(logoPath, doc.page.width / 2 - 50, 40, { width: 100 });
-//       }
-
-//       // 🏫 Institute Name
-//       doc
-//         .font("Helvetica-Bold")
-//         .fontSize(22)
-//         .fillColor("#2c3e50")
-//         .text("Teach Space Nepal Institute", {
-//           align: "center",
-//         });
-
-//       doc.moveDown(2);
-
-//       // 🏅 Certificate Title
-//       doc
-//         .fontSize(20)
-//         .fillColor("black")
-//         .text("🎓 Certificate of Completion", { align: "center" });
-
-//       doc.moveDown();
-
-//       // 👤 Student Name
-//       doc
-//         .font("Helvetica")
-//         .fontSize(14)
-//         .text(`This is to certify that`, { align: "center" })
-//         .moveDown(0.5)
-//         .font("Helvetica-Bold")
-//         .fontSize(18)
-//         .text(`${studentName}`, { align: "center" });
-
-//       doc.moveDown(0.5);
-
-//       // 📚 Course Title
-//       doc
-//         .font("Helvetica")
-//         .fontSize(14)
-//         .text(`has successfully completed the course`, { align: "center" })
-//         .moveDown(0.3)
-//         .font("Helvetica-Bold")
-//         .fontSize(16)
-//         .text(`"${courseTitle}"`, { align: "center" });
-
-//       doc.moveDown(2);
-
-//       // 📆 Issue Date
-//       doc
-//         .font("Helvetica")
-//         .fontSize(12)
-//         .text(`Issued on: ${new Date().toLocaleDateString()}`, { align: "center" });
-
-//       doc.moveDown(3);
-
-//       // ✍️ Digital Signature
-//       if (fs.existsSync(signaturePath)) {
-//         doc.image(signaturePath, doc.page.width / 2 - 50, doc.y, {
-//           width: 100,
-//         });
-//         doc.moveDown(1);
-//         doc
-//           .fontSize(10)
-//           .fillColor("gray")
-//           .text("Authorized Signature", { align: "center" });
-//       } else {
-//         doc
-//           .fontSize(10)
-//           .fillColor("red")
-//           .text("[Signature missing]", { align: "center" });
-//       }
-
-//       doc.end();
-
-//       stream.on("finish", () => {
-//         console.log("✅ Certificate generated:", filePath);
-//         resolve(true);
-//       });
-
-//       stream.on("error", (err) => {
-//         console.error("❌ Stream error:", err);
-//         reject(err);
-//       });
-//     } catch (err) {
-//       console.error("❌ Certificate generation failed:", err);
-//       reject(err);
-//     }
-//   });
-// };
-
-
-
-
-
-
-
-
-
-// ✅ Publish all enrolledCourses for a specific teacher and course
 
 
 
@@ -578,3 +365,139 @@ export const getEnrolledStudentCount = async (req, res) => {
     res.status(500).json({ message: 'Failed to count students' });
   }
 };
+
+
+// export const getStudentsWithCompletedAssignments = async (req, res) => {
+//   try {
+//     const { teacherId } = req.params;
+
+//     // Find enrolled courses assigned to this teacher where assignments are completed
+//     const enrolledRecords = await EnrolledCourse.find({
+//       teacherId,
+//       assignmentCompleted: true,
+//     }).populate('studentId').populate('courseId');
+
+//     // Map to required response format
+//     const studentsWithAssignments = enrolledRecords.map((enrolled) => {
+//       const student = enrolled.studentId;
+//       const course = enrolled.courseId;
+//       return {
+//         _id: student._id.toString(),
+//         fullName: student.fullName || null,
+//         username: student.username || null,
+//         email: student.email,
+//         courseId: course._id.toString(),
+//         courseTitle: course.title,
+//         assignmentCompleted: enrolled.assignmentCompleted,
+//          currentGrade: enrolled.grade || "",
+//       };
+//     });
+
+//     res.json(studentsWithAssignments);
+//   } catch (error) {
+//     console.error('Error fetching graded students:', error);
+//     res.status(500).json({ message: 'Server error' });
+//   }
+// };
+
+
+
+
+
+
+export const getAllStudentsByTeacher = async (req, res) => {
+  try {
+    const { teacherId } = req.params;
+    // console.log("👉 Fetching students for teacherId:", teacherId);
+
+    const teacherObjectId = new mongoose.Types.ObjectId(teacherId);
+
+    const enrolledStudents = await EnrolledCourse.find({ teacherId: teacherObjectId })
+      .populate("courseId", "title teacherId")
+      .populate("studentId", " username email")
+      .exec();
+
+    // console.log("✅ Total enrolled records for teacher:", enrolledStudents.length);
+
+    const students = enrolledStudents.map((item) => {
+      const data = {
+        _id: item.studentId._id,
+        // fullName: item.studentId.fullName,
+        username: item.studentId.username,
+        email: item.studentId.email,
+        courseId: item.courseId._id,
+        courseTitle: item.courseId.title,
+        assignmentCompleted: item.assignmentCompleted || false,
+        currentGrade: item.grade || null,
+      };
+      // console.log("📘 Student data:", data);
+      return data;
+    });
+
+    res.json(students);
+  } catch (error) {
+    console.error("❌ Error in getAllStudentsByTeacher:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+
+
+export const markAssignmentComplete = async (req, res) => {
+  const { studentId, courseId } = req.params;
+
+  try {
+    const updated = await EnrolledCourse.findOneAndUpdate(
+      { studentId, courseId },
+      { assignmentCompleted: true },
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ message: "Enrollment not found" });
+    }
+
+    res.status(200).json({ message: "Assignment marked complete", data: updated });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
+
+
+
+
+
+// PUT /api/enrolledCourses/submit-grade/:studentId/:courseId
+export const submitGrade = async (req, res) => {
+  const { studentId, courseId } = req.params;
+  const { grade } = req.body;
+
+  try {
+    // Validate grade here (optional)
+    if (!["A+","A","B","B+"].includes(grade)) {
+      return res.status(400).json({ message: "Invalid grade value" });
+    }
+
+    // Find enrolled course record
+    const enrolledRecord = await EnrolledCourse.findOne({ studentId, courseId });
+    if (!enrolledRecord) {
+      return res.status(404).json({ message: "Enrollment record not found" });
+    }
+
+    // Update grade field
+    enrolledRecord.grade = grade;
+    await enrolledRecord.save();
+
+    res.json({ message: "Grade submitted successfully", grade });
+  } catch (error) {
+    console.error("Submit grade error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+
+

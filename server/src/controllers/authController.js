@@ -1,7 +1,7 @@
-import Auth from '../models/Auth.js';
-import jwt from 'jsonwebtoken';
-import {sendEmail} from '../utils/sendEmail.js';
-import crypto from 'crypto';
+import Auth from "../models/Auth.js";
+import jwt from "jsonwebtoken";
+import { sendEmail } from "../utils/sendEmail.js";
+import crypto from "crypto";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -12,39 +12,35 @@ const generateToken = (id, role) => {
   return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "1d" });
 };
 
-
-
-
 // Utility to validate strong password
 const isStrongPassword = (password) => {
   return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
 };
 
-
-
 export const registerAdmin = async (req, res) => {
-  const {fullName, username, email, number, password, role } = req.body;
+  const { fullName, username, email, number, password, role } = req.body;
 
   try {
     const existingUser = await Auth.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists with this email.' });
+      return res
+        .status(400)
+        .json({ message: "User already exists with this email." });
     }
 
     if (!isStrongPassword(password)) {
       return res.status(400).json({
         message:
-          'Password must be at least 8 characters and include uppercase, lowercase, number, and special character.',
+          "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.",
       });
     }
 
     if (error.code === 11000 && error.keyPattern?.username) {
-  return res.status(400).json({ message: "Username already exists" });
-}
+      return res.status(400).json({ message: "Username already exists" });
+    }
 
-
-    const allowedRoles = ['user', 'admin', 'teacher'];
-    const finalRole = allowedRoles.includes(role) ? role : 'user';
+    const allowedRoles = ["user", "admin", "teacher"];
+    const finalRole = allowedRoles.includes(role) ? role : "user";
 
     const newUser = new Auth({
       fullName,
@@ -61,25 +57,20 @@ export const registerAdmin = async (req, res) => {
     const token = generateToken(newUser._id, newUser.role);
 
     // ✅ Response मा token return गर्नुहोस्
-   res.status(201).json({
-  message: 'Registration successful!',
-  token,
-  fullName : newUser.fullName,
-  username: newUser.username,
-  email: newUser.email, 
-  number: newUser.number, 
-  role: newUser.role,
-});
-
-
+    res.status(201).json({
+      message: "Registration successful!",
+      token,
+      fullName: newUser.fullName,
+      username: newUser.username,
+      email: newUser.email,
+      number: newUser.number,
+      role: newUser.role,
+    });
   } catch (error) {
-    console.error('Register Error:', error);
-    res.status(500).json({ message: 'Server error. Could not register user.' });
+    console.error("Register Error:", error);
+    res.status(500).json({ message: "Server error. Could not register user." });
   }
 };
-
-
-
 
 export const loginAdmin = async (req, res) => {
   const { email, password } = req.body;
@@ -94,58 +85,52 @@ export const loginAdmin = async (req, res) => {
     const token = jwt.sign(
       { id: admin._id, role: admin.role },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "30d" }
     );
 
- res.status(200).json({
-  token,
-  
-   userId: admin._id,  
-  username: admin.username,
-  role: admin.role,
-  email: admin.email
-});
-
-
+    res.status(200).json({
+      token,
+      userId: admin._id,
+      username: admin.username,
+      role: admin.role,
+      email: admin.email,
+    });
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-
-
-
 // logout --------------------
 
 export const logoutAdmin = async (req, res) => {
-    try {
+  try {
     const user = await Auth.findById(req.user.id); // req.user from protect middleware
     if (user) {
       user.active = false;
       await user.save();
     }
 
-    res.clearCookie('adminToken');
-    res.status(200).json({ message: 'Logout successful' });
+    res.clearCookie("adminToken");
+    res.clearCookie("teacherToken");
+    res.status(200).json({ message: "Logout successful" });
   } catch (error) {
-    res.status(500).json({ message: 'Logout failed', error });
+    res.status(500).json({ message: "Logout failed", error });
   }
 };
-
 
 // ✅ Get Admin by ID
 export const getAdminById = async (req, res) => {
   try {
     const admin = await Auth.findById(req.params.id);
-    if (!admin || admin.role !== 'admin') {
-      return res.status(404).json({ message: 'Admin not found' });
+    if (!admin || admin.role !== "admin") {
+      return res.status(404).json({ message: "Admin not found" });
     }
 
     res.status(200).json({ username: admin.username });
   } catch (err) {
-    console.error('Get Admin Error:', err);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Get Admin Error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -153,14 +138,14 @@ export const getAdminById = async (req, res) => {
 export const getUserById = async (req, res) => {
   try {
     const user = await Auth.findById(req.params.id);
-    if (!user || user.role !== 'user') {
-      return res.status(404).json({ message: 'User not found' });
+    if (!user || user.role !== "user") {
+      return res.status(404).json({ message: "User not found" });
     }
 
     res.status(200).json({ username: user.username });
   } catch (err) {
-    console.error('Get User Error:', err);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Get User Error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -176,8 +161,6 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-
-
 // ✅ Delete by ID
 export const deleteUserById = async (req, res) => {
   try {
@@ -189,7 +172,6 @@ export const deleteUserById = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
-
 
 // UPDATE user by email
 export const updateUserByEmail = async (req, res) => {
@@ -206,18 +188,48 @@ export const updateUserByEmail = async (req, res) => {
   }
 };
 
+// export const login = async (req, res) => {
+//   try {
+//     const { username, password } = req.body;
+
+//     const user = await Auth.findOne({ username });
+//     if (!user) {
+//       return res.status(400).json({ message: 'User not found' });
+//     }
+
+//     const isPasswordValid = await user.comparePassword(password);
+//     if (!isPasswordValid) {
+//       return res.status(400).json({ message: 'Invalid credentials' });
+//     }
+
+//     // Login सफल हुँदा active true set गर्ने
+//     user.active = true;
+//     await user.save();
+
+//     // Token generate
+//     // const token = generateToken(user);
+
+//     const token = generateToken(user._id, user.role);
+
+//     res.json({ token, user });
+//   } catch (error) {
+//     console.error('Login error:', error);
+//     res.status(500).json({ message: 'Server error' });
+//   }
+// };
+
 export const login = async (req, res) => {
   try {
     const { username, password } = req.body;
 
     const user = await Auth.findOne({ username });
     if (!user) {
-      return res.status(400).json({ message: 'User not found' });
+      return res.status(400).json({ message: "User not found" });
     }
 
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
     // Login सफल हुँदा active true set गर्ने
@@ -225,31 +237,25 @@ export const login = async (req, res) => {
     await user.save();
 
     // Token generate
-    // const token = generateToken(user);
-
     const token = generateToken(user._id, user.role);
 
-    res.json({ token, user });
+    return res.json({ token, user }); // return here
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Login error:", error);
+    return res.status(500).json({ message: "Server error" }); // return here
   }
 };
-
-
-
 
 export const logout = async (req, res) => {
   try {
     const userId = req.user.id;
     await User.findByIdAndUpdate(userId, { active: false });
-    res.status(200).json({ message: 'Logout successfull, active false ' });
+    res.status(200).json({ message: "Logout successfull, active false " });
   } catch (error) {
-    console.error('Logout error:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Logout error:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
-
 
 export const forgotPassword = async (req, res) => {
   const { email } = req.body;
@@ -294,10 +300,11 @@ export const forgotPassword = async (req, res) => {
     res.status(200).json({ message: "OTP has been sent to your email." });
   } catch (error) {
     console.error("Error sending OTP:", error);
-    res.status(500).json({ message: "Failed to send OTP.", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Failed to send OTP.", error: error.message });
   }
 };
-
 
 export const resetPassword = async (req, res) => {
   const { email, otp, newPassword, token, password } = req.body;
@@ -322,7 +329,10 @@ export const resetPassword = async (req, res) => {
 
     // 2. Token-based reset (token param + new password)
     if (token && password) {
-      const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+      const hashedToken = crypto
+        .createHash("sha256")
+        .update(token)
+        .digest("hex");
 
       const user = await Auth.findOne({
         resetPasswordToken: hashedToken,
@@ -332,7 +342,9 @@ export const resetPassword = async (req, res) => {
       // Token invalid or expired
       if (!user) {
         // Send email about expired link if possible
-        const expiredUser = await Auth.findOne({ resetPasswordToken: hashedToken });
+        const expiredUser = await Auth.findOne({
+          resetPasswordToken: hashedToken,
+        });
         if (expiredUser) {
           const transporter = nodemailer.createTransport({
             service: "gmail",
@@ -349,7 +361,7 @@ export const resetPassword = async (req, res) => {
             html: `
               <div style="font-family: Arial, sans-serif; padding: 10px;">
                 <h2 style="color: #dc3545;">Teach Space</h2>
-                <p>Hello ${expiredUser.username || 'User'},</p>
+                <p>Hello ${expiredUser.username || "User"},</p>
                 <p>Your password reset link has expired. Please request a new one to reset your password.</p>
                 <br/>
                 <p>Thank you,<br/>Teach Space Team</p>
@@ -380,7 +392,6 @@ export const resetPassword = async (req, res) => {
   }
 };
 
-
 export const googleLogin = async (req, res) => {
   const { email, googleId, username } = req.body;
 
@@ -399,14 +410,18 @@ export const googleLogin = async (req, res) => {
         username,
         email,
         googleId,
-        role: 'user',
+        role: "user",
         active: true,
       });
     }
 
-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
-      expiresIn: '7d',
-    });
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
 
     res.status(200).json({
       token,
@@ -414,10 +429,9 @@ export const googleLogin = async (req, res) => {
       username: user.username,
     });
   } catch (error) {
-    res.status(500).json({ message: 'Google login failed', error });
+    res.status(500).json({ message: "Google login failed", error });
   }
 };
-
 
 export const getTeacherById = async (req, res) => {
   try {
@@ -439,13 +453,12 @@ export const getTeacherById = async (req, res) => {
   }
 };
 
-
 export const getAllTeachers = async (req, res) => {
   try {
-    const teachers = await Auth.find({ role: 'teacher' }, '_id username');
+    const teachers = await Auth.find({ role: "teacher" }, "_id username");
     res.status(200).json(teachers);
   } catch (error) {
-    console.error('Error fetching teachers:', error);
-    res.status(500).json({ message: 'Failed to fetch teachers' });
+    console.error("Error fetching teachers:", error);
+    res.status(500).json({ message: "Failed to fetch teachers" });
   }
 };

@@ -55,6 +55,8 @@
 //   ],
 // };
 
+
+
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -77,10 +79,11 @@ export function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
+
 export const config = {
   matcher: [
     "/auth/admin/:path*",
-    "/auth/Dashboard/teacherDashboard/:path*",
+    "/auth/Dashboard/teacherDashboard/:path*", 
     "/Dashboard/teacherDashboard/:path*",
     "/studentDashboard/:path*",
   ],

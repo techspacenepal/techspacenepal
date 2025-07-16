@@ -82,7 +82,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const generateCertificatePDF = (studentName, courseTitle, certPath, description, isTemplate = false) => {
+export const generateCertificatePDF = (studentName, courseTitle, certPath, description, grade = '', isTemplate = false) => {
   return new Promise(async (resolve, reject) => {
     try {
       const doc = new PDFDocument({ size: 'A4', layout: 'landscape', margin: 0 });
@@ -124,6 +124,7 @@ export const generateCertificatePDF = (studentName, courseTitle, certPath, descr
           .fontSize(18)
           .fillColor('#333333')
           .text(description, { align: 'center' })
+
           .moveDown(0.2)
           .font('Helvetica-BoldOblique')
           .fontSize(22)
@@ -142,6 +143,14 @@ export const generateCertificatePDF = (studentName, courseTitle, certPath, descr
           .fontSize(12)
           .fillColor('#000000')
           .text(`Issued on: ${date}`, 205, 470);
+
+          doc
+          .moveDown(0.8)
+          .font('Helvetica-Bold')
+          .fontSize(10)
+          .fillColor('#16a085')
+          .text(`Grade : ${grade}`, 395, 480);
+
 
 
           if (fs.existsSync(signaturePath)) {

@@ -594,7 +594,7 @@ export default function AddEnrolledCourseForm() {
           </div>
 
           <div className="mb-3">
-            <label htmlFor="description" className="form-label fw-bold">Certificates Description :</label>
+            <label htmlFor="description" className="form-label fw-bold"> Description :</label>
             <textarea
               className="form-control"
               id="description"

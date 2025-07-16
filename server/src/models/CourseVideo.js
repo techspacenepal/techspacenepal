@@ -8,6 +8,7 @@ const courseVideoSchema = new mongoose.Schema({
      title: { type: String, required: true },
   videoUrl: { type: String, required: true },
   uploadedAt: { type: Date, default: Date.now },
+    assignmentUrl: { type: String, default: null },
 });
 
 const CourseVideo = mongoose.model("CourseVideo", courseVideoSchema);

@@ -1,3 +1,6 @@
+
+
+
 // "use client";
 
 // import Link from "next/link";
@@ -9,11 +12,11 @@
 // import { useRouter } from "next/navigation";
 // import { Notifications } from "./notification";
 
-
 // interface User {
 //   username: string;
 //   email: string;
 //   avatarUrl?: string;
+//   role?: string; // added role to handle logout path
 // }
 
 // export function UserNav() {
@@ -25,14 +28,46 @@
 //   const toggleDropdown = () => setShowDropdown((prev) => !prev);
 
 //   const logout = () => {
+//     const userData = localStorage.getItem("user");
+//     let role = "student"; // default fallback
+
+//     if (userData) {
+//       try {
+//         const parsed = JSON.parse(userData);
+//         role = parsed.role || "student";
+//       } catch (err) {
+//         console.error("Error parsing user role:", err);
+//       }
+//     }
+
+//     // remove all potential tokens
 //     Cookies.remove("adminToken");
-//     router.push("/auth/studentLogin");
+//     Cookies.remove("studentToken");
+//     Cookies.remove("teacherToken");
+//     localStorage.removeItem("adminToken");
+//     localStorage.removeItem("studentToken");
+//     localStorage.removeItem("teacherToken");
+//     localStorage.removeItem("user");
+//     localStorage.removeItem("studentId");
+
+//     // redirect by role
+//     if (role === "admin") {
+//       router.push("/auth/adminLogin");
+//     } else if (role === "teacher") {
+//       router.push("/auth/teacherLogin");
+//     } else {
+//       router.push("/auth/studentLogin");
+//     }
 //   };
 
 //   useEffect(() => {
 //     const fetchUser = async () => {
 //       try {
-//         const token = Cookies.get("adminToken");
+//         const token =
+//           Cookies.get("studentToken") ||
+//           Cookies.get("teacherToken") ||
+//           Cookies.get("adminToken");
+
 //         if (!token) return;
 
 //         const { data } = await axios.get("http://localhost:5000/api/students/profile", {
@@ -55,12 +90,12 @@
 //   return (
 //     <div className="d-flex align-items-center gap-3 position-relative">
 //       {/* 🔔 Notification Icon */}
-//       <Notifications/>
+//       <Notifications />
 
 //       {/* 👤 User Dropdown */}
 //       <div className="dropdown">
 //         <button
-//           className="btn btn-light  d-flex align-items-center rounded-circle p-0 border-0"
+//           className="btn btn-light d-flex align-items-center rounded-circle p-0 border-0"
 //           type="button"
 //           id="userMenu"
 //           data-bs-toggle="dropdown"
@@ -97,7 +132,9 @@
 //             <strong>{student.username}</strong>
 //             <div className="small text-muted">{student.email}</div>
 //           </li>
-//           <li><hr className="dropdown-divider" /></li>
+//           <li>
+//             <hr className="dropdown-divider" />
+//           </li>
 
 //           <li>
 //             <Link href="/studentdashboard/profile" className="dropdown-item">
@@ -105,13 +142,16 @@
 //             </Link>
 //           </li>
 
+//           {/* Optional: Settings modal */}
 //           {/* <li>
 //             <button className="dropdown-item" onClick={() => setShowSettingsModal(true)}>
 //               <i className="bi bi-gear me-2"></i> Settings
 //             </button>
 //           </li> */}
 
-//           <li><hr className="dropdown-divider" /></li>
+//           <li>
+//             <hr className="dropdown-divider" />
+//           </li>
 
 //           <li>
 //             <button
@@ -155,11 +195,11 @@ interface User {
   username: string;
   email: string;
   avatarUrl?: string;
-  role?: string; // added role to handle logout path
+  role?: string;
 }
 
 export function UserNav() {
-  const [student, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const router = useRouter();
@@ -168,7 +208,7 @@ export function UserNav() {
 
   const logout = () => {
     const userData = localStorage.getItem("user");
-    let role = "student"; // default fallback
+    let role = "student";
 
     if (userData) {
       try {
@@ -179,17 +219,16 @@ export function UserNav() {
       }
     }
 
-    // remove all potential tokens
     Cookies.remove("adminToken");
     Cookies.remove("studentToken");
     Cookies.remove("teacherToken");
+
     localStorage.removeItem("adminToken");
     localStorage.removeItem("studentToken");
     localStorage.removeItem("teacherToken");
     localStorage.removeItem("user");
     localStorage.removeItem("studentId");
 
-    // redirect by role
     if (role === "admin") {
       router.push("/auth/adminLogin");
     } else if (role === "teacher") {
@@ -200,38 +239,42 @@ export function UserNav() {
   };
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const token =
-          Cookies.get("studentToken") ||
-          Cookies.get("teacherToken") ||
-          Cookies.get("adminToken");
+   const fetchUser = async () => {
+  try {
+    const token = Cookies.get("studentToken");
+    console.log("Token:", token);
 
-        if (!token) return;
+    if (!token) {
+      console.log("No token found");
+      return;
+    }
 
-        const { data } = await axios.get("http://localhost:5000/api/students/profile", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+    const url = "http://localhost:5000/api/students/profile";
+    console.log("Fetching profile from:", url);
 
-        setUser(data);
-      } catch (error) {
-        console.error("Failed to fetch user:", error);
-      }
-    };
+    const { data } = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("User data:", data);
+    setUser(data);
+  } catch (error: any) {
+    console.error("Fetch user error:", error.response?.status, error.response?.data);
+  }
+};
+
 
     fetchUser();
   }, []);
 
-  if (!student) return null;
+  if (!user) return null;
 
   return (
     <div className="d-flex align-items-center gap-3 position-relative">
-      {/* 🔔 Notification Icon */}
       <Notifications />
 
-      {/* 👤 User Dropdown */}
       <div className="dropdown">
         <button
           className="btn btn-light d-flex align-items-center rounded-circle p-0 border-0"
@@ -241,20 +284,20 @@ export function UserNav() {
           aria-expanded={showDropdown}
           onClick={toggleDropdown}
         >
-          {student.avatarUrl ? (
+          {user.avatarUrl ? (
             <img
-              src={student.avatarUrl}
-              alt={student.username || "student"}
+              src={user.avatarUrl}
+              alt={user.username || "user"}
               className="rounded-circle"
               width={40}
               height={40}
             />
-          ) : student.username ? (
+          ) : user.username ? (
             <div
               className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
               style={{ width: 40, height: 40, fontWeight: "bold" }}
             >
-              {student.username.substring(0, 2).toUpperCase()}
+              {user.username.substring(0, 2).toUpperCase()}
             </div>
           ) : (
             <div
@@ -268,12 +311,11 @@ export function UserNav() {
 
         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
           <li className="dropdown-header">
-            <strong>{student.username}</strong>
-            <div className="small text-muted">{student.email}</div>
+            <strong>{user.username}</strong>
+            <div className="small text-muted">{user.email}</div>
           </li>
-          <li>
-            <hr className="dropdown-divider" />
-          </li>
+
+          <li><hr className="dropdown-divider" /></li>
 
           <li>
             <Link href="/studentdashboard/profile" className="dropdown-item">
@@ -281,16 +323,7 @@ export function UserNav() {
             </Link>
           </li>
 
-          {/* Optional: Settings modal */}
-          {/* <li>
-            <button className="dropdown-item" onClick={() => setShowSettingsModal(true)}>
-              <i className="bi bi-gear me-2"></i> Settings
-            </button>
-          </li> */}
-
-          <li>
-            <hr className="dropdown-divider" />
-          </li>
+          <li><hr className="dropdown-divider" /></li>
 
           <li>
             <button
@@ -304,10 +337,9 @@ export function UserNav() {
         </ul>
       </div>
 
-      {/* ⚙️ Settings Modal */}
       {showSettingsModal && (
         <SettingsModal
-          user={student}
+          user={user}
           onClose={() => setShowSettingsModal(false)}
           onUpdate={(updatedUser) => setUser(updatedUser)}
         />
@@ -315,3 +347,4 @@ export function UserNav() {
     </div>
   );
 }
+

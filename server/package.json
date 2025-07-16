@@ -28,6 +28,13 @@
     "pdfkit": "^0.17.1"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.9",
+    "@types/cors": "^2.8.19",
+    "@types/express-session": "^1.18.2",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.0.0",
+    "@types/nodemailer": "^6.4.17",
+    "@types/passport": "^1.0.17",
     "nodemon": "^3.0.2"
   }
 }
