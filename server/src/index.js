@@ -28,7 +28,7 @@ import todoRoutes from './routes/todoRoutes.js';
 
 import courseRoutes from './routes/courseRoutes.js';
 import announcementRoutes from './routes/announcementRoutes.js';
-// Custom error middleware (dummy placeholder)
+
 import errorMiddleware from './middlewares/errorMiddleware.js';
 import teacherCourseRoutes from "./routes/teacherCourseRoutes.js";
 
@@ -37,6 +37,9 @@ import { sendNotificationToCourseStudents } from './controllers/teacherNotificat
 import teacherNotificationRoutes from './routes/teacherNotificationRoutes.js';
 import videoRoutes from "./routes/courseVideoRoutes.js";
 import certificateRoutes from "./routes/certificateRoutes.js";
+import assignmentRoutes from "./routes/assignmentRoutes.js";
+
+
 
 // __dirname define for ES module
 const __filename = fileURLToPath(import.meta.url);
@@ -90,6 +93,7 @@ app.use("/api/videos", videoRoutes);
 // app.use("/api", certificateRoutes);
 app.use("/api/certificates", certificateRoutes);
 app.use('/api/todos', todoRoutes);
+app.use("/api/assignments", assignmentRoutes);
 
 
 // Google OAuth login

@@ -15,6 +15,7 @@ interface Student {
   courseTitle: string;
   assignmentCompleted: boolean;
   currentGrade?: string | null;
+   assignmentSubmissionCount?: number; 
 }
 
 export default function GradesPage() {
@@ -99,7 +100,7 @@ export default function GradesPage() {
             <h4 className="text-primary mb-3">Course: {courseTitle}</h4>
             <div className="table-responsive">
               <table className="table table-bordered align-middle">
-                <thead className="table-light">
+                {/* <thead className="table-light">
                   <tr>
                     <th>S.N.</th>
                     <th>Student</th>
@@ -108,8 +109,24 @@ export default function GradesPage() {
                     <th className="text-center">Grade</th>
                     <th className="text-center">Action</th>
                   </tr>
-                </thead>
-                <tbody>
+                </thead> */}
+
+
+                <thead className="table-light">
+  <tr>
+    <th>S.N.</th>
+    <th>Student</th>
+    <th>Email</th>
+    <th>Assignment</th>
+    <th className="text-center"> Submitted</th> 
+    <th className="text-center">Grade</th>
+    <th className="text-center">Action</th>
+  </tr>
+</thead>
+
+
+
+                {/* <tbody>
                   {courseStudents.map((student, index) => {
                     const displayName =
                       student.fullName?.trim() ||
@@ -172,9 +189,84 @@ export default function GradesPage() {
                       </tr>
                     );
                   })}
-                </tbody>
+                </tbody> */}
+
+
+                <tbody>
+  {courseStudents.map((student, index) => {
+    const displayName =
+      student.fullName?.trim() ||
+      student.username?.trim() ||
+      'Unnamed';
+
+    return (
+      <tr key={student._id}>
+        <td>{index + 1}</td>
+        <td>{displayName}</td>
+        <td>{student.email}</td>
+        <td>
+          {student.assignmentCompleted ? (
+            <span className="badge bg-success">Completed</span>
+          ) : (
+            <span className="badge bg-danger">Not Completed</span>
+          )}
+        </td>
+
+        {/* नयाँ कॉलम: Submit गरेको assignments को संख्या */}
+        <td className="text-center">
+          {student.assignmentSubmissionCount ?? 0}
+        </td>
+
+        <td className="text-center">
+          {student.assignmentCompleted ? (
+            <div className="btn-group" role="group">
+              {['A+', 'A', 'B+', 'B'].map((grade) => (
+                <button
+                  key={grade}
+                  type="button"
+                  className={`btn btn-sm btn-outline-primary ${
+                    grades[student._id] === grade ? 'active' : ''
+                  }`}
+                  onClick={() =>
+                    handleGradeChange(student._id, grade)
+                  }
+                >
+                  {grade}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <span className="text-muted">N/A</span>
+          )}
+        </td>
+        <td className="text-center">
+          {student.assignmentCompleted ? (
+            <button
+              className="btn btn-sm btn-primary"
+              disabled={!grades[student._id]}
+              onClick={() =>
+                handleSubmitGrade(
+                  student._id,
+                  student.courseId,
+                  grades[student._id]
+                )
+              }
+            >
+              Submit
+            </button>
+          ) : (
+            <span className="text-muted">N/A</span>
+          )}
+        </td>
+      </tr>
+    );
+  })}
+</tbody>
+
               </table>
             </div>
+
+            
           </div>
         ))
       )}

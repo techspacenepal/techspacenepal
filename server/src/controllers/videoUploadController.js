@@ -119,6 +119,8 @@ import path from "path";
 import fs from "fs";
 import CourseVideo from "../models/CourseVideo.js";
 import TeacherCourse from "../models/TeacherCourse.js";
+import Assignment from "../models/Assignment.js";
+
 
 // Folders
 const VIDEO_UPLOAD_PATH = path.join(process.cwd(), "uploads/videos");
@@ -154,11 +156,13 @@ export const upload = multer({ storage }).fields([
 ]);
 
 
-// Upload Controller
+
+
+
 export const uploadCourseVideo = async (req, res) => {
   try {
     const { teacherId, courseId } = req.params;
-    const { title, videoUrl } = req.body;
+    const { title, videoUrl, assignmentUrl } = req.body; // ✅
 
     const course = await TeacherCourse.findOne({ teacherId, courseId });
     if (!course || course.status !== "published") {
@@ -174,7 +178,7 @@ export const uploadCourseVideo = async (req, res) => {
 
     const assignmentPath = assignmentFile
       ? `/uploads/assignments/${assignmentFile.filename}`
-      : null;
+      : assignmentUrl || null; 
 
     const newVideo = await CourseVideo.create({
       teacherId,
@@ -190,6 +194,7 @@ export const uploadCourseVideo = async (req, res) => {
     res.status(500).json({ message: "Upload failed", error: err.message });
   }
 };
+
 
 
 
@@ -211,21 +216,56 @@ export const getCourseVideos = async (req, res) => {
 };
 
 
+
 // DELETE: Delete course video by ID
+// export const deleteCourseVideo = async (req, res) => {
+//   try {
+//     const { videoId } = req.params;
+
+//     const video = await CourseVideo.findById(videoId);
+//     if (!video) {
+//       return res.status(404).json({ message: "Video not found" });
+//     }
+
+//     // Delete file from server if it's a local video (not a YouTube URL)
+//     if (!video.videoUrl.startsWith("http")) {
+//       const localPath = `./public${video.videoUrl}`;
+//       if (fs.existsSync(localPath)) {
+//         fs.unlinkSync(localPath);
+//       }
+//     }
+
+//     await CourseVideo.findByIdAndDelete(videoId);
+//     res.status(200).json({ message: "Video deleted successfully" });
+//   } catch (err) {
+//     console.error("Delete failed:", err);
+//     res.status(500).json({ message: "Failed to delete video", error: err.message });
+//   }
+// };
+
+
 export const deleteCourseVideo = async (req, res) => {
   try {
     const { videoId } = req.params;
-
     const video = await CourseVideo.findById(videoId);
+
     if (!video) {
       return res.status(404).json({ message: "Video not found" });
     }
 
-    // Delete file from server if it's a local video (not a YouTube URL)
-    if (!video.videoUrl.startsWith("http")) {
-      const localPath = `./public${video.videoUrl}`;
-      if (fs.existsSync(localPath)) {
-        fs.unlinkSync(localPath);
+    // Delete local video file
+    if (video.videoUrl && !video.videoUrl.startsWith("http")) {
+      const videoFilePath = path.join(process.cwd(), "public", video.videoUrl);
+      if (fs.existsSync(videoFilePath) && fs.lstatSync(videoFilePath).isFile()) {
+        fs.unlinkSync(videoFilePath);
+      }
+    }
+
+    // Delete local assignment file
+    if (video.assignmentUrl && !video.assignmentUrl.startsWith("http")) {
+      const assignmentFilePath = path.join(process.cwd(), "public", video.assignmentUrl);
+      if (fs.existsSync(assignmentFilePath) && fs.lstatSync(assignmentFilePath).isFile()) {
+        fs.unlinkSync(assignmentFilePath);
       }
     }
 
@@ -236,3 +276,147 @@ export const deleteCourseVideo = async (req, res) => {
     res.status(500).json({ message: "Failed to delete video", error: err.message });
   }
 };
+
+
+// export const updateCourseVideo = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     // check if req.body exists
+//     const { title, videoUrl, assignmentUrl } = req.body || {};
+
+//     // multer files
+//     const videoFile = req.files?.video?.[0];
+//     const assignmentFile = req.files?.assignment?.[0];
+
+//     if (!title) {
+//       return res.status(400).json({ message: "Title is required" });
+//     }
+
+//     const updateData = { title };
+
+//     if (videoFile) {
+//       updateData.videoUrl = `/uploads/videos/${videoFile.filename}`;
+//     } else if (videoUrl) {
+//       updateData.videoUrl = videoUrl;
+//     }
+
+//     if (assignmentFile) {
+//       updateData.assignmentUrl = `/uploads/assignments/${assignmentFile.filename}`;
+//     } else if (assignmentUrl) {
+//       updateData.assignmentUrl = assignmentUrl;
+//     }
+
+//     const updated = await CourseVideo.findByIdAndUpdate(id, updateData, { new: true });
+
+//     if (!updated) return res.status(404).json({ message: "Video not found" });
+
+//     res.json(updated);
+//   } catch (err) {
+//     console.error("Update failed:", err);
+//     res.status(500).json({ message: "Update failed", error: err.message });
+//   }
+// };
+
+
+export const updateCourseVideo = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // req.body fields (non-file)
+    const title = req.body.title;
+    const videoUrl = req.body.videoUrl;
+    const assignmentUrl = req.body.assignmentUrl;
+
+    const videoFile = req.files?.video?.[0];
+    const assignmentFile = req.files?.assignment?.[0];
+
+    const updatedFields = {
+      title,
+    };
+
+    if (videoFile) {
+      updatedFields.videoUrl = `/uploads/videos/${videoFile.filename}`;
+    } else if (videoUrl) {
+      updatedFields.videoUrl = videoUrl;
+    }
+
+    if (assignmentFile) {
+      updatedFields.assignmentUrl = `/uploads/assignments/${assignmentFile.filename}`;
+    } else if (assignmentUrl) {
+      updatedFields.assignmentUrl = assignmentUrl;
+    }
+
+    const updatedVideo = await CourseVideo.findByIdAndUpdate(id, updatedFields, {
+      new: true,
+    });
+
+    if (!updatedVideo) {
+      return res.status(404).json({ message: "Video not found" });
+    }
+
+    res.status(200).json(updatedVideo);
+  } catch (err) {
+    console.error("Update failed:", err);
+    res.status(400).json({ message: "Update failed", error: err.message });
+  }
+};
+
+
+
+export const getAssignmentByVideo = async (req, res) => {
+  const { videoId, teacherId, courseId } = req.params;
+  try {
+    const video = await CourseVideo.findOne({ _id: videoId, teacherId, courseId });
+    if (!video || !video.assignmentUrl) {
+      return res.status(404).json({ message: "Assignment not found" });
+    }
+    res.json({ assignmentUrl: video.assignmentUrl });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+
+
+// Get single video by ID
+export const getVideoById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const video = await CourseVideo.findById(id).populate("submissions.studentId");
+    if (!video) return res.status(404).json({ message: "Video not found" });
+    res.json({ video });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+
+// export const getAllVideos = async (req, res) => {
+//   try {
+//     const videos = await CourseVideo.find().populate("submissions.studentId");
+//     res.json({ videos });
+//   } catch (err) {
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
+
+
+// Example route: GET /api/videos
+export const getAllVideos = async (req, res) => {
+  const { courseId, teacherId } = req.query;
+
+  const query = {};
+  if (courseId) query.courseId = courseId;
+  if (teacherId) query.teacherId = teacherId;
+
+  // Show only those that have assignments
+  query.assignmentUrl = { $ne: null };
+
+  const videos = await CourseVideo.find(query);
+  res.status(200).json({ videos });
+};
+
+

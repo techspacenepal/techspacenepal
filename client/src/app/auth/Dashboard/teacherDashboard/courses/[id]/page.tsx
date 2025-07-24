@@ -248,6 +248,7 @@ import { useParams } from "next/navigation";
 import axios from "axios";
 import Cookies from "js-cookie";
 import TeachersVideoUploadForm from "@/app/Component/teachersVideoUpload";
+import { FileText } from "lucide-react";
 
 interface EnrolledStudent {
   studentId: string;
@@ -384,6 +385,20 @@ export default function CourseDetailsPage() {
         </table>
       )}
 
+           <hr className="my-4" />
+<div className="d-flex justify-content-between align-items-center mb-2">
+   
+  {course?.status === "published" && (
+    
+    <a
+      href={`/auth/Dashboard/teacherDashboard/courses/${courseId}/submissions`}
+      className="btn btn-outline-danger btn-sm fw-bold"
+    >
+       View Student Assignment Submissions
+    </a>
+  )}
+</div>
+
       {/* ------------------ Video Upload Section ------------------ */}
       {/* ------------------ Video Upload Section ------------------ */}
       <hr className="my-4" />
@@ -417,6 +432,11 @@ export default function CourseDetailsPage() {
           courseId={courseId as string}
         />
       )}
+
+ 
+
+
+
     </div>
   );
 }

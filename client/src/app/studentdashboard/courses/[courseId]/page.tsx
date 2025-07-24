@@ -308,6 +308,10 @@
 //   );
 // }
 
+
+
+
+
 "use client";
 
 import { useEffect, useState, useRef } from "react";
@@ -318,6 +322,7 @@ import toast, { Toaster } from "react-hot-toast";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Link from "next/link";
 
 interface Video {
   _id: string;
@@ -614,16 +619,23 @@ export default function CourseVideosPage() {
                 Next Video ▶️
               </button>
 
-  {currentVideo?.assignmentUrl && currentVideo.assignmentUrl.length > 0 && (
-  <button
-    className="btn btn-outline-secondary"
-    onClick={() => setShowAssignment(true)}
-  >
-    🎓 View Assignment
-  </button>
-)}
+              {currentVideo?.assignmentUrl &&
+                currentVideo.assignmentUrl.length > 0 && (
+                  
+                  // <button
+                  //   className="btn btn-outline-secondary"
+                  //   onClick={() => setShowAssignment(true)}
+                  // >
+                  //   🎓 View Assignment
+                  // </button>
 
-              
+                  <Link
+                    href={`/studentdashboard/courses/${courseId}/assignment/${currentVideo._id}`}
+                    className="btn btn-outline-secondary"
+                  >
+                    🎓 View Assignment
+                  </Link>
+                )}
             </div>
 
             <p className="text-muted mt-2">
@@ -634,18 +646,20 @@ export default function CourseVideosPage() {
       )}
 
       {/* Assignment Modal */}
-      {/* <Modal
+     
+
+      <Modal
         show={showAssignment}
         onHide={() => setShowAssignment(false)}
         centered
         size="lg"
         onShow={() => {
-          // auto-complete if image
           const isImage = currentVideo?.assignmentUrl?.match(
             /\.(jpg|jpeg|png|gif|webp)$/
           );
-          if (isImage) {
-            handleAssignmentComplete();
+          const isPDF = currentVideo?.assignmentUrl?.match(/\.(pdf|doc|docx)$/);
+          if (isImage || isPDF) {
+            handleAssignmentComplete(); // ✅ auto complete for image/pdf
           }
         }}
       >
@@ -677,6 +691,14 @@ export default function CourseVideosPage() {
               style={{ maxHeight: "400px", objectFit: "contain" }}
               onLoad={handleAssignmentComplete}
             />
+          ) : currentVideo?.assignmentUrl?.match(/\.pdf$/) ? (
+            <iframe
+              src={`http://localhost:5000${currentVideo.assignmentUrl}`}
+              width="100%"
+              height="500px"
+              style={{ border: "none", borderRadius: "8px" }}
+              onLoad={handleAssignmentComplete}
+            ></iframe>
           ) : (
             <a
               href={`http://localhost:5000${currentVideo?.assignmentUrl}`}
@@ -695,110 +717,7 @@ export default function CourseVideosPage() {
             Close
           </Button>
         </Modal.Footer>
-      </Modal> */}
-
-      <Modal
-  show={showAssignment}
-  onHide={() => setShowAssignment(false)}
-  centered
-  size="lg"
-  onShow={() => {
-    const isImage = currentVideo?.assignmentUrl?.match(/\.(jpg|jpeg|png|gif|webp)$/);
-    const isPDF = currentVideo?.assignmentUrl?.match(/\.(pdf|doc|docx)$/);
-    if (isImage || isPDF) {
-      handleAssignmentComplete(); // ✅ auto complete for image/pdf
-    }
-  }}
->
-  <Modal.Header closeButton>
-    <Modal.Title>Assignment</Modal.Title>
-  </Modal.Header>
-
-  {/* <Modal.Body>
-    {currentVideo?.assignmentUrl?.match(/\.(mp4|webm|ogg|mov)$/) ? (
-      <video
-        width="100%"
-        height="360"
-        controls
-        style={{ borderRadius: "8px" }}
-        onEnded={handleAssignmentComplete}
-      >
-        <source
-          src={`http://localhost:5000${currentVideo.assignmentUrl}`}
-          type="video/mp4"
-        />
-      </video>
-    ) : currentVideo?.assignmentUrl?.match(/\.(jpg|jpeg|png|gif|webp)$/) ? (
-      <img
-        src={`http://localhost:5000${currentVideo.assignmentUrl}`}
-        alt="Assignment"
-        className="img-fluid rounded"
-        style={{ maxHeight: "400px", objectFit: "contain" }}
-        onLoad={handleAssignmentComplete}
-      />
-    ) : (
-      <a
-        href={`http://localhost:5000${currentVideo?.assignmentUrl}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="btn btn-outline-primary"
-      >
-        📎 Open Assignment File
-      </a>
-    )}
-  </Modal.Body> */}
-
-  <Modal.Body>
-  {currentVideo?.assignmentUrl?.match(/\.(mp4|webm|ogg|mov)$/) ? (
-    <video
-      width="100%"
-      height="360"
-      controls
-      style={{ borderRadius: "8px" }}
-      onEnded={handleAssignmentComplete}
-    >
-      <source
-        src={`http://localhost:5000${currentVideo.assignmentUrl}`}
-        type="video/mp4"
-      />
-    </video>
-  ) : currentVideo?.assignmentUrl?.match(/\.(jpg|jpeg|png|gif|webp)$/) ? (
-    <img
-      src={`http://localhost:5000${currentVideo.assignmentUrl}`}
-      alt="Assignment"
-      className="img-fluid rounded"
-      style={{ maxHeight: "400px", objectFit: "contain" }}
-      onLoad={handleAssignmentComplete}
-    />
-  ) : currentVideo?.assignmentUrl?.match(/\.pdf$/) ? (
-    <iframe
-      src={`http://localhost:5000${currentVideo.assignmentUrl}`}
-      width="100%"
-      height="500px"
-      style={{ border: "none", borderRadius: "8px" }}
-      onLoad={handleAssignmentComplete}
-    ></iframe>
-  ) : (
-    <a
-      href={`http://localhost:5000${currentVideo?.assignmentUrl}`}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="btn btn-outline-primary"
-      onClick={handleAssignmentComplete}
-    >
-      📎 Open Assignment File
-    </a>
-  )}
-</Modal.Body>
-
-
-  <Modal.Footer>
-    <Button variant="secondary" onClick={() => setShowAssignment(false)}>
-      Close
-    </Button>
-  </Modal.Footer>
-</Modal>
-
+      </Modal>
     </div>
   );
 }

@@ -349,6 +349,8 @@ import EnrolledCourse from '../models/enrolledCourses.js';
 import multer from "multer";
 import path from "path";
 
+
+
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -882,3 +884,29 @@ export const uploadAvatar = (req, res) => {
     }
   });
 };
+
+
+export const getTeacherForStudent = async (req, res) => {
+  const { studentId, courseId } = req.params; 
+  try {
+    if (!studentId || !courseId) {     
+      return res.status(400).json({ message: "Missing studentId or courseId" });
+    }
+    const enrollment = await EnrolledCourse.findOne({ studentId, courseId });
+    if (!enrollment) {   
+      return res.status(404).json({ message: "Enrollment not found" });
+    }
+    if (!enrollment.teacherId) {
+      return res.status(404).json({ message: "Teacher not assigned" });
+    } 
+
+    res.status(200).json({ teacherId: enrollment.teacherId });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+
+
+
+

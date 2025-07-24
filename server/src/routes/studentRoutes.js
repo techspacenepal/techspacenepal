@@ -1,5 +1,5 @@
 import express from 'express';
-import { facebookLogin, getAllStudents,  getStudentById,  getStudentProfile, githubLogin, googleLogin, loginStudent, registerStudent, resetPassword, studentforgotPassword, uploadAvatar } from '../controllers/studentController.js';
+import { facebookLogin, getAllStudents,  getStudentById,  getStudentProfile, getTeacherForStudent, githubLogin, googleLogin, loginStudent, registerStudent, resetPassword, studentforgotPassword, uploadAvatar } from '../controllers/studentController.js';
 import { protect } from '../middlewares/studentMiddleware.js';
 import Student from "../models/student.js";
 import multer from "multer";
@@ -64,6 +64,10 @@ router.get("/check-username/:username", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+
+// 👇 Add this route
+router.get("/teacher/:studentId/:courseId", getTeacherForStudent);
 
 
 

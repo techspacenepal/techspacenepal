@@ -4,7 +4,10 @@ import mongoose from "mongoose";
 import EnrolledCourse from "../models/enrolledCourses.js";
 import Student from "../models/student.js";
 import { generateCertificate } from './generateCertificate.js';
-import Course from '../models/Course.js';
+
+import Assignment from "../models/Assignment.js";
+
+
 
 
 
@@ -367,40 +370,6 @@ export const getEnrolledStudentCount = async (req, res) => {
 };
 
 
-// export const getStudentsWithCompletedAssignments = async (req, res) => {
-//   try {
-//     const { teacherId } = req.params;
-
-//     // Find enrolled courses assigned to this teacher where assignments are completed
-//     const enrolledRecords = await EnrolledCourse.find({
-//       teacherId,
-//       assignmentCompleted: true,
-//     }).populate('studentId').populate('courseId');
-
-//     // Map to required response format
-//     const studentsWithAssignments = enrolledRecords.map((enrolled) => {
-//       const student = enrolled.studentId;
-//       const course = enrolled.courseId;
-//       return {
-//         _id: student._id.toString(),
-//         fullName: student.fullName || null,
-//         username: student.username || null,
-//         email: student.email,
-//         courseId: course._id.toString(),
-//         courseTitle: course.title,
-//         assignmentCompleted: enrolled.assignmentCompleted,
-//          currentGrade: enrolled.grade || "",
-//       };
-//     });
-
-//     res.json(studentsWithAssignments);
-//   } catch (error) {
-//     console.error('Error fetching graded students:', error);
-//     res.status(500).json({ message: 'Server error' });
-//   }
-// };
-
-
 
 
 
@@ -464,12 +433,6 @@ export const markAssignmentComplete = async (req, res) => {
   }
 };
 
-
-
-
-
-
-
 // PUT /api/enrolledCourses/submit-grade/:studentId/:courseId
 export const submitGrade = async (req, res) => {
   const { studentId, courseId } = req.params;
@@ -498,6 +461,43 @@ export const submitGrade = async (req, res) => {
   }
 };
 
+export const getStudentsWithAssignmentCount = async (req, res) => {
+  const teacherId = req.params.teacherId;
 
+  try {
+    // Teacher द्वारा पढाइएका सबै courses फेला पार्नुहोस्
+    const enrolledStudents = await EnrolledCourse.find({ teacherId })
+      .populate("studentId")
+      .populate("courseId");
 
+    const results = await Promise.all(
+      enrolledStudents.map(async (enrolled) => {
+        const student = enrolled.studentId;
+        const course = enrolled.courseId;
 
+        // यो student ले यो course का कति assignments submit गर्यो?
+        const count = await Assignment.countDocuments({
+          studentId: student._id,
+          courseId: course._id,
+        });
+
+        return {
+          _id: student._id,
+          fullName: student.fullName,
+          username: student.username,
+          email: student.email,
+          courseId: course._id,
+          courseTitle: course.title,
+          assignmentCompleted: count > 0,
+            assignmentSubmissionCount: count,
+          currentGrade: enrolled.grade || null,
+        };
+      })
+    );
+
+    res.json(results);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch students with submissions" });
+  }
+};
