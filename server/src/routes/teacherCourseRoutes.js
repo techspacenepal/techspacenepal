@@ -4,10 +4,14 @@ import {
   createTeacherCourse,
   deleteTeacherCourse,
   getAllTeacherCourses,
+  getAllTeachers,
   getCoursesByTeacher,  
+  getEnrolledCoursesByTeacher,  
   getStudentsByTeacherAndCourse,
   getTeacherCourseDetails,
-  getTeacherCoursesWithEnrollments, 
+   
+  getTeacherCoursesWithEnrollments,
+   
   getTotalStudentsByTeacher,  
   publishTeacherCourse,
   
@@ -42,6 +46,7 @@ router.put(
 );
 
 router.get("/details/:teacherId/:courseId", getTeacherCourseDetails);
+router.get("/teacher/:teacherId/enrollments", getEnrolledCoursesByTeacher);
 
 
 
@@ -59,6 +64,7 @@ router.get("/videos/:courseId", getCourseVideos);
 router.delete("/videos/:videoId", protect, deleteCourseVideo);
 
 
+router.get("/list", getAllTeachers);
 
 
 

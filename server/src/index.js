@@ -38,7 +38,8 @@ import teacherNotificationRoutes from './routes/teacherNotificationRoutes.js';
 import videoRoutes from "./routes/courseVideoRoutes.js";
 import certificateRoutes from "./routes/certificateRoutes.js";
 import assignmentRoutes from "./routes/assignmentRoutes.js";
-
+import notificationsRouter from "./routes/studentnotificationsRoutes.js";  
+import studentNotificationRoutes from "./routes/studentnotificationsRoutes.js";
 
 
 // __dirname define for ES module
@@ -94,7 +95,8 @@ app.use("/api/videos", videoRoutes);
 app.use("/api/certificates", certificateRoutes);
 app.use('/api/todos', todoRoutes);
 app.use("/api/assignments", assignmentRoutes);
-
+app.use("/api/notifications", notificationsRouter);
+app.use("/api/student", studentNotificationRoutes);
 
 // Google OAuth login
 app.get(

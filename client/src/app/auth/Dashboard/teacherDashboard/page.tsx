@@ -74,33 +74,53 @@ export default function DashboardPage() {
   }, [teacherId]);
 
   // Fetch total students
-  // // 📚 Fetch enrolled courses and compute total
-  useEffect(() => {
-    if (!teacherId) return;
 
-    const fetchData = async () => {
-      try {
-        const res = await axios.get(
-          `http://localhost:5000/api/teacherCourses/teacher/${teacherId}/enrollments`
-        );
-        const courseList = res.data;
-        setEnrolledCourses(courseList);
+  // useEffect(() => {
+  //   if (!teacherId) return;
 
-        // ✅ Compute total students from all course entries
-        const total = courseList.reduce(
-          (sum: number, course: any) => sum + (course.studentCount || 0),
-          0
-        );
-        setTotalStudents(total);
-      } catch (err) {
-        console.error("❌ Error fetching enrolled data", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  //   const fetchData = async () => {
+  //     try {
+  //       const res = await axios.get(
+  //         `http://localhost:5000/api/teacherCourses/teacher/${teacherId}/enrollments`
+  //       );
+  //       const courseList = res.data;
+  //       setEnrolledCourses(courseList);
 
-    fetchData();
-  }, [teacherId]);
+  //       // ✅ Compute total students from all course entries
+  //       const total = courseList.reduce(
+  //         (sum: number, course: any) => sum + (course.studentCount || 0),
+  //         0
+  //       );
+  //       setTotalStudents(total);
+  //     } catch (err) {
+  //       console.error("❌ Error fetching enrolled data", err);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [teacherId]);
+
+
+useEffect(() => {
+  if (!teacherId) return;
+
+  const fetchTotalStudents = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/api/teacherCourses/teacher/${teacherId}/total-students`
+      );
+      setTotalStudents(res.data.totalStudents);
+    } catch (error) {
+      console.error("❌ Error fetching total unique students:", error);
+    }
+  };
+
+  fetchTotalStudents();
+}, [teacherId]);
+
+
 
   const getCustomInitials = (name: string) => {
     const parts = name.trim().split(" ");
@@ -110,20 +130,25 @@ export default function DashboardPage() {
     return firstLetter + secondLetter;
   };
 
-  if (loading) {
-    return (
-      <div
-        className="d-flex justify-content-center align-items-center"
-        style={{ height: "100vh" }}
-      >
-        <div
-          className="spinner-border text-primary"
-          role="status"
-          aria-label="Loading"
-        ></div>
-      </div>
-    );
-  }
+ if (loading) {
+  return (
+    <div
+       className="d-flex justify-content-center align-items-center"
+      style={{ height: '50vh', paddingTop: '50px' }}
+    >
+      <img
+        src="/logo.png"
+        alt="Loading..."
+        style={{
+          width: "100px",
+          height: "100px",
+          borderRadius: "50%",
+          animation: "spin 1s linear infinite"
+        }}
+      />
+    </div>
+  );
+}
 
   return (
     <div className="container py-4">

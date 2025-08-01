@@ -1,35 +1,46 @@
-import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
 const studentSchema = new mongoose.Schema(
   {
-     fullName: { type: String, required: false },
+    isBlocked: {
+      type: Boolean,
+      default: false,
+    },
+
+    uid: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+    fullName: { type: String, required: false },
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    role: { type: String, default: 'student' },
+
+    role: { type: String, default: "student" },
     number: { type: String, required: false },
     avatarUrl: { type: String, default: "" },
     resetOTP: String,
     resetOTPExpiry: Date,
-     enrolledCourses: [
-    {
-      courseId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Course",
+    enrolledCourses: [
+      {
+        courseId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Course",
+        },
+        progress: {
+          type: Number,
+          default: 0,
+        },
       },
-      progress: {
-        type: Number,
-        default: 0,
-      },
-    },
-  ],
+    ],
   },
   { timestamps: true }
 );
 
-studentSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+studentSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();
@@ -37,6 +48,5 @@ studentSchema.pre('save', async function (next) {
 
 // student.js
 export const Student = mongoose.model("Student", studentSchema);
-
 
 export default Student;

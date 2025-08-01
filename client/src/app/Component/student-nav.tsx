@@ -1,6 +1,3 @@
-
-
-
 // "use client";
 
 // import Link from "next/link";
@@ -177,9 +174,6 @@
 //   );
 // }
 
-
-
-
 "use client";
 
 import Link from "next/link";
@@ -239,32 +233,35 @@ export function UserNav() {
   };
 
   useEffect(() => {
-   const fetchUser = async () => {
-  try {
-    const token = Cookies.get("studentToken");
-    console.log("Token:", token);
+    const fetchUser = async () => {
+      try {
+        const token = Cookies.get("studentToken");
+        console.log("Token:", token);
 
-    if (!token) {
-      console.log("No token found");
-      return;
-    }
+        if (!token) {
+          console.log("No token found");
+          return;
+        }
 
-    const url = "http://localhost:5000/api/students/profile";
-    console.log("Fetching profile from:", url);
+        const url = "http://localhost:5000/api/students/profile";
+        console.log("Fetching profile from:", url);
 
-    const { data } = await axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+        const { data } = await axios.get(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-    console.log("User data:", data);
-    setUser(data);
-  } catch (error: any) {
-    console.error("Fetch user error:", error.response?.status, error.response?.data);
-  }
-};
-
+        console.log("User data:", data);
+        setUser(data);
+      } catch (error: any) {
+        console.error(
+          "Fetch user error:",
+          error.response?.status,
+          error.response?.data
+        );
+      }
+    };
 
     fetchUser();
   }, []);
@@ -309,13 +306,20 @@ export function UserNav() {
           )}
         </button>
 
-        <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+       
+
+        <ul
+          className="dropdown-menu dropdown-menu-end"
+          aria-labelledby="userMenu"
+        >
           <li className="dropdown-header">
             <strong>{user.username}</strong>
             <div className="small text-muted">{user.email}</div>
           </li>
 
-          <li><hr className="dropdown-divider" /></li>
+          <li>
+            <hr className="dropdown-divider" />
+          </li>
 
           <li>
             <Link href="/studentdashboard/profile" className="dropdown-item">
@@ -323,7 +327,19 @@ export function UserNav() {
             </Link>
           </li>
 
-          <li><hr className="dropdown-divider" /></li>
+          <li>
+            <button
+              className="dropdown-item d-flex align-items-center gap-2"
+              onClick={() => setShowSettingsModal(true)}
+            >
+              <i className="bi bi-gear me-2"></i>
+              Edit Profile
+            </button>
+          </li>
+
+          <li>
+            <hr className="dropdown-divider" />
+          </li>
 
           <li>
             <button
@@ -347,4 +363,3 @@ export function UserNav() {
     </div>
   );
 }
-

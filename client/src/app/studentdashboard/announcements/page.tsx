@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -21,19 +19,15 @@ export default function AnnouncementsPage() {
   const [notifications, setNotifications] = useState<Announcement[]>([]);
   const [studentId, setStudentId] = useState<string | null>(null);
 
-  // ✅ Step 1: Get student ID from profile
   useEffect(() => {
     const fetchStudent = async () => {
       try {
         const token = Cookies.get("studentToken");
         if (!token) return;
 
-        const res = await axios.get(
-          "http://localhost:5000/api/students/profile",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const res = await axios.get("http://localhost:5000/api/students/profile", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
         setStudentId(res.data._id);
       } catch (err) {
@@ -44,7 +38,6 @@ export default function AnnouncementsPage() {
     fetchStudent();
   }, []);
 
-  // ✅ Step 2: Fetch announcements
   useEffect(() => {
     const fetchAnnouncements = async () => {
       try {
@@ -58,7 +51,6 @@ export default function AnnouncementsPage() {
     fetchAnnouncements();
   }, []);
 
-  // ✅ Step 3: Fetch personal notifications
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
@@ -82,52 +74,53 @@ export default function AnnouncementsPage() {
   }, [studentId]);
 
   return (
-    <div className="max-w-3xl mx-auto mt-6 p-4 space-y-6">
+    <div className="container mt-5">
       {/* 🔔 My Notifications */}
-      <section>
-        <h1 className="text-2xl font-bold mb-4 text-green-600">
-          🔔 My Notifications
-        </h1>
-        {notifications.length > 0 ? (
-          notifications.map((notify) => (
-            <div key={notify._id} className="border p-4 mb-4 rounded shadow">
-              <h2 className="text-lg font-semibold">{notify.title}</h2>
-              <p className="text-sm text-gray-600">
-                {new Date(notify.createdAt || notify.date).toLocaleString()}
-              </p>
-              <p className="mt-2">{notify.message}</p>
-            </div>
-          ))
-        ) : (
-          <p className="text-gray-500 italic">
-            No personal notifications available.
-          </p>
-        )}
-      </section>
+     <section className="mb-5">
+  <h2 className="mb-3 fw-bold text-danger"> Notifications from Your Teacher</h2>
+  {notifications.length > 0 ? (
+    <ul className="list-group">
+      {notifications.map((notify) => (
+        <li key={notify._id} className="list-group-item">
+          <div className="d-flex justify-content-between align-items-center">
+            <strong>{notify.title}</strong>
+            <small className="text-muted">
+              {new Date(notify.createdAt || notify.date).toLocaleString()}
+            </small>
+          </div>
+          <div className="text-muted">This message was sent by your teacher</div>
+          <div className="mt-1">{notify.message}</div>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p className="text-muted fst-italic">No notifications from your teacher at the moment.</p>
+  )}
+</section>
 
-      <hr className="my-6" />
+
+      <hr className="my-5" />
 
       {/* 📢 General Announcements */}
       <section>
-        <h1 className="text-2xl font-bold mb-4 text-blue-600">
-          📢 General Announcements
-        </h1>
+        <h2 className="mb-3 fw-bold text-primary">📢 General Announcements</h2>
         {announcements.length > 0 ? (
-          announcements.map((ann) => (
-            <div key={ann._id} className="border p-4 mb-4 rounded shadow">
-              <h2 className="text-lg font-semibold">{ann.title}</h2>
-              {/* <p className="text-sm text-gray-600">
-                {new Date(ann.date || ann.createdAt).toLocaleDateString()} by {ann.author}
-              </p> */}
-              <p className="text-sm text-gray-600">
-                {new Date(ann.date ?? ann.createdAt ?? "").toLocaleDateString()}{" "}
-                By {ann.author}
-              </p>
-              <p className="mt-2">{ann.content}</p>
-            </div>
-          ))
+          <ul className="list-group">
+            {announcements.map((ann) => (
+              <li key={ann._id} className="list-group-item">
+                <div className="d-flex justify-content-between align-items-center">
+                  <strong>{ann.title}</strong>
+                  <small className="text-muted">
+                    {new Date(ann.date ?? ann.createdAt ?? "").toLocaleDateString()}
+                  </small>
+                </div>
+                <div className="text-muted">By {ann.author}</div>
+                <div className="mt-1">{ann.content}</div>
+              </li>
+            ))}
+          </ul>
         ) : (
-          <p className="text-gray-500 italic">No announcements found.</p>
+          <p className="text-muted fst-italic">No announcements found.</p>
         )}
       </section>
     </div>

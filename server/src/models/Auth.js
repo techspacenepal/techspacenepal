@@ -8,6 +8,11 @@ import bcrypt from "bcryptjs";
 const authSchema = new mongoose.Schema(
   {
 
+     isBlocked: {
+    type: Boolean,
+    default: false,
+  },
+
     fullName: {
       type: String,
       required: false,
@@ -39,7 +44,7 @@ const authSchema = new mongoose.Schema(
     provider: { type: String, default: "google" },
     role: {
       type: String,
-      enum: ["user", "admin", "teacher"],
+      enum: ["user", "admin","superadmin", "teacher"],
       default: "user",
     },
     active: {
@@ -49,6 +54,8 @@ const authSchema = new mongoose.Schema(
     resetOTP: String,
     resetOTPExpiry: Date,
   },
+
+  
   { timestamps: true }
 );
 

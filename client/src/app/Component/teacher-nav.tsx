@@ -87,9 +87,9 @@ export function UserNav() {
           <button className="dropdown-item ">Profile</button>
           </Link>
         </li>
-        <li>
+        {/* <li>
           <button className="dropdown-item">Settings</button>
-        </li>
+        </li> */}
         <li>
           <hr className="dropdown-divider" />
         </li>

@@ -14,8 +14,7 @@ import {
   getUserById,
   getAllUsers,
   updateUserByEmail,
-  login,
-  logout,
+ 
   forgotPassword,
   resetPassword,
   deleteUserById,
@@ -23,6 +22,9 @@ import {
   
   getAllTeachers,
   getTeacherById,
+  blockUser,
+  getProfile,
+  getLoginSessions,
 } from '../controllers/authController.js';
 
 import { authenticateToken } from '../middlewares/authMiddleware.js';
@@ -43,13 +45,18 @@ router.put('/users/:email', updateUserByEmail);
 router.delete('/:id', protect, deleteUserById);
 
 /* ------------------ Auth Routes ------------------ */
-router.post('/login-user', login); // renamed to avoid conflict
-router.post('/logout-user', authenticateToken, logout);
+// router.post('/login-user', login); // renamed to avoid conflict
+// router.post('/logout-user', authenticateToken, logout);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
 router.get('/teacher/:id', getTeacherById);
-// router.get("/:id", protect, getTeacherById);
+
+router.put("/block/:id", protect, blockUser);
+router.get("/profile", protect, getProfile);
+
 router.get('/', getAllTeachers);
+
+router.get("/:studentId/login-sessions", getLoginSessions);
 /* ------------------ Google OAuth ------------------ */
 router.post('/google-login', googleLogin);
 

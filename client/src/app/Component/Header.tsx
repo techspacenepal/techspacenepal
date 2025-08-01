@@ -23,6 +23,9 @@ export default function TopNavbar() {
   }, []);
 
   const { isAuthenticated, user } = useAuth();
+  const role = (user?.role ?? "").toLowerCase();
+
+
 
   useEffect(() => {
     import("bootstrap/dist/js/bootstrap.bundle.min.js");
@@ -89,10 +92,13 @@ export default function TopNavbar() {
   }, []);
 
   const pathname = usePathname();
-  const hideHeader = pathname === "/auth/adminLogin";
-  const hideFooter = pathname === "/auth/adminRegister/superAdmin";
+ const hideHeader =
+  pathname === "/auth/adminLogin" || pathname === "/auth/studentLogin";
 
-  if (hideHeader || hideFooter) return null;
+const hideFooter =
+  pathname === "/auth/adminRegister" || pathname === "/auth/studentRegister";
+
+if (hideHeader || hideFooter) return null;
 
   return (
     <>
@@ -305,8 +311,7 @@ export default function TopNavbar() {
                   Send Inquiry
                 </Link>
 
-                
-
+                {/* 
                 {isAuthenticated &&
                   ["admin", "user", "student", "teacher"].includes(
                     user?.role ?? ""
@@ -318,6 +323,24 @@ export default function TopNavbar() {
                           : user?.role === "student"
                           ? "/studentdashboard"
                           : user?.role === "teacher"
+                          ? "/auth/Dashboard/teacherDashboard"
+                          : "/auth/Dashboard/userDashboard"
+                      }
+                      className="btn btn-outline-primary px-3 py-2 ms-2"
+                    >
+                      Dashboard
+                    </Link>
+                  )} */}
+
+                {isAuthenticated &&
+                  ["admin", "user", "student", "teacher"].includes(role) && (
+                    <Link
+                      href={
+                        role === "admin"
+                          ? "/auth/Dashboard/adminDashboard"
+                          : role === "student"
+                          ? "/studentdashboard"
+                          : role === "teacher"
                           ? "/auth/Dashboard/teacherDashboard"
                           : "/auth/Dashboard/userDashboard"
                       }

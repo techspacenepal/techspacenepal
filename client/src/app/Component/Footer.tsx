@@ -9,10 +9,13 @@ import React from 'react';
 const Footer = () => {
 
     const pathname = usePathname();
-  const hideHeader = pathname === "/auth/adminLogin";
-  const hideFooter = pathname === "/auth/adminRegister/superAdmin";
+const hideHeader =
+  pathname === "/auth/adminLogin" || pathname === "/auth/studentLogin";
 
-  if (hideHeader || hideFooter) return null;
+const hideFooter =
+  pathname === "/auth/adminRegister" || pathname === "/auth/studentRegister";
+
+if (hideHeader || hideFooter) return null;
 
 
     return (

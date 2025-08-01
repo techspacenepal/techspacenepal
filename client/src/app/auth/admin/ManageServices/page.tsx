@@ -14,16 +14,13 @@ interface Service {
 }
 
 export default function ManageServices() {
-  const router = useRouter();
-  // const [services, setServices] = useState([]);
+  const router = useRouter();  
   const [form, setForm] = useState({ title: "", desc: "", icon: "" });
-  //const [editingId, setEditingId] = useState(null);
   const [services, setServices] = useState<Service[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
-
   const [pageLoading, setPageLoading] = useState(true);
-  // const formRef = useRef(null);
-  const formRef = useRef<HTMLDivElement | null>(null);
+   const formRef = useRef<HTMLDivElement | null>(null);
+  const [role, setRole] = useState<string | null>(null);
 
   const fetchServices = async () => {
     try {
@@ -34,22 +31,39 @@ export default function ManageServices() {
     }
   };
 
+  // useEffect(() => {
+  //   const token = Cookies.get("adminToken");
+
+  //   setTimeout(() => {
+  //     if (!token) {
+  //       toast.error("Please login to access this page");
+  //       router.push("/auth/adminLogin");
+  //     } else {
+  //       fetchServices();
+  //       setPageLoading(false);
+  //     }
+  //   }, 1000);
+  // }, []);
+
+
   useEffect(() => {
-    const token = Cookies.get("adminToken");
+  const token = Cookies.get("adminToken");
+  const user = JSON.parse(localStorage.getItem("user") || "{}"); // user ल्याउने
+  const userRole = user?.role || null;
+  setRole(userRole); 
 
-    setTimeout(() => {
-      if (!token) {
-        toast.error("Please login to access this page");
-        router.push("/auth/adminLogin");
-      } else {
-        fetchServices();
-        setPageLoading(false);
-      }
-    }, 1000);
-  }, []);
+  setTimeout(() => {
+    if (!token) {
+      toast.error("Please login to access this page");
+      router.push("/auth/adminLogin");
+    } else {
+      fetchServices();
+      setPageLoading(false);
+    }
+  }, 1000);
+}, []);
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -99,83 +113,78 @@ export default function ManageServices() {
     }, 100);
   };
 
-  if (pageLoading) {
-    return (
-      <div
-        className="d-flex justify-content-center align-items-center"
-        style={{ height: "100vh" }}
-      >
-        <div className="multi-spinner"></div>
-        <style jsx>{`
-          .multi-spinner {
-            width: 4rem;
-            height: 4rem;
-            border: 8px solid transparent;
-            border-top: 8px solid red;
-            border-right: 8px solid blue;
-            border-bottom: 8px solid green;
-            border-left: 8px solid orange;
-            border-radius: 50%;
-            animation: spin 1.2s linear infinite;
-          }
-          @keyframes spin {
-            0% {
-              transform: rotate(0deg);
-            }
-            100% {
-              transform: rotate(360deg);
-            }
-          }
-        `}</style>
-      </div>
-    );
-  }
+//   if (pageLoading) {
+//   return (
+//     <div
+//        className="d-flex justify-content-center align-items-center"
+//       style={{ height: '50vh', paddingTop: '50px' }}
+//     >
+//       <img
+//         src="/logo.png"
+//         alt="Loading..."
+//         style={{
+//           width: "100px",
+//           height: "100px",
+//           borderRadius: "50%",
+//           animation: "spin 1s linear infinite"
+//         }}
+//       />
+//     </div>
+//   );
+// }
+
 
   return (
     <div className="container py-5">
-      <h2 className="mb-4">Manage Services</h2>
-      <div ref={formRef}>
-        <form onSubmit={handleSubmit} className="mb-5">
-          <input
-            type="text"
-            className="form-control mb-3"
-            placeholder="Service Title"
-            value={form.title}
-            onChange={(e) => setForm({ ...form, title: e.target.value })}
-            required
-          />
-          <textarea
-            className="form-control mb-3"
-            placeholder="Service Description"
-            value={form.desc}
-            onChange={(e) => setForm({ ...form, desc: e.target.value })}
-            required
-          />
-          <input
-            type="text"
-            className="form-control mb-3"
-            placeholder="Icon URL"
-            value={form.icon}
-            onChange={(e) => setForm({ ...form, icon: e.target.value })}
-            required
-          />
-          <button type="submit" className="btn btn-primary">
-            {editingId ? "Update Service" : "Add Service"}
+      {role !== "user" && (
+  <>
+    <h2 className="mb-4">Manage Services</h2>
+
+    <div ref={formRef}>
+      <form onSubmit={handleSubmit} className="mb-5">
+        <input
+          type="text"
+          className="form-control mb-3"
+          placeholder="Service Title"
+          value={form.title}
+          onChange={(e) => setForm({ ...form, title: e.target.value })}
+          required
+        />
+        <textarea
+          className="form-control mb-3"
+          placeholder="Service Description"
+          value={form.desc}
+          onChange={(e) => setForm({ ...form, desc: e.target.value })}
+          required
+        />
+        <input
+          type="text"
+          className="form-control mb-3"
+          placeholder="Icon URL"
+          value={form.icon}
+          onChange={(e) => setForm({ ...form, icon: e.target.value })}
+          required
+        />
+        <button type="submit" className="btn btn-primary">
+          {editingId ? "Update Service" : "Add Service"}
+        </button>
+        {editingId && (
+          <button
+            type="button"
+            className="btn btn-secondary ms-2"
+            onClick={() => {
+              setEditingId(null);
+              setForm({ title: "", desc: "", icon: "" });
+            }}
+          >
+            Cancel
           </button>
-          {editingId && (
-            <button
-              type="button"
-              className="btn btn-secondary ms-2"
-              onClick={() => {
-                setEditingId(null);
-                setForm({ title: "", desc: "", icon: "" });
-              }}
-            >
-              Cancel
-            </button>
-          )}
-        </form>
-      </div>
+        )}
+      </form>
+    </div>
+  </>
+)}
+
 
       <h4>Existing Services</h4>
       <div className="row g-4">

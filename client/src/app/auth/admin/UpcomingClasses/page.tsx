@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
@@ -8,8 +7,6 @@ import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
-
 interface ClassData {
   _id: string;
   title: string;
@@ -18,7 +15,6 @@ interface ClassData {
   duration: string;
   imageUrl?: string;
 }
-
 
 export default function UpcomingClassesAdmin() {
   const [pageLoading, setPageLoading] = useState(true);
@@ -34,8 +30,6 @@ export default function UpcomingClassesAdmin() {
   // const [editId, setEditId] = useState(null);
   const [editId, setEditId] = useState<string | null>(null);
   const [image, setImage] = useState<File | null>(null);
-
-
 
   // const formRef = useRef(null);
   const formRef = useRef<HTMLDivElement>(null);
@@ -67,29 +61,24 @@ export default function UpcomingClassesAdmin() {
   // };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  setForm({ ...form, [e.target.name]: e.target.value });
-};
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   // const handleFileChange = (e) => {
   //   setImage(e.target.files[0]);
   // };
 
-  
-// handleFileChange: file input change event
-const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  if (e.target.files) {
-    setImage(e.target.files[0]);
-  }
-};
+  // handleFileChange: file input change event
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setImage(e.target.files[0]);
+    }
+  };
 
-
-
- const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData();
-    Object.entries(form).forEach(([key, value]) =>
-      formData.append(key, value)
-    );
+    Object.entries(form).forEach(([key, value]) => formData.append(key, value));
     if (image) formData.append("image", image);
 
     try {
@@ -113,7 +102,7 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     }
   };
 
-  const handleEdit = (cls:ClassData) => {
+  const handleEdit = (cls: ClassData) => {
     setForm({
       title: cls.title,
       date: cls.date,
@@ -128,7 +117,7 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     }, 100);
   };
 
-  const handleDelete = async (id:string) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm("Are you sure you want to delete?")) {
       try {
         await axios.delete(`http://localhost:5000/api/classes/${id}`);
@@ -140,41 +129,26 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     }
   };
 
-
-
-
   // 🌀 Loading spinner while checking token
-  if (pageLoading) {
-    return (
-      <div
-        className="d-flex justify-content-center align-items-center"
-        style={{ height: "100vh" }}
-      >
-        <div className="multi-spinner"></div>
-        <style jsx>{`
-          .multi-spinner {
-            width: 4rem;
-            height: 4rem;
-            border: 8px solid transparent;
-            border-top: 8px solid red;
-            border-right: 8px solid blue;
-            border-bottom: 8px solid green;
-            border-left: 8px solid orange;
-            border-radius: 50%;
-            animation: spin 1.2s linear infinite;
-          }
-          @keyframes spin {
-            0% {
-              transform: rotate(0deg);
-            }
-            100% {
-              transform: rotate(360deg);
-            }
-          }
-        `}</style>
-      </div>
-    );
-  }
+  //    if (pageLoading) {
+  //   return (
+  //     <div
+  //        className="d-flex justify-content-center align-items-center"
+  //       style={{ height: '50vh', paddingTop: '50px' }}
+  //     >
+  //       <img
+  //         src="/logo.png"
+  //         alt="Loading..."
+  //         style={{
+  //           width: "100px",
+  //           height: "100px",
+  //           borderRadius: "50%",
+  //           animation: "spin 1s linear infinite"
+  //         }}
+  //       />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="container py-4">
@@ -267,9 +241,7 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
               </div>
               <div className="p-3">
                 <h5 className="mb-1">{data.title}</h5>
-                <p className="mb-1 fw-semibold text-muted">
-                  UPCOMING CLASSES
-                </p>
+                <p className="mb-1 fw-semibold text-muted">UPCOMING CLASSES</p>
                 <div className="d-flex justify-content-between">
                   <span>
                     <i className="bi bi-calendar3"></i>{" "}

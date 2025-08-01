@@ -1,5 +1,5 @@
 import express from 'express';
-import { facebookLogin, getAllStudents,  getStudentById,  getStudentProfile, getTeacherForStudent, githubLogin, googleLogin, loginStudent, registerStudent, resetPassword, studentforgotPassword, uploadAvatar } from '../controllers/studentController.js';
+import { blockStudent, facebookLogin, getAllStudents,  getLoginSessions,  getStudentById,  getStudentProfile, getTeacherForStudent, githubLogin, googleLogin, loginStudent, registerStudent, resetPassword, studentforgotPassword, updateStudentProfile, uploadAvatar } from '../controllers/studentController.js';
 import { protect } from '../middlewares/studentMiddleware.js';
 import Student from "../models/student.js";
 import multer from "multer";
@@ -18,8 +18,8 @@ router.post("/google-login", googleLogin);
 router.post("/facebook-login", facebookLogin);
 router.post("/github-login", githubLogin);
 router.get("/:id", getStudentById);
+router.put("/block/:id", blockStudent);
 
-// routes/students.js or routes/studentRoutes.js
 router.put("/update", protect, async (req, res) => {
   try {
     const { name, email } = req.body;
@@ -69,6 +69,7 @@ router.get("/check-username/:username", async (req, res) => {
 // 👇 Add this route
 router.get("/teacher/:studentId/:courseId", getTeacherForStudent);
 
-
+router.put("/profile", protect, updateStudentProfile);
+router.get("/:studentId/login-sessions", getLoginSessions);
 
 export default router;

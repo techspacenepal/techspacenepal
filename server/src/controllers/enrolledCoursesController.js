@@ -196,14 +196,25 @@ export const getStudentsByTeacherWithProgress = async (req, res) => {
       .populate("studentId", "username email avatarUrl")
       .populate("courseId", "title");
 
-    const students = enrollments.map((enroll) => ({
-      id: enroll.studentId._id,
-      name: enroll.studentId.username,
-      email: enroll.studentId.email,
-      avatar: enroll.studentId.avatarUrl || "",
-      progress: enroll.progress || 0,
-      courseTitle: enroll.courseId?.title || "",
-    }));
+    // const students = enrollments.map((enroll) => ({
+    //   id: enroll.studentId._id,
+    //   name: enroll.studentId.username,
+    //   email: enroll.studentId.email,
+    //   avatar: enroll.studentId.avatarUrl || "",
+    //   progress: enroll.progress || 0,
+    //   courseTitle: enroll.courseId?.title || "",
+    // }));
+
+    const students = enrollments
+  .filter(enroll => enroll.studentId && enroll.courseId) // prevent crash
+  .map((enroll) => ({
+    id: enroll.studentId._id,
+    name: enroll.studentId.username,
+    email: enroll.studentId.email,
+    avatar: enroll.studentId.avatarUrl || "",
+    progress: enroll.progress || 0,
+    courseTitle: enroll.courseId?.title || "",
+  }));
 
     res.status(200).json(students);
   } catch (error) {

@@ -14,6 +14,8 @@ import {
   Sparkles,
   UserCircle,
 } from "lucide-react";
+import { FaPaperPlane } from "react-icons/fa";
+
 
 const navItems = [
   { href: "/studentdashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -21,6 +23,8 @@ const navItems = [
   { href: "/studentdashboard/courses", label: "Courses", icon: BookOpen },
   { href: "/studentdashboard/gradebook", label: "Gradebook", icon: ClipboardList },
   { href: "/studentdashboard/announcements", label: "Announcements", icon: Megaphone },
+{ href: "/studentdashboard/studentnotifications", label: "Send Notification", icon: FaPaperPlane },
+
     { href: "/studentdashboard/todoList", label: "To Do List", icon: CheckSquare },
 
 ];

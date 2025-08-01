@@ -9,6 +9,14 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import LoadingWrapper from "./loadingWrapper"; // Client loader import
 import Footer from "./Component/Footer";
 import Header from "./Component/Header";
+import { Roboto } from "next/font/google";
+
+
+
+const robotos = Roboto({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"], // customize as needed
+});
 
 
 const geistSans = Geist({
@@ -32,9 +40,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+     <body
+  className={`${robotos.className} ${geistSans.variable} ${geistMono.variable} antialiased`}
+>
+
         <GoogleOAuthProvider
           clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
         >

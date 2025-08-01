@@ -3,6 +3,7 @@
 import { PageHeader } from "@/app/Component/page-header";
 import { BookOpen, CheckCircle, TrendingUp } from "lucide-react";
 import Link from "next/link";
+import '@/app/globals.css'; 
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -27,81 +28,59 @@ export default function DashboardPage() {
 
   const router = useRouter();
 
-  // 🔐 Redirect to login if no token
-  // useEffect(() => {
-  //   const token = Cookies.get("studentToken");
-  //   if (!token) {
-  //     router.push("/auth/studentLogin");
-  //   }
-  // }, []);
-
 // useEffect(() => {
-//   // Wait a short time to ensure cookie is written
-//   setTimeout(() => {
+//   const verifyAndLoad = async () => {
 //     const token = Cookies.get("studentToken") || localStorage.getItem("studentToken");
-//     console.log("🧪 Token from cookie:", token);
+//     console.log("🧪 Checking token in cookie/localStorage:", token);
 
 //     if (!token) {
+//       console.warn("🚫 Token not found, redirecting to login...");
 //       router.push("/auth/studentLogin");
-//     } else {
-//       fetchStudent(); // fetch only if token exists
+//       return;
 //     }
-//   }, 300); // wait 300ms for cookie to appear
+
+//     try {
+//       const res = await axios.get("http://localhost:5000/api/students/profile", {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//         withCredentials: true,
+//       });
+
+//       console.log("✅ Student fetched:", res.data);
+//       setStudent(res.data);
+
+//       // ✅ Fetch enrolled courses
+//       const { data: courseData } = await axios.get(
+//         `http://localhost:5000/api/enrolledCourses/${res.data._id}`,
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//           withCredentials: true,
+//         }
+//       );
+//       setEnrolledCourses(courseData);
+
+//       // ✅ Fetch announcements
+//       fetchAnnouncements();
+
+//       setError(null);
+//     } catch (err: any) {
+//       console.error("❌ Auth error, redirecting to login:", err.message);
+//       Cookies.remove("studentToken");
+//       localStorage.removeItem("studentToken");
+//       router.push("/auth/studentLogin");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   // Wait 300–500ms so that cookie is stored
+//   setTimeout(() => {
+//     verifyAndLoad();
+//   }, 400);
 // }, []);
-
-useEffect(() => {
-  const verifyAndLoad = async () => {
-    const token = Cookies.get("studentToken") || localStorage.getItem("studentToken");
-    console.log("🧪 Checking token in cookie/localStorage:", token);
-
-    if (!token) {
-      console.warn("🚫 Token not found, redirecting to login...");
-      router.push("/auth/studentLogin");
-      return;
-    }
-
-    try {
-      const res = await axios.get("http://localhost:5000/api/students/profile", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      });
-
-      console.log("✅ Student fetched:", res.data);
-      setStudent(res.data);
-
-      // ✅ Fetch enrolled courses
-      const { data: courseData } = await axios.get(
-        `http://localhost:5000/api/enrolledCourses/${res.data._id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        }
-      );
-      setEnrolledCourses(courseData);
-
-      // ✅ Fetch announcements
-      fetchAnnouncements();
-
-      setError(null);
-    } catch (err: any) {
-      console.error("❌ Auth error, redirecting to login:", err.message);
-      Cookies.remove("studentToken");
-      localStorage.removeItem("studentToken");
-      router.push("/auth/studentLogin");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Wait 300–500ms so that cookie is stored
-  setTimeout(() => {
-    verifyAndLoad();
-  }, 400);
-}, []);
 
 
 
@@ -120,91 +99,96 @@ useEffect(() => {
     }
   };
 
-  // useEffect(() => {
-  //   fetchStudent();
-  //   fetchAnnouncements();
-  // }, []);
 
-  // Fetch function बाहिर निकालियो ताकि retry मा पनि चलाउन सकियोस्
-// const fetchStudent = async () => {
-//   try {
-//     const token = Cookies.get("studentToken");
-//     console.log("🧪 Token from cookie:", token);
+   useEffect(() => {
+    const verifyAndLoad = async () => {
+      const token = Cookies.get("studentToken") || localStorage.getItem("studentToken");
 
-//     if (!token) {
-//       throw new Error("Token not found.");
-//     }
+      if (!token) {
+        router.push("/auth/studentLogin");
+        return;
+      }
 
-//     const authHeaders = {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//       withCredentials: true,
-//     };
+      try {
+        const res = await axios.get("http://localhost:5000/api/students/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        });
 
-//     // ✅ Corrected: Now token is sent in header
-//     const res = await axios.get("http://localhost:5000/api/students/profile", authHeaders);
+        const studentData = res.data;
+        const validRoles = ["student"];
 
-//     const studentData = res.data;
-//     setStudent(studentData);
+        if (!validRoles.includes(studentData.role)) {
+          alert("Unauthorized access detected. Redirecting to login.");
+          Cookies.remove("studentToken");
+          localStorage.removeItem("studentToken");
+          router.push("/auth/studentLogin");
+          return;
+        }
 
-//     // ✅ Enrolled courses
-//     const { data: courseData } = await axios.get(
-//       `http://localhost:5000/api/enrolledCourses/${studentData._id}`,
-//       authHeaders
-//     );
-//     setEnrolledCourses(courseData);
+        if (studentData.isBlocked) {
+          alert("Your account has been blocked. Please contact Your Institute");
+          Cookies.remove("studentToken");
+          localStorage.removeItem("studentToken");
+          router.push("/auth/studentLogin");
+          return;
+        }
 
-//     setError(null);
-//   } catch (error: any) {
-//     console.error("Failed to fetch student or courses:", error);
+        setStudent(studentData);
 
-//     const message = error?.response?.data?.message || "Failed to load data.";
-//     setError(message);
+        const { data: courseData } = await axios.get(
+          `http://localhost:5000/api/enrolledCourses/${studentData._id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            withCredentials: true,
+          }
+        );
+        setEnrolledCourses(courseData);
 
-//     if (
-//       message.toLowerCase().includes("expired") ||
-//       message.toLowerCase().includes("not authorized") ||
-//       error.response?.status === 401
-//     ) {
-//       Cookies.remove("studentToken");
-//       localStorage.removeItem("studentToken");
-//       localStorage.removeItem("user");
-//       router.push("/auth/studentLogin");
-//     }
-//   } finally {
-//     setLoading(false);
-//   }
-// };
+        await fetchAnnouncements();
+        setError(null);
+      } catch (err: any) {
+        console.error("❌ Auth error, redirecting to login:", err.message);
+        Cookies.remove("studentToken");
+        localStorage.removeItem("studentToken");
+        router.push("/auth/studentLogin");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-// const fetchStudent = async () => {
-//   try {
-//     const token = Cookies.get("studentToken") || localStorage.getItem("studentToken");
-//     console.log("🧪 Token (cookie/local):", token);
+    setTimeout(() => {
+      verifyAndLoad();
+    }, 100);
+  }, []);
 
-//     if (!token) {
-//       throw new Error("Token not found.");
-//     }
+if (loading) {
+  return (
+    <div
+      className="d-flex justify-content-center align-items-start"
+      style={{ height: '100vh', paddingTop: '100px' }}
+    >
+      <img
+        src="/logo.png"
+        alt="Loading..."
+        style={{
+          width: "100px",
+          height: "100px",
+          borderRadius: "50%",
+          animation: "spin 1s linear infinite"
+        }}
+      />
+    </div>
+  );
+}
 
-//     const res = await axios.get("http://localhost:5000/api/students/profile", {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//       withCredentials: true,
-//     });
 
-//     setStudent(res.data);
-//     setError(null);
-//   } catch (error: any) {
-//     console.error("Failed to fetch student or courses:", error);
-//     setError(error.message || "Fetch error");
-//     Cookies.remove("studentToken");
-//     localStorage.removeItem("studentToken");
-//     router.push("/auth/studentLogin");
-//   } finally {
-//     setLoading(false);
-//   }
-// };
+
+
 
 const fetchStudent = async () => {
   try {
@@ -252,7 +236,28 @@ const fetchStudent = async () => {
     );
   }
 
-  if (loading) return <p>Loading...</p>;
+if (loading) {
+  return (
+    <div
+      className="d-flex justify-content-center align-items-start"
+     style={{ height: '100vh', paddingTop: '100px' }}
+    >
+      <img
+        src="/logo.png"
+        alt="Loading..."
+        style={{
+          width: "100px",
+          height: "100px",
+          borderRadius: "50%",
+          animation: "spin 1s linear infinite"
+        }}
+      />
+    </div>
+  );
+}
+
+
+
   if (!student) return <p>Failed to load student data</p>;
 
   // ✅ Calculate stats
@@ -347,30 +352,7 @@ const fetchStudent = async () => {
               </small>
             </div>
             <div className="card-body">
-              {/* {completedCourses.length === 0 ? (
-          <p className="small text-muted">No completed courses yet.</p>
-        ) : (
-          completedCourses.map((course: any) => (
-            <div
-              key={course._id}
-              className="d-flex justify-content-between align-items-center mb-3 p-3 border rounded"
-            >
-              <div>
-                <h6 className="mb-1">{course.courseId?.title || "Untitled Course"}</h6>
-                <small className="text-muted">100% completed</small>
-              </div>
-              <a
-                href={`http://localhost:5000/api/certificates/${course.studentId}/${course.courseId._id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-success btn-sm"
-              >
-                🎓 Download Certificate
-              </a>
-            </div>
-          ))
-        )} */}
-
+          
               {completedCourses.length === 0 ? (
                 <p className="small text-muted">No completed courses yet.</p>
               ) : (

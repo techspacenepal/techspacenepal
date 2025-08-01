@@ -2,11 +2,13 @@ import Auth from "../models/Auth.js";
 import jwt from "jsonwebtoken";
 import { sendEmail } from "../utils/sendEmail.js";
 import crypto from "crypto";
-
+import Student from "../models/student.js";
+import LoginSession from "../models/LoginSession.js";
 import dotenv from "dotenv";
 dotenv.config();
 
 import nodemailer from "nodemailer";
+import bcrypt from "bcryptjs";
 
 const generateToken = (id, role) => {
   return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "1d" });
@@ -16,6 +18,7 @@ const generateToken = (id, role) => {
 const isStrongPassword = (password) => {
   return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
 };
+
 
 export const registerAdmin = async (req, res) => {
   const { fullName, username, email, number, password, role } = req.body;
@@ -35,11 +38,7 @@ export const registerAdmin = async (req, res) => {
       });
     }
 
-    if (error.code === 11000 && error.keyPattern?.username) {
-      return res.status(400).json({ message: "Username already exists" });
-    }
-
-    const allowedRoles = ["user", "admin", "teacher"];
+    const allowedRoles = ["user", "admin", "superadmin", "teacher"];
     const finalRole = allowedRoles.includes(role) ? role : "user";
 
     const newUser = new Auth({
@@ -68,9 +67,18 @@ export const registerAdmin = async (req, res) => {
     });
   } catch (error) {
     console.error("Register Error:", error);
+
+    // 👇 यो line पहिले try block मा थियो — अब यहाँ सही ठाउँमा राखिएको छ
+    if (error.code === 11000 && error.keyPattern?.username) {
+      return res.status(400).json({ message: "Username already exists" });
+    }
+
     res.status(500).json({ message: "Server error. Could not register user." });
   }
 };
+
+
+
 
 export const loginAdmin = async (req, res) => {
   const { email, password } = req.body;
@@ -81,6 +89,9 @@ export const loginAdmin = async (req, res) => {
     if (!admin || !(await admin.comparePassword(password))) {
       return res.status(401).json({ message: "Incorrect email or password" });
     }
+
+    if (admin.isBlocked)
+      return res.status(403).json({ message: "Your access has been temporarily suspended. For further assistance, please contact the administration." });
 
     const token = jwt.sign(
       { id: admin._id, role: admin.role },
@@ -101,7 +112,7 @@ export const loginAdmin = async (req, res) => {
   }
 };
 
-// logout --------------------
+
 
 export const logoutAdmin = async (req, res) => {
   try {
@@ -119,20 +130,26 @@ export const logoutAdmin = async (req, res) => {
   }
 };
 
-// ✅ Get Admin by ID
+
+
+
+// ✅ Get Admin by ID (admin or superadmin)
 export const getAdminById = async (req, res) => {
   try {
     const admin = await Auth.findById(req.params.id);
-    if (!admin || admin.role !== "admin") {
+
+    // admin वा superadmin दुबैलाई अनुमति
+    if (!admin || !["admin", "superadmin"].includes(admin.role)) {
       return res.status(404).json({ message: "Admin not found" });
     }
 
-    res.status(200).json({ username: admin.username });
+    res.status(200).json({ username: admin.username, role: admin.role });
   } catch (err) {
     console.error("Get Admin Error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 // ✅ Get User by ID
 export const getUserById = async (req, res) => {
@@ -161,17 +178,27 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-// ✅ Delete by ID
+
 export const deleteUserById = async (req, res) => {
   try {
-    const user = await Auth.findByIdAndDelete(req.params.id);
+   
+    const user = await Auth.findById(req.params.id);
     if (!user) return res.status(404).json({ message: "User not found" });
+
+   
+    if (user.role === "superadmin") {
+      return res.status(403).json({ message: "Superadmin cannot be deleted" });
+    }
+
+    
+    await Auth.findByIdAndDelete(req.params.id);
 
     res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
 
 // UPDATE user by email
 export const updateUserByEmail = async (req, res) => {
@@ -188,74 +215,47 @@ export const updateUserByEmail = async (req, res) => {
   }
 };
 
+
+
 // export const login = async (req, res) => {
 //   try {
-//     const { username, password } = req.body;
+//     const { email, password } = req.body;
+//     const user = await Auth.findOne({ email });
 
-//     const user = await Auth.findOne({ username });
-//     if (!user) {
-//       return res.status(400).json({ message: 'User not found' });
-//     }
+//     if (!user) return res.status(404).json({ message: "User not found" });
 
-//     const isPasswordValid = await user.comparePassword(password);
-//     if (!isPasswordValid) {
-//       return res.status(400).json({ message: 'Invalid credentials' });
-//     }
+//     if (user.isBlocked)
+//       return res.status(403).json({ message: "Your account has been blocked by admin" });
 
-//     // Login सफल हुँदा active true set गर्ने
-//     user.active = true;
-//     await user.save();
+//     const isMatch = await bcrypt.compare(password, user.password);
+//     if (!isMatch)
+//       return res.status(401).json({ message: "Invalid credentials" });
 
-//     // Token generate
-//     // const token = generateToken(user);
+//     // login success
+//     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
+//       expiresIn: "30d",
+//     });
 
-//     const token = generateToken(user._id, user.role);
-
-//     res.json({ token, user });
-//   } catch (error) {
-//     console.error('Login error:', error);
-//     res.status(500).json({ message: 'Server error' });
+//     res.status(200).json({
+//       message: "Login successful ",
+//       token,
+//       user,
+//     });
+//   } catch (err) {
+//     res.status(500).json({ message: "Server Error" });
 //   }
 // };
 
-export const login = async (req, res) => {
-  try {
-    const { username, password } = req.body;
-
-    const user = await Auth.findOne({ username });
-    if (!user) {
-      return res.status(400).json({ message: "User not found" });
-    }
-
-    const isPasswordValid = await user.comparePassword(password);
-    if (!isPasswordValid) {
-      return res.status(400).json({ message: "Invalid credentials" });
-    }
-
-    // Login सफल हुँदा active true set गर्ने
-    user.active = true;
-    await user.save();
-
-    // Token generate
-    const token = generateToken(user._id, user.role);
-
-    return res.json({ token, user }); // return here
-  } catch (error) {
-    console.error("Login error:", error);
-    return res.status(500).json({ message: "Server error" }); // return here
-  }
-};
-
-export const logout = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    await User.findByIdAndUpdate(userId, { active: false });
-    res.status(200).json({ message: "Logout successfull, active false " });
-  } catch (error) {
-    console.error("Logout error:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
+// export const logout = async (req, res) => {
+//   try {
+//     const userId = req.user.id;
+//     await User.findByIdAndUpdate(userId, { active: false });
+//     res.status(200).json({ message: "Logout successfull, active false " });
+//   } catch (error) {
+//     console.error("Logout error:", error);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
 
 export const forgotPassword = async (req, res) => {
   const { email } = req.body;
@@ -460,5 +460,70 @@ export const getAllTeachers = async (req, res) => {
   } catch (error) {
     console.error("Error fetching teachers:", error);
     res.status(500).json({ message: "Failed to fetch teachers" });
+  }
+};
+
+
+
+
+
+
+export const blockUser = async (req, res) => {
+  try {
+    const user = await Auth.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (user.role === "superadmin") {
+      return res.status(403).json({ message: "Cannot block superadmin" });
+    }
+
+    const updatedUser = await Auth.findByIdAndUpdate(
+      req.params.id,
+      { isBlocked: !user.isBlocked },
+      { new: true }
+    );
+
+    res.status(200).json({
+      message: `User has been ${updatedUser.isBlocked ? "blocked" : "unblocked"}`,
+    });
+  } catch (error) {
+    console.error("BlockUser Error:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+
+export const getProfile = async (req, res) => {
+  try {
+    const user = await Auth.findById(req.user.id).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.status(200).json({
+      id: user._id,
+      username: user.username,
+      role: user.role,
+      email: user.email,
+      isBlocked: user.isBlocked, 
+    });
+  } catch (error) {
+    console.error("Profile Error:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+
+
+export const getLoginSessions = async (req, res) => {
+  const { studentId } = req.params;
+
+  try {
+    const sessions = await LoginSession.find({ userId: studentId })
+      .sort({ loginAt: -1 })
+      .limit(10); // पछिल्ला १० session मात्र देखाउन
+
+    res.json(sessions);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to fetch login sessions" });
   }
 };

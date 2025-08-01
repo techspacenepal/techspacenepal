@@ -376,6 +376,7 @@ const AdminRegisterPage: React.FC = () => {
               onChange={(e) => setRole(e.target.value)}
               required
             >
+              <option value="superadmin">Super Admin</option>
               <option value="admin">Admin</option>
               <option value="user">User</option>
               <option value="teacher">Teacher</option>

@@ -348,10 +348,12 @@ import nodemailer from "nodemailer";
 import EnrolledCourse from '../models/enrolledCourses.js';
 import multer from "multer";
 import path from "path";
-
-
-
+import asyncHandler from "express-async-handler";
+import LoginSession from "../models/LoginSession.js";
+import requestIp from "request-ip";
 import dotenv from "dotenv";
+
+
 dotenv.config();
 
 // Helper function to generate JWT token with user ID and role, expires in 1 day
@@ -402,7 +404,7 @@ export const getAllStudents = async (req, res) => {
   }
 };
 
-// Student login handler
+
 // export const loginStudent = async (req, res) => {
 //   const { email, password } = req.body;
 
@@ -413,6 +415,11 @@ export const getAllStudents = async (req, res) => {
 //       return res.status(404).json({ message: "User not found" });
 //     }
 
+//     // 👉 Check if student is blocked
+//     if (student.isBlocked) {
+//       return res.status(403).json({ message: "Your account has been blocked. Please contact Your Institute" });
+//     }
+
 //     // Compare entered password with stored hashed password
 //     const isMatch = await bcrypt.compare(password, student.password);
 //     if (!isMatch) {
@@ -421,18 +428,39 @@ export const getAllStudents = async (req, res) => {
 
 //     // Generate JWT token on successful login
 //     const token = generateToken(student._id, student.role);
+
+//     // Set cookie
+//     res.cookie("token", token, {
+//       httpOnly: true,
+//       secure: process.env.NODE_ENV === "production",
+//       sameSite: "strict",
+//       maxAge: 86400000,
+//       path: "/",
+//     });
+
+//     // Send student info with token
 //     res.status(200).json({
 //       token,
 //       username: student.username,
 //       role: student.role,
+//       student: {
+//         _id: student._id,
+//         email: student.email,
+//         username: student.username,
+//         role: student.role,
+//       },
 //     });
 //   } catch (error) {
 //     console.error("Login error:", error);
 //     res.status(500).json({ message: "Server error" });
 //   }
 // };
+
+
+/// ---- login device treacking-----------------
+
 export const loginStudent = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, deviceInfo } = req.body;  // deviceInfo frontend बाट पठाउनुपर्ने हुन्छ
 
   try {
     // Find student by email
@@ -441,32 +469,48 @@ export const loginStudent = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Compare entered password with stored hashed password
+    // Check if blocked
+    if (student.isBlocked) {
+      return res.status(403).json({ message: "Your account has been blocked. Please contact Your Institute" });
+    }
+
+    // Compare password
     const isMatch = await bcrypt.compare(password, student.password);
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // Generate JWT token on successful login
+    // Generate JWT token
     const token = generateToken(student._id, student.role);
 
-     // Cookie set गर्नुहोस्
-   res.cookie("token", token, {
-  httpOnly: true,              
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "strict",
-  // maxAge: 30 * 24 * 60 * 60 * 1000 ,
-  maxAge: 86400000,
-  path: "/",
-});
+    // Set cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 86400000, // 1 day
+      path: "/",
+    });
 
-    // Send student info along with token for frontend usage
+    // Get IP Address (Express)
+    const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+
+    // Save login session
+    await LoginSession.create({
+      userId: student._id,
+      deviceInfo: deviceInfo || "Unknown device",  // deviceInfo frontend बाट पठाउनुहोस्
+      ipAddress,
+      loginAt: new Date(),
+      isActive: true,
+    });
+
+    // Send response
     res.status(200).json({
       token,
       username: student.username,
       role: student.role,
       student: {
-        _id: student._id,  // Add this line
+        _id: student._id,
         email: student.email,
         username: student.username,
         role: student.role,
@@ -477,25 +521,6 @@ export const loginStudent = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
-
-// Get logged-in student's profile
-// export const getStudentProfile = async (req, res) => {
-//   try {
-//     // Fetch student by ID stored in the authenticated request (req.user)
-//     const student = await Student.findById(req.user._id).select("-password");
-
-//     if (!student) {
-//       return res.status(404).json({ message: "Student not found" });
-//     }
-
-//     res.status(200).json(student);
-//   } catch (error) {
-//     console.error("Profile Fetch Error:", error);
-//     res.status(500).json({ message: "Server Error" });
-//   }
-// };
-
 
 export const getStudentProfile = async (req, res) => {
   try {
@@ -669,28 +694,159 @@ export const resetPassword = async (req, res) => {
 };
 
 // Google OAuth login or registration
+// export const googleLogin = async (req, res) => {
+//   const { email, name } = req.body;
+
+//   try {
+//     let student = await Student.findOne({ email });
+
+//     // If user does not exist, create a new one with dummy password
+//     if (!student) {
+//       student = await Student.create({ email, username: name, password: "google-login", role: "student" });
+//     }
+
+//     // Generate JWT token valid for 7 days
+//     const token = jwt.sign(
+//       { id: student._id, role: student.role },
+//       process.env.JWT_SECRET,
+//       { expiresIn: "30d" }
+//     );
+
+//     res.status(200).json({
+//       token,
+//       role: student.role,
+//       username: student.username,
+//     });
+//   } catch (error) {
+//     console.error("Google login error:", error);
+//     res.status(500).json({ message: "Google login failed" });
+//   }
+// };
+// // GitHub OAuth login or registration
+// export const githubLogin = async (req, res) => {
+//   const { email, name } = req.body;
+
+//   try {
+//     let student = await Student.findOne({ email });
+
+//     // If student doesn't exist, create new one with dummy password
+//     if (!student) {
+//       student = await Student.create({
+//         email,
+//         username: name,
+//         password: "github-login",
+//         role: "student",
+//       });
+//     }
+
+//     // Generate JWT token valid for 7 days
+//     const token = jwt.sign(
+//       { id: student._id, role: student.role },
+//       process.env.JWT_SECRET,
+//       { expiresIn: "30d" }
+//     );
+
+//     res.status(200).json({
+//       token,
+//       role: student.role,
+//       username: student.username,
+//     });
+//   } catch (error) {
+//     console.error("GitHub login error:", error);
+//     res.status(500).json({ message: "GitHub login failed" });
+//   }
+// };
+// export const facebookLogin = async (req, res) => {
+//   const { email, name, uid } = req.body;
+
+//   try {
+//     if (!uid) {
+//       return res.status(400).json({ message: "Facebook UID is required." });
+//     }
+
+//     let student = await Student.findOne({ uid });
+
+//     // 🔁 If UID not found, try with email (fallback)
+//     if (!student && email) {
+//       student = await Student.findOne({ email });
+
+//       // 🔗 If found by email, update the record to include UID
+//       if (student) {
+//         student.uid = uid;
+//         await student.save();
+//       }
+//     }
+
+//     // 🆕 If no student found at all, create new one
+//     if (!student) {
+//       student = await Student.create({
+//         uid,
+//         email: email || "", // fallback if not present
+//         username: name || (email ? email.split('@')[0] : `fbuser_${uid.slice(0, 6)}`),
+//         password: Math.random().toString(36).slice(-8), // dummy password
+//         role: "student",
+//       });
+//     }
+
+//     // ✅ JWT token
+//     const token = jwt.sign(
+//       { id: student._id, role: student.role },
+//       process.env.JWT_SECRET,
+//       { expiresIn: "30d" }
+//     );
+
+//     res.status(200).json({
+//       token,
+//       role: student.role,
+//       username: student.username,
+//       student,
+//     });
+
+//   } catch (error) {
+//     console.error("Facebook login error:", error);
+//     res.status(500).json({ message: "Facebook login failed" });
+//   }
+// };
+
+
+
+// Save login session with device and IP info for social login------------------
+
 export const googleLogin = async (req, res) => {
-  const { email, name } = req.body;
+  const { email, name, uid } = req.body;
+  
 
   try {
     let student = await Student.findOne({ email });
 
-    // If user does not exist, create a new one with dummy password
     if (!student) {
-      student = await Student.create({ email, username: name, password: "google-login", role: "student" });
+      student = await Student.create({
+        email,
+        username: name,
+        password: "google-login",
+        role: "student",
+      });
     }
 
-    // Generate JWT token valid for 7 days
+    // ✅ Save login session
+    await LoginSession.create({
+      userId: student._id,
+       deviceInfo: deviceInfo || req.get("User-Agent"),
+      ipAddress: req.ip || req.headers["x-forwarded-for"] || req.connection.remoteAddress,
+      loginAt: new Date(),
+    });
+
     const token = jwt.sign(
       { id: student._id, role: student.role },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "30d" }
     );
 
     res.status(200).json({
       token,
       role: student.role,
       username: student.username,
+      student,
     });
   } catch (error) {
     console.error("Google login error:", error);
@@ -698,14 +854,13 @@ export const googleLogin = async (req, res) => {
   }
 };
 
-// GitHub OAuth login or registration
+
 export const githubLogin = async (req, res) => {
-  const { email, name } = req.body;
+  const { email, name, deviceInfo } = req.body;
 
   try {
     let student = await Student.findOne({ email });
 
-    // If student doesn't exist, create new one with dummy password
     if (!student) {
       student = await Student.create({
         email,
@@ -715,17 +870,25 @@ export const githubLogin = async (req, res) => {
       });
     }
 
-    // Generate JWT token valid for 7 days
+    // ✅ Save login session
+    await LoginSession.create({
+      userId: student._id,
+       deviceInfo: deviceInfo || req.get("User-Agent"),
+      ipAddress: req.ip || req.headers["x-forwarded-for"] || req.connection.remoteAddress,
+      loginAt: new Date(),
+    });
+
     const token = jwt.sign(
       { id: student._id, role: student.role },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "30d" }
     );
 
     res.status(200).json({
       token,
       role: student.role,
       username: student.username,
+      student,
     });
   } catch (error) {
     console.error("GitHub login error:", error);
@@ -733,76 +896,63 @@ export const githubLogin = async (req, res) => {
   }
 };
 
-// Facebook OAuth login or registration
-// export const facebookLogin = async (req, res) => {
-//   const { email, name } = req.body;
 
-//   try {
-//     let student = await Student.findOne({ email });
-
-//     // If student not found, create with dummy password
-//     if (!student) {
-//       student = await Student.create({
-//         email,
-//         username: name,
-//         password: "facebook-login",
-//         role: "student",
-//       });
-//     }
-
-//     // Generate JWT token valid for 7 days
-//     const token = jwt.sign(
-//       { id: student._id, role: student.role },
-//       process.env.JWT_SECRET,
-//       { expiresIn: "7d" }
-//     );
-
-//     res.status(200).json({
-//       token,
-//       role: student.role,
-//       username: student.username,
-//     });
-//   } catch (error) {
-//     console.error("Facebook login error:", error);
-//     res.status(500).json({ message: "Facebook login failed" });
-//   }
-// };
 
 export const facebookLogin = async (req, res) => {
-  const { email, name } = req.body;
-
-  if (!email) {
-    return res.status(400).json({ message: "Facebook login requires email permission." });
-  }
+  const { email, name, uid, deviceInfo } = req.body;
 
   try {
-    let student = await Student.findOne({ email });
+    if (!uid) {
+      return res.status(400).json({ message: "Facebook UID is required." });
+    }
+
+    let student = await Student.findOne({ uid });
+
+    if (!student && email) {
+      student = await Student.findOne({ email });
+      if (student) {
+        student.uid = uid;
+        await student.save();
+      }
+    }
 
     if (!student) {
       student = await Student.create({
-        email,
-        username: name || email.split('@')[0], // fallback username
-        password: Math.random().toString(36).slice(-8), // dummy unique password
+        uid,
+        email: email || "",
+        username: name || (email ? email.split("@")[0] : `fbuser_${uid.slice(0, 6)}`),
+        password: Math.random().toString(36).slice(-8),
         role: "student",
       });
     }
 
+    // ✅ Save login session
+    await LoginSession.create({
+      userId: student._id,
+      deviceInfo: deviceInfo || req.get("User-Agent"),
+      ipAddress: requestIp.getClientIp(req),
+    });
+
     const token = jwt.sign(
       { id: student._id, role: student.role },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "30d" }
     );
 
     res.status(200).json({
       token,
       role: student.role,
       username: student.username,
+      student,
     });
   } catch (error) {
     console.error("Facebook login error:", error);
     res.status(500).json({ message: "Facebook login failed" });
   }
 };
+//-------------// Save login session with device and IP info for social login
+
+
 
 
 // Get detailed student info by student ID, including course and progress
@@ -907,6 +1057,101 @@ export const getTeacherForStudent = async (req, res) => {
 };
 
 
+export const blockStudent = async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id);
+    if (!student) return res.status(404).json({ message: "Student not found" });
+
+    student.isBlocked = !student.isBlocked;
+    await student.save();
+
+    res.status(200).json({
+      message: `Student has been ${student.isBlocked ? "blocked" : "unblocked"}`,
+    });
+  } catch (error) {
+    console.error("blockStudent Error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const updateStudentProfile = asyncHandler(async (req, res) => {
+  const studentId = req.user?.id; // Logged in user id
+
+  const { username, email, number } = req.body;
+
+  // Check if email is already used by another student
+  const emailExists = await Student.findOne({ email, _id: { $ne: studentId } });
+  if (emailExists) {
+    return res.status(400).json({ message: "Email is already taken by another user." });
+  }
+
+  const student = await Student.findById(studentId);
+
+  if (!student) {
+    return res.status(404).json({ message: "Student not found" });
+  }
+
+  student.username = username || student.username;
+  student.email = email || student.email;
+  student.number = number || student.number;
+
+  const updatedStudent = await student.save();
+
+  res.status(200).json({
+    _id: updatedStudent._id,
+    username: updatedStudent.username,
+    email: updatedStudent.email,
+    number: updatedStudent.number,
+  });
+});
+
+
+// export const updateStudentProfile = asyncHandler(async (req, res) => {
+//   const studentId = req.user?.id; 
+
+//   if (!studentId) {
+//     res.status(401);
+//     throw new Error("Not authorized");
+//   }
+
+//   const student = await Student.findById(studentId);
+
+//   if (!student) {
+//     res.status(404);
+//     throw new Error("Student not found");
+//   }
+
+//   const { username, email, number } = req.body;
+
+//   student.username = username || student.username;
+//   student.email = email || student.email;
+//   student.number = number || student.number;
+
+//   const updatedStudent = await student.save();
+
+//   res.status(200).json({
+//     _id: updatedStudent._id,
+//     username: updatedStudent.username,
+//     email: updatedStudent.email,
+//     number: updatedStudent.number,
+//   });
+// });
 
 
 
+
+
+export const getLoginSessions = async (req, res) => {
+  const { studentId } = req.params;
+
+  try {
+    const sessions = await LoginSession.find({ userId: studentId })
+      .sort({ loginAt: -1 })
+      .limit(10); // पछिल्ला १० session मात्र देखाउन
+
+    res.json(sessions);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to fetch login sessions" });
+  }
+};

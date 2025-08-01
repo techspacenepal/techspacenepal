@@ -1,91 +1,40 @@
-// import jwt from 'jsonwebtoken';
-// import Student from '../models/student.js';
 
-// export const protect = async (req, res, next) => {
-//   try {
-//     const authHeader = req.headers.authorization;
-
-//     // 🛑 Check for token presence and correct format
-//     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-//       return res.status(401).json({ message: "No token provided or format invalid" });
-//     }
-
-//     const token = authHeader.split(" ")[1];
-
-//     // 🛑 Check for malformed token (e.g., "null", "undefined", broken string)
-//     if (!token || token === "null" || token === "undefined" || token.split(".").length !== 3) {
-//       return res.status(401).json({ message: "Malformed or invalid token" });
-//     }
-
-//     // ✅ Verify token
-//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-//     const student = await Student.findById(decoded.id).select("-password");
-
-//     if (!student) {
-//       return res.status(401).json({ message: "Student not found" });
-//     }
-
-//     req.user = student;
-//     next();
-//   } catch (error) {
-//     console.error("Auth Middleware Error:", error.message);
-//     return res.status(401).json({
-//       message: error.name === "TokenExpiredError"
-//         ? "Token expired. Please login again."
-//         : "Invalid or expired token",
-//     });
-//   }
-// };
 
 
 import jwt from "jsonwebtoken";
 import Student from "../models/student.js";
 
+
 // export const protect = async (req, res, next) => {
-//   try {
-//     const authHeader = req.headers.authorization;
-// if (!authHeader || !authHeader.startsWith("Bearer ")) {
-//   return res.status(401).json({ message: "No token provided or format invalid" });
-// }
-//     const token = authHeader.split(" ")[1];
+//   let token;
 
-//     // 🛑 Malformed token check
-//     if (
-//       !token ||
-//       token === "null" ||
-//       token === "undefined" ||
-//       token.split(".").length !== 3
-//     ) {
-//       return res.status(401).json({ message: "Malformed or invalid token" });
-//     }
+//   if (
+//     req.headers.authorization &&
+//     req.headers.authorization.startsWith("Bearer")
+//   ) {
+//     token = req.headers.authorization.split(" ")[1];
 
-//     // ✅ Token verify
-//     let decoded;
 //     try {
-//       decoded = jwt.verify(token, process.env.JWT_SECRET);
-//     } catch (err) {
-//       console.error("JWT Verify Error:", err.message);
+//       const decoded = jwt.verify(token, process.env.JWT_SECRET);
+//       const student = await Student.findById(decoded.id).select("-password");
+
+//       if (!student) {
+//         return res.status(401).json({ message: "Student not found" });
+//       }
+
+//       req.user = student; 
+//       next();
+//     } catch (error) {
+//       console.error("JWT Error:", error.message);
 //       return res.status(401).json({
 //         message:
-//           err.name === "TokenExpiredError"
+//           error.name === "TokenExpiredError"
 //             ? "Token expired. Please login again."
-//             : "Invalid or expired token",
+//             : "Token invalid.",
 //       });
 //     }
-
-//     // ✅ Find user from DB
-//     const student = await Student.findById(decoded.id).select("-password");
-
-//     if (!student) {
-//       return res.status(401).json({ message: "Student not found" });
-//     }
-
-//     req.user = student; // You can access req.user in next handlers
-//     next();
-//   } catch (error) {
-//     console.error("Protect Middleware Error:", error.message);
-//     return res.status(500).json({ message: "Server error in auth middleware" });
+//   } else {
+//     return res.status(401).json({ message: "Not authorized, token missing" });
 //   }
 // };
 
@@ -93,24 +42,28 @@ import Student from "../models/student.js";
 export const protect = async (req, res, next) => {
   let token;
 
+  console.log("[Backend] Authorization header:", req.headers.authorization); // Debug authorization header
+
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
   ) {
     token = req.headers.authorization.split(" ")[1];
+    console.log("[Backend] Extracted token:", token); // Debug extracted token
 
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const student = await Student.findById(decoded.id).select("-password");
+      console.log("[Backend] Decoded token:", decoded); // Debug decoded token
 
+      const student = await Student.findById(decoded.id).select("-password");
       if (!student) {
         return res.status(401).json({ message: "Student not found" });
       }
 
-      req.user = student; // ✅ सुरक्षित रूपमा set
+      req.user = student;
       next();
     } catch (error) {
-      console.error("JWT Error:", error.message);
+      console.error("[Backend] JWT verification error:", error.message);
       return res.status(401).json({
         message:
           error.name === "TokenExpiredError"
@@ -119,8 +72,18 @@ export const protect = async (req, res, next) => {
       });
     }
   } else {
+    console.log("[Backend] No token found in authorization header");
     return res.status(401).json({ message: "Not authorized, token missing" });
   }
+};
+
+
+
+
+
+export const isStudent = (req, res, next) => {
+  if (req.user?.role === "student") next();
+  else res.status(403).json({ message: "Only students can send notifications" });
 };
 
 

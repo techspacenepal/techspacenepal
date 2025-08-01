@@ -32,7 +32,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
 
         {/* Sidebar Footer */}
-        {!collapsed && (
+        {/* {!collapsed && (
           <div className="mt-4 border-top pt-3">
             <div className="bg-body-secondary p-3 text-center rounded">
               <h6 className="fw-bold">Upgrade to Pro</h6>
@@ -42,7 +42,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <button className="btn btn-primary btn-sm w-100 mt-2">Upgrade</button>
             </div>
           </div>
-        )}
+        )} */}
       </aside>
 
       {/* Main Content */}

@@ -12,7 +12,7 @@ const teacherCourseSchema = new mongoose.Schema({
     ref: "Course",
     required: true,
   }, // ✅ add this
-  name: { type: String, required: true },
+  name: { type: String, required: false },
   description: { type: String, required: true },
    status: { type: String, enum: ["draft", "published"], default: "draft" },
 

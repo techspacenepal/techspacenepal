@@ -1,5 +1,4 @@
-
-//  course anushar notification jane 
+//  course anushar notification jane
 
 // "use client";
 
@@ -42,7 +41,6 @@
 //     try {
 //     const token = Cookies.get("teacherToken") || Cookies.get("adminToken");
 
-
 //       if (!token) {
 //         alert("Missing auth token");
 //         return;
@@ -61,7 +59,6 @@
 //           },
 //         }
 //       );
-
 
 //       alert("✅ Notification sent to all students in selected course.");
 //       setTitle("");
@@ -135,7 +132,6 @@
 
 
 
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -144,6 +140,7 @@ import Cookies from "js-cookie";
 
 export default function TeacherNotificationForm() {
   const [courses, setCourses] = useState<any[]>([]);
+  
   const [selectedCourseId, setSelectedCourseId] = useState("");
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
@@ -157,53 +154,84 @@ export default function TeacherNotificationForm() {
         const res = await axios.get(
           `http://localhost:5000/api/teacherCourses/teacher/${teacherId}/enrollments`
         );
+
+        console.log("📦 Courses fetched from backend:", res.data);
+        if (!Array.isArray(res.data)) {
+          console.warn("⚠️ Courses fetched is not an array!");
+        }
+
+        // check each course item
+        res.data.forEach((course: any, i: number) => {
+          console.log(`🔎 Course ${i}:`, course);
+        });
+
         setCourses(res.data);
       } catch (error) {
-        console.error("Failed to fetch courses:", error);
+        console.error("❌ Failed to fetch courses:", error);
       }
     };
 
     fetchCourses();
   }, []);
 
+  const isValidObjectId = (id: string) => {
+    return /^[a-f\d]{24}$/i.test(id);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    console.log("📤 Trying to send notification...");
+    console.log("➡️ Selected Course ID:", selectedCourseId);
+    console.log("➡️ Title:", title);
+    console.log("➡️ Message:", message);
+
     if (!selectedCourseId) {
-      alert("Please select a course.");
+      alert("⚠️ Please select a course.");
+      return;
+    }
+
+    if (!isValidObjectId(selectedCourseId)) {
+      alert("❌ Invalid course ID format. Must be a MongoDB ObjectId.");
       return;
     }
 
     try {
       const token = Cookies.get("teacherToken") || Cookies.get("adminToken");
-      console.log("Sending token:", token);
+      console.log("🪪 Token:", token);
+
       if (!token) {
-        alert("Missing auth token");
+        alert("❌ Missing authentication token.");
         return;
       }
 
-        await axios.post(
-  "http://localhost:5000/api/teacherNotifications/sendToCourse",
-  {
-    courseId : selectedCourseId,
-    title,
-    message,
-  },
-  {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("teacherToken")}`,
-    },
-  }
-);
+      const payload = {
+        courseId: selectedCourseId,
+        title,
+        message,
+      };
 
+      console.log("📨 Sending payload:", payload);
 
+      const res = await axios.post(
+        "http://localhost:5000/api/teacherNotifications/sendToCourse",
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("✅ Notification response:", res.data);
       alert("✅ Notification sent to all students in selected course.");
+
       setTitle("");
       setMessage("");
       setSelectedCourseId("");
-    } catch (error) {
-      console.error("❌ Failed to send notification:", error);
-      alert("❌ Failed to send notification");
+    } catch (error: any) {
+      console.error("❌ Failed to send notification:", error.response || error);
+      alert("❌ Failed to send notification. Check console for more info.");
     }
   };
 

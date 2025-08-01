@@ -52,5 +52,35 @@ export type GradeEntry = {
 };
 
 
+export interface NotificationItem {
+  _id: string;
+  name: string;
+  message: string;
+  createdAt: string;
+  type: "student_notification";
+}
+
+export interface Inquiry {
+  _id: string;
+  name: string;
+  email: string;
+  phone: string;
+  course: string;
+  message?: string;
+  createdAt: string;
+  seen?: boolean;
+}
+
+export interface Contact {
+  _id: string;
+  name: string;
+  email: string;
+  mobile: string;
+  course: string;
+  message?: string;
+  createdAt: string;
+  seen?: boolean;
+}
+
 
 

@@ -3,21 +3,22 @@ import TeacherCourse from '../models/TeacherCourse.js';
 import EnrolledCourse from "../models/enrolledCourses.js";
 import Course from "../models/Course.js";
 import CourseVideo from "../models/CourseVideo.js"; 
+import { Auth } from "../models/Auth.js"; 
 
 // 🔸 शिक्षकद्वारा course सिर्जना गर्ने
 export const createTeacherCourse = async (req, res) => {
   try {
-    const { teacherId, name, description, courseId } = req.body;
+    const { teacherId,  description, courseId } = req.body;
 
     // सबै आवश्यक field check गर्ने
-    if (!teacherId || !name || !description || !courseId) {
+    if (!teacherId ||  !description || !courseId) {
       return res.status(400).json({ message: "All fields are required." });
     }
 
     // नयाँ teacher course बनाउने
     const newCourse = await TeacherCourse.create({
       teacherId,
-      name,
+      
       description,
       courseId,
     });
@@ -138,12 +139,15 @@ export const getStudentsByTeacherAndCourse = async (req, res) => {
     const enrollments = await EnrolledCourse.find({ teacherId, courseId })
       .populate("studentId", "username email");
 
-    const students = enrollments.map(e => ({
-      studentId: e.studentId._id,
-      name: e.studentId.username,
-      email: e.studentId.email,
-      enrolledDate: e.createdAt,
-    }));
+    // filter out enrollments with null studentId before mapping
+    const students = enrollments
+      .filter(e => e.studentId)  // null check here
+      .map(e => ({
+        studentId: e.studentId._id,
+        name: e.studentId.username,
+        email: e.studentId.email,
+        enrolledDate: e.createdAt,
+      }));
 
     res.json(students);
   } catch (error) {
@@ -151,6 +155,7 @@ export const getStudentsByTeacherAndCourse = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 // Total unique students per teacher
 export const getTotalStudentsByTeacher = async (req, res) => {
@@ -160,8 +165,15 @@ export const getTotalStudentsByTeacher = async (req, res) => {
     const enrolled = await EnrolledCourse.find({ teacherId }).populate("studentId");
 
     // ✅ Use Set to count unique students only
-    const uniqueStudentIds = new Set(enrolled.map(e => e.studentId.toString()));
+    // const uniqueStudentIds = new Set(enrolled.map(e => e.studentId.toString()));
     
+
+    const uniqueStudentIds = new Set(
+  enrolled
+    .filter(e => e.studentId) // ❗ null check
+    .map(e => e.studentId.toString())
+);
+
     res.json({ totalStudents: uniqueStudentIds.size });
   } catch (error) {
     console.error("❌ Error getting total students by teacher:", error);
@@ -233,7 +245,7 @@ export const getTeacherCoursesWithEnrollments = async (req, res) => {
   try {
     // Step 1: Get all teacherCourse records
     const teacherCourses = await TeacherCourse.find({ teacherId })
-      .populate("courseId")
+      .populate("courseId", "title image", ) 
       .lean();
 
     // Step 2: Get student counts from EnrolledCourse
@@ -299,3 +311,52 @@ export const getVideosByCourseAndTeacher = async (req, res) => {
   }
 };
 
+
+
+// 🔸 शिक्षकले पढाइरहेका कोर्सहरू फेच गर्ने (notification का लागि प्रयोग हुन्छ)
+export const getEnrolledCoursesByTeacher = async (req, res) => {
+  try {
+    const { teacherId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(teacherId)) {
+      return res.status(400).json({ message: "Invalid teacherId" });
+    }
+
+    const enrollments = await EnrolledCourse.find({ teacherId })
+      .populate("courseId", "title") // ✅ Only populate courseId with title
+
+    // CourseId null छैन भने मात्रै पठाउने
+    const courses = enrollments
+      .filter((e) => e.courseId) // sometimes populated data can be null
+      .map((e) => ({
+        _id: e.courseId._id,
+        title: e.courseId.title,
+      }));
+
+    // ✅ Remove duplicate courses by _id
+    const uniqueCoursesMap = {};
+    courses.forEach((course) => {
+      uniqueCoursesMap[course._id.toString()] = course;
+    });
+
+    const uniqueCourses = Object.values(uniqueCoursesMap);
+
+    res.status(200).json(uniqueCourses);
+  } catch (error) {
+    console.error("❌ Error in getEnrolledCoursesByTeacher:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+
+
+export const getAllTeachers = async (req, res) => {
+  try {
+    const teachers = await Auth.find({ role: "teacher" }, "_id fullName username");
+    res.status(200).json(teachers);
+  } catch (error) {
+    console.error("❌ Failed to fetch teachers", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
