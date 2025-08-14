@@ -211,16 +211,6 @@
 
 
 /* courses section styling start*/
-.transition-courses {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.transition-courses:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
-
-
 /* For horizontal scroll only on small screens */
 .course-scroll-wrapper {
   overflow-x: auto;
@@ -261,12 +251,9 @@
   }
 }
 
-
-
 /* courses slug page styling   */
 .responsive-text {
   font-size: 1rem;
-  /* default for small screens */
 }
 
 @media (min-width: 576px) {
@@ -789,3 +776,10 @@ img.img-fluid.rounded.shadow:hover {
 .blog-btn:active {
   transform: scale(0.9);
 }
+
+
+
+
+
+
+/* success gallery page */

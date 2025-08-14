@@ -78,8 +78,6 @@ export default function GalleryPage() {
             e.preventDefault();
             router.push("/success-gallery");
           }}
-          // target="_blank"
-          // rel="noopener noreferrer"
           className="btn d-inline-flex align-items-center"
           style={{
             backgroundColor: '#0057d8',
@@ -95,7 +93,7 @@ export default function GalleryPage() {
           }}
 
         >
-          Read More<i className="bi bi-arrow-right" style={{ fontSize: '18px' }}></i>
+          Read More
         </Link>
 
       </div>
@@ -117,6 +115,7 @@ export default function GalleryPage() {
         >
           {galleryData.slice(0, 5).map((item) => (
             <div key={item._id} className="p-2">
+
               <div
                 className="card h-100 text-center px-3"
                 style={{
@@ -222,6 +221,7 @@ export default function GalleryPage() {
                 </div>
 
               </div>
+
             </div>
           ))}
         </Carousel>

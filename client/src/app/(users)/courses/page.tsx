@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
+import Image from 'next/image'; // ✅ Next.js Image import for better optimization
+       import { FiFilter } from "react-icons/fi"; // feather filter icon
 
 interface Course {
   _id: string;
@@ -61,23 +63,24 @@ export default function CoursesPage() {
     <div className="container my-5">
       {/* Top Row: Filter Button + Title + Search */}
       <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-        <button
-          onClick={() => setShowFilters(!showFilters)}
-          className="d-flex align-items-center gap-2 px-3 py-2"
-          style={{
-            border: '1px solid #dee2e6',
-            backgroundColor: 'white',
-            borderRadius: '8px',
-            fontWeight: '500',
-            fontSize: '1rem',
-            color: '#000',
-          }}
-        >
-          <i className="bi bi-funnel-fill" style={{ fontSize: '1.1rem' }}></i>
-          <span>Filter</span>
-        </button>
 
-        <h2 className="fw-bold text-center flex-grow-1 mb-0">All Courses</h2>
+<button
+  onClick={() => setShowFilters(!showFilters)}
+  className="d-flex align-items-center gap-2 px-3 py-2"
+  style={{
+    border: '1px solid #000',
+    backgroundColor: 'white',
+    borderRadius: '8px',
+    fontWeight: '500',
+    fontSize: '1rem',
+    color: '#000',
+  }}
+>
+  <FiFilter style={{ fontSize: '1.1rem' }} />
+  <span>Filter</span>
+</button>
+
+
 
         <div className="position-relative search-wrapper" style={{ maxWidth: 250 }}>
           <input
@@ -150,56 +153,42 @@ export default function CoursesPage() {
         </div>
       </div>
 
-      {/* Category Filter Bar (Only on Filter Click) */}
+      {/* ✅ Category Buttons */}
       {showFilters && (
         <div
-          className="mb-4 d-flex flex-nowrap justify-content-start gap-3 overflow-auto px-2 border-bottom pb-2"
+          className="mb-5 d-flex flex-nowrap justify-content-start gap-3 overflow-auto"
           style={{
             WebkitOverflowScrolling: 'touch',
             scrollbarWidth: 'none',
           }}
         >
           <style jsx>{`
-            div::-webkit-scrollbar {
-              display: none;
-            }
-          `}</style>
+      div::-webkit-scrollbar {
+        display: none;
+      }
+    `}</style>
 
           {categories.map((cat) => (
             <button
               key={cat}
-              onClick={() => {
-                setSelectedCategory(cat);
-                setVisibleCount(12);
-              }}
-              className="bg-transparent border-0 fw-semibold px-3 py-2 text-nowrap"
+              onClick={() => setSelectedCategory(cat)}
               style={{
-                color: selectedCategory === cat ? '#0d6efd' : '#333',
-                fontSize: '1rem',
-                transition: 'color 0.3s ease',
-                whiteSpace: 'nowrap',
-                fontWeight: selectedCategory === cat ? '600' : '500',
-                letterSpacing: '0.5px',
+                backgroundColor: selectedCategory === cat ? '#0d6efd' : '#f8f9fa',
+                color: selectedCategory === cat ? '#fff' : '#333',
+                border: selectedCategory === cat ? '1px solid #0d6efd' : '1px solid #ddd',
+                padding: '8px 18px',
+                borderRadius: '12px',
+                fontSize: '0.95rem',
+                fontWeight: '500',
                 textTransform: 'capitalize',
+                cursor: 'pointer',
+                boxShadow: selectedCategory === cat
+                  ? '0 4px 8px rgba(13,110,253,0.3)'
+                  : '0 2px 4px rgba(0,0,0,0.05)',
+                transition: 'all 0.25s ease',
               }}
             >
-              <span style={{ position: 'relative', display: 'inline-block' }}>
-                {cat}
-                {selectedCategory === cat && (
-                  <span
-                    style={{
-                      position: 'absolute',
-                      left: 0,
-                      bottom: -2,
-                      height: '2px',
-                      width: '100%',
-                      backgroundColor: '#0d6efd',
-                      borderRadius: '1px',
-                      transition: 'width 0.3s ease',
-                    }}
-                  />
-                )}
-              </span>
+              {cat}
             </button>
           ))}
         </div>
@@ -211,29 +200,37 @@ export default function CoursesPage() {
           const slug = slugify(c.title);
           return (
             <div key={c._id} className="col-12 col-sm-6 col-md-4 col-lg-3">
+
               <div
-                className="card h-100 rounded-2 overflow-hidden transition-courses"
+                className="card h-100 rounded-2 overflow-hidden"
                 style={{
-                  border: "0.3px solid #dee2e6",
+                  border: "0.4px solid #dee2e6",
                   boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)",
                 }}
+
               >
                 <div className="position-relative overflow-hidden">
+                  {/* ✅ Using Next.js Image for optimization */}
                   <Link href={`/courses/${slug}`}>
-                    <img
+                    <Image
                       src={`http://localhost:5000${c.image}`}
                       alt={c.title}
+                      width={500}
+                      height={300}
                       className="card-img-top p-3"
                       style={{
                         height: 200,
                         objectFit: 'cover',
+                        transition: 'transform 0.4s ease',
                         borderRadius: '1.3rem',
                         cursor: 'pointer',
                       }}
                     />
                   </Link>
+
+                  {/* ✅ Duration Badge */}
                   <span
-                    className="badge bg-danger text-white fw-semibold position-absolute"
+                    className="badge bg-success text-white fw-semibold position-absolute"
                     style={{
                       top: '1.5rem',
                       right: '1.5rem',
@@ -246,7 +243,11 @@ export default function CoursesPage() {
                   </span>
                 </div>
 
-                <div className="card-body d-flex flex-column pt-0">
+                {/* ✅ Card Body */}
+                <div
+                  className="card-body d-flex flex-column justify-content-between pt-0"
+                  style={{ minHeight: '117px' }}
+                >
                   <Link href={`/courses/${slug}`} className="text-decoration-none">
                     <h5
                       className="card-title mb-2"
@@ -261,8 +262,21 @@ export default function CoursesPage() {
                       {c.title}
                     </h5>
                   </Link>
+
+                  <div className="d-flex align-items-center justify-content-between pb-0">
+                    <Link href="/inquiry" className="cta text-decoration-none">
+                      <span className="hover-underline-animation"> Apply now </span>
+                      <i className="bi bi-arrow-right"></i>
+                    </Link>
+
+                    <Link href={`/courses/${slug}`} className='courses-btn-viewdetails p-0'>
+                      <span> View Details</span>
+                    </Link>
+                  </div>
                 </div>
               </div>
+
+
             </div>
           );
         })}
