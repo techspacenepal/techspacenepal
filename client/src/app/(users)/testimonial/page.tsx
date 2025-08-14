@@ -160,77 +160,120 @@ function TestimonialDetailspage() {
         )}
       </div>
 
-      {selected && (
-        <div
-          className="modal-overlay"
-          onClick={closeModal}
+     {selected && (
+  <div
+    className="modal-overlay"
+    onClick={closeModal}
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      background: "rgba(0,0,0,0.5)",
+      zIndex: 1050,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "10px", // padding for mobile safe space
+    }}
+  >
+    <div
+      className="modal-content card shadow"
+      onClick={(e) => e.stopPropagation()}
+      style={{
+        width: "100%",
+        maxWidth: "600px",
+        maxHeight: "90vh",
+        backgroundColor: "#fff",
+        borderRadius: "10px",
+        display: "flex",
+        flexDirection: "column",
+        padding: "clamp(12px, 2vw, 20px)",
+      }}
+    >
+      {/* Header */}
+      <div className="d-flex align-items-center mb-3 flex-shrink-0">
+        <img
+          src={
+            selected.image
+              ? `http://localhost:5000${selected.image}`
+              : "https://via.placeholder.com/55"
+          }
+          alt={selected.name}
+          className="rounded-circle me-3"
           style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0,0,0,0.5)",
-            zIndex: 1040,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            animation: "fadeInBg 0.2s ease-in-out",
+            width: "clamp(60px, 15vw, 90px)",
+            height: "clamp(60px, 15vw, 90px)",
+            objectFit: "cover",
+            border: "3px solid #fff",
+            boxShadow: "0 0 0 4px #FF4C4C",
           }}
-        >
-          <div
-            className="modal-content card shadow"
-            onClick={(e) => e.stopPropagation()}
+        />
+        <div className="flex-grow-1">
+          <h5
+            className="mb-0 fw-bold text-capitalize"
             style={{
-              width: "90%",
-              maxWidth: "600px",
-              padding: "20px",
-              backgroundColor: "#fff",
-              borderRadius: "10px",
-              position: "relative",
-              transform: "translateY(0)",  // ✅ Ensures no top jump
-              animation: "fadeInModal 0.25s ease-in-out",
+              fontSize: "clamp(16px, 4vw, 20px)",
+              fontFamily: "Poppins, sans-serif",
+              color: "#000",
             }}
           >
-            <div className="row align-items-center w-100 mb-3">
-              <div className="col-10 d-flex align-items-center">
-                <img
-                  src={
-                    selected.image
-                      ? `http://localhost:5000${selected.image}`
-                      : "https://via.placeholder.com/55"
-                  }
-                  alt={selected.name}
-                  className="rounded-circle me-3"
-                  style={{
-                    width: "90px",
-                    height: "90px",
-                    objectFit: "cover",
-                    objectPosition: "center",
-                    border: "3px solid #fff",
-                    boxShadow: "0 0 0 4px #b6d9ff",
-                  }}
-                />
-                <div>
-                  <h5 className="mb-0">{selected.name}</h5>
-                  <small className="text-muted">{selected.course}</small>
-                </div>
-              </div>
-              <div className="col-2 text-end">
-                <a
-                  onClick={closeModal}
-                  className="fw-semibold text-decoration-none"
-                  role="button"
-                  style={{ cursor: "pointer" }}
-                >
-                  Close
-                </a>
-              </div>
-            </div>
-            <p className="mb-0">{selected.message}</p>
-          </div>
+            {selected.name}
+          </h5>
+          <small
+            className="text-muted text-uppercase fw-medium"
+            style={{
+              fontSize: "clamp(12px, 3vw, 14px)",
+              fontFamily: "Poppins, sans-serif",
+              color: "#555",
+            }}
+          >
+            {selected.course}
+          </small>
         </div>
-      )}
+        <button
+          onClick={closeModal}
+          className="btn p-0 ms-2"
+          style={{
+            fontSize: "clamp(18px, 4vw, 22px)",
+            fontWeight: 600,
+            color: "#FF4C4C",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            lineHeight: 1,
+          }}
+        >
+          ✕
+        </button>
+      </div>
+
+      {/* Scrollable Message */}
+      <div
+        style={{
+          overflowY: "auto",
+          maxHeight: "calc(90vh - 120px)", // Adjust space for header
+          paddingRight: "4px",
+        }}
+      >
+        <p
+          className="mb-0"
+          style={{
+            fontSize: "clamp(14px, 3.5vw, 16px)",
+            lineHeight: "1.6",
+            fontWeight: 400,
+            fontFamily: "Poppins, sans-serif",
+            color: "#333",
+            wordBreak: "break-word",
+          }}
+        >
+          {selected.message}
+        </p>
+      </div>
+    </div>
+  </div>
+)}
 
     </section>
   );
