@@ -196,6 +196,7 @@ const Footer = () => {
                                     { href: '/courses', text: 'Courses' },
                                     { href: '/success-gallery', text: 'Success Gallery' },
                                     { href: '/testimonial', text: 'Testimonials' },
+                                    { href: '/upcomming-classes', text: 'Upcoming Classes' },
                                     { href: '/our-team', text: 'Our Team' },
                                     { href: '/blog', text: 'Blog' },
                                     { href: '/contact', text: 'Contact' },

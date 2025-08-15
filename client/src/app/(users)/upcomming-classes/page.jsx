@@ -201,17 +201,18 @@ export default function UpcomingClassesUserPanel() {
                 <div
                   className="card h-100 rounded-2"
                   style={{
-                    minHeight: "414px",
+                    minHeight: "367px",
                     border: "0.3px solid #dee2e6",
                     boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)",
                     transition: "box-shadow 0.7s ease",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.boxShadow = "0 0 35px rgba(0, 0, 0, 0.25)";
+                    e.currentTarget.style.boxShadow = "0 0 30px rgba(0, 0, 0, 0.20)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.boxShadow = "0 0 8px rgba(0, 0, 0, 0.1)";
                   }}
+
                 >
 
 
@@ -306,7 +307,7 @@ export default function UpcomingClassesUserPanel() {
 
                     {/* Duration Badge */}
                     {cls.duration && (
-                      <span className="badge bg-danger text-white fw-semibold position-absolute" style={{
+                      <span className="badge bg-success text-white fw-semibold position-absolute" style={{
                         top: "1.5rem",
                         right: "1.5rem",
                         padding: "0.5rem 1rem",
@@ -319,8 +320,23 @@ export default function UpcomingClassesUserPanel() {
 
                     {/* 🔘 REGISTER BUTTON */}
                     <button
-                      className="btn btn-primary w-100 py-2 mt-3 fw-bold text-uppercase"
-                      style={{ fontFamily: "Poppins, sans-serif", backgroundColor: "#00214D", borderColor: "#00214D" }}
+                      style={{
+                        padding: '0.6rem 1.5rem',
+                        fontSize: '1rem',
+                        fontWeight: '600',
+                        fontFamily: "'Poppins', sans-serif",
+                        color: '#fff',
+                        backgroundColor: '#007bff',
+                        border: 'none',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        transition: 'background-color 0.3s ease',
+                        display: 'block',
+                        width: 'fit-content',
+                        margin: '0 auto',
+                      }}
+                      onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#0056b3')}
+                      onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#007bff')}
                       onClick={() => {
                         setShowFormFor(cls._id);
                         setSelectedClass(cls);

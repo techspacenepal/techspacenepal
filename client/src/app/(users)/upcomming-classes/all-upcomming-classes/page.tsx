@@ -216,13 +216,13 @@ export default function UpcommingPage() {
                                 <div
                                     className="card h-100 rounded-2"
                                     style={{
-                                        minHeight: "414px",
-                                        border: "0.3px solid #dee2e6",
+                                        minHeight: "367px",
+                                        border: "0.5px solid #dee2e6",
                                         boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)",
                                         transition: "box-shadow 0.7s ease",
                                     }}
                                     onMouseEnter={(e) => {
-                                        e.currentTarget.style.boxShadow = "0 0 35px rgba(0, 0, 0, 0.25)";
+                                        e.currentTarget.style.boxShadow = "0 0 30px rgba(0, 0, 0, 0.20)";
                                     }}
                                     onMouseLeave={(e) => {
                                         e.currentTarget.style.boxShadow = "0 0 8px rgba(0, 0, 0, 0.1)";
@@ -319,7 +319,7 @@ export default function UpcommingPage() {
 
                                         {/* Duration Badge */}
                                         {cls.duration && (
-                                            <span className="badge bg-danger text-white fw-semibold position-absolute" style={{
+                                            <span className="badge bg-success text-white fw-semibold position-absolute color-[#20C997]" style={{
                                                 top: "1.5rem",
                                                 right: "1.5rem",
                                                 padding: "0.5rem 1rem",
@@ -369,10 +369,20 @@ export default function UpcommingPage() {
                     <div className='text-center mt-4'>
                         <Link
                             href="/upcomming-classes"
-                            className="upcomming-readmore-btn"
-
+                            className="btn d-inline-flex align-items-center"
+                            style={{
+                                backgroundColor: '#0057d8',
+                                color: '#ffffff',
+                                fontWeight: '500',
+                                padding: '12px 17px',
+                                borderRadius: '8px',
+                                border: 'none',
+                                fontSize: '16px',
+                                textDecoration: 'none',
+                                gap: '8px'
+                            }}
                         >
-                            Read More
+                            View Details
                         </Link>
                     </div>
 
