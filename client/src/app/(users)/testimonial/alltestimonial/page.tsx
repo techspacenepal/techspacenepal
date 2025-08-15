@@ -75,9 +75,9 @@ const Testimonialpage: React.FC = () => {
               {testimonials.slice(0, 5).map((testimonial) => (
                 <div className="col-12 px-3 py-4" key={testimonial._id}>
                   <div
-                    className="px-4 py-5 bg-white shadow rounded-4 position-relative"
+                    className="px-4 py-4 bg-white shadow rounded-4 position-relative"
                     style={{
-                      height: "340px",
+                      height: "320px",
                       borderBottom: "5px solid #4A75F3",
                       display: "flex",
                       flexDirection: "column",
@@ -109,7 +109,7 @@ const Testimonialpage: React.FC = () => {
 
                     {testimonial.message.split(" ").length > 35 && (
                       <a
-                        className="fw-semibold p-0 text-primary text-decoration-none"
+                        className="fw-semibold p-0 text-primary"
                         onClick={() => openModal(testimonial)}
                         style={{ cursor: "pointer", fontSize: "14px", fontWeight: 600, fontFamily: "Poppins, sans-serif", textTransform: "uppercase" }}
                       >
@@ -122,9 +122,9 @@ const Testimonialpage: React.FC = () => {
                         src={testimonial.image ? `http://localhost:5000${testimonial.image}` : "https://via.placeholder.com/170"}
                         alt={testimonial.name}
                         className="rounded-circle me-3"
-                        width={85}
-                        height={85}
-                        style={{ objectFit: "cover", objectPosition: "center center", border: "3px solid #ffffff", boxShadow: "0 0 0 4px #FF4C4C" }}
+                        width={100}
+                        height={100}
+                        style={{ objectFit: "cover", objectPosition: "center center", border: "3.5px solid #ffffff", boxShadow: "0 0 0 4px #28C76F" }}
                       />
                       <div>
                         <h6 className="mb-0" style={{ fontWeight: 700, fontSize: "18px", fontFamily: "Poppins, sans-serif", color: "#000", textTransform: "capitalize" }}>
@@ -183,22 +183,23 @@ const Testimonialpage: React.FC = () => {
 
           <Link
             href="/testimonial"
-            className="btn btn-outline-primary fw-semibold d-inline-flex align-items-center"
+            className="d-inline-flex align-items-center fw-semibold rounded"
             style={{
-              backgroundColor: '#0057d8',
-              color: '#ffffff',
-              fontWeight: '500',
-              padding: '10px 16px',
-              borderRadius: '8px',
-              border: 'none',
-              fontSize: 'clamp(14px, 2.5vw, 16px)',
-              textDecoration: 'none',
-              gap: '8px',
-              whiteSpace: 'nowrap'
+              background: "linear-gradient(135deg, #0057d8, #007bff)",
+              color: "#fff",
+              padding: "10px 18px",
+              fontSize: "clamp(14px, 2.5vw, 16px)",
+              textDecoration: "none",
+              gap: "8px",
+              whiteSpace: "nowrap",
+              boxShadow: "0 4px 10px rgba(0, 87, 216, 0.3)",
+              transition: "all 0.3s ease",
             }}
+            
           >
-            View More <i className="bi bi-arrow-right" style={{ fontSize: '18px' }}></i>
+            View More <i className="bi bi-arrow-right" style={{ fontSize: "18px" }}></i>
           </Link>
+
         </div>
 
 
@@ -249,8 +250,8 @@ const Testimonialpage: React.FC = () => {
                   width: "clamp(60px, 15vw, 90px)",
                   height: "clamp(60px, 15vw, 90px)",
                   objectFit: "cover",
-                  border: "3px solid #fff",
-                  boxShadow: "0 0 0 4px #FF4C4C",
+                  border: "3.5px solid #fff",
+                  boxShadow: "0 0 0 4px #28C76F",
                 }}
               />
               <div className="flex-grow-1">

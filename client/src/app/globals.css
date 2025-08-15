@@ -511,6 +511,21 @@ img.img-fluid.rounded.shadow:hover {
   font-size: 20px !important;
 }
 
+@media (max-width: 992px) {
+  .slick-slider .rounded-circle {
+    width: 70px !important;
+    height: 70px !important;
+  }
+
+  .slick-slider .d-flex.align-items-center.flex-nowrap {
+    flex-wrap: wrap !important;
+  }
+
+  .slick-slider .d-flex.align-items-center.flex-nowrap img {
+    margin-bottom: 10px;
+  }
+}
+
 
 
 
@@ -729,7 +744,6 @@ img.img-fluid.rounded.shadow:hover {
 
 
 /* blog section styling start */
-/* From Uiverse.io by adamgiebl */ 
 .blog-btn {
   font-size: 18px;
   letter-spacing: 2px;
@@ -782,4 +796,3 @@ img.img-fluid.rounded.shadow:hover {
 
 
 
-/* success gallery page */

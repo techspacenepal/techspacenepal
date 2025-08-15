@@ -112,19 +112,19 @@ function TestimonialDetailspage() {
                         style={{
                           objectFit: "cover",
                           objectPosition: "center top",
-                          border: "3px solid #ffffff",
-                          boxShadow: "0 0 0 4px #0d6efd",
+                          border: "3.3px solid #ffffff",
+                          boxShadow: "0 0 0 4px #28C76F",
                         }}
                       />
                       <div>
                         <h6
                           className="mb-0"
                           style={{
-                            fontSize: "clamp(14px, 2vw, 18px)",   
-                            fontWeight: 600,                      
-                            textTransform: "capitalize",       
-                            color: "#0d6efd",                     
-                            fontFamily: "Poppins, sans-serif"     
+                            fontSize: "clamp(14px, 2vw, 18px)",
+                            fontWeight: 600,
+                            textTransform: "capitalize",
+                            color: "#0d6efd",
+                            fontFamily: "Poppins, sans-serif"
                           }}
                         >
                           {testimonial.name}
@@ -135,7 +135,7 @@ function TestimonialDetailspage() {
                             fontSize: "clamp(12px, 1.5vw, 14px)",
                             fontWeight: 500,
                             textTransform: "uppercase",
-                            color: "#6c757d",                     
+                            color: "#6c757d",
                             fontFamily: "Poppins, sans-serif"
                           }}
                         >
@@ -151,8 +151,22 @@ function TestimonialDetailspage() {
 
             {visibleCount < filteredTestimonials.length && (
               <div className="text-center mt-4">
-                <button className="btn btn-primary" onClick={loadMore}>
+                <button className="btn d-inline-flex align-items-center" onClick={loadMore}
+                  style={{
+                    backgroundColor: '#0057d8',
+                    color: '#ffffff',
+                    fontWeight: '500',
+                    padding: '10px 16px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    fontSize: 'clamp(14px, 2.5vw, 16px)',
+                    textDecoration: 'none',
+                    gap: '8px',
+                    whiteSpace: 'nowrap'
+                  }}>
                   Load More
+                  <i className="bi bi-arrow-down" style={{ fontSize: '18px' }}></i>
+
                 </button>
               </div>
             )}
@@ -160,120 +174,120 @@ function TestimonialDetailspage() {
         )}
       </div>
 
-     {selected && (
-  <div
-    className="modal-overlay"
-    onClick={closeModal}
-    style={{
-      position: "fixed",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      background: "rgba(0,0,0,0.5)",
-      zIndex: 1050,
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: "10px", // padding for mobile safe space
-    }}
-  >
-    <div
-      className="modal-content card shadow"
-      onClick={(e) => e.stopPropagation()}
-      style={{
-        width: "100%",
-        maxWidth: "600px",
-        maxHeight: "90vh",
-        backgroundColor: "#fff",
-        borderRadius: "10px",
-        display: "flex",
-        flexDirection: "column",
-        padding: "clamp(12px, 2vw, 20px)",
-      }}
-    >
-      {/* Header */}
-      <div className="d-flex align-items-center mb-3 flex-shrink-0">
-        <img
-          src={
-            selected.image
-              ? `http://localhost:5000${selected.image}`
-              : "https://via.placeholder.com/55"
-          }
-          alt={selected.name}
-          className="rounded-circle me-3"
-          style={{
-            width: "clamp(60px, 15vw, 90px)",
-            height: "clamp(60px, 15vw, 90px)",
-            objectFit: "cover",
-            border: "3px solid #fff",
-            boxShadow: "0 0 0 4px #FF4C4C",
-          }}
-        />
-        <div className="flex-grow-1">
-          <h5
-            className="mb-0 fw-bold text-capitalize"
-            style={{
-              fontSize: "clamp(16px, 4vw, 20px)",
-              fontFamily: "Poppins, sans-serif",
-              color: "#000",
-            }}
-          >
-            {selected.name}
-          </h5>
-          <small
-            className="text-muted text-uppercase fw-medium"
-            style={{
-              fontSize: "clamp(12px, 3vw, 14px)",
-              fontFamily: "Poppins, sans-serif",
-              color: "#555",
-            }}
-          >
-            {selected.course}
-          </small>
-        </div>
-        <button
+      {selected && (
+        <div
+          className="modal-overlay"
           onClick={closeModal}
-          className="btn p-0 ms-2"
           style={{
-            fontSize: "clamp(18px, 4vw, 22px)",
-            fontWeight: 600,
-            color: "#FF4C4C",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            lineHeight: 1,
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background: "rgba(0,0,0,0.5)",
+            zIndex: 1050,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "10px", // padding for mobile safe space
           }}
         >
-          ✕
-        </button>
-      </div>
+          <div
+            className="modal-content card shadow"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: "100%",
+              maxWidth: "600px",
+              maxHeight: "90vh",
+              backgroundColor: "#fff",
+              borderRadius: "10px",
+              display: "flex",
+              flexDirection: "column",
+              padding: "clamp(12px, 2vw, 20px)",
+            }}
+          >
+            {/* Header */}
+            <div className="d-flex align-items-center mb-3 flex-shrink-0">
+              <img
+                src={
+                  selected.image
+                    ? `http://localhost:5000${selected.image}`
+                    : "https://via.placeholder.com/55"
+                }
+                alt={selected.name}
+                className="rounded-circle me-3"
+                style={{
+                  width: "clamp(60px, 15vw, 90px)",
+                  height: "clamp(60px, 15vw, 90px)",
+                  objectFit: "cover",
+                  border: "3.5px solid #fff",
+                  boxShadow: "0 0 0 4px #28C76F",
+                }}
+              />
+              <div className="flex-grow-1">
+                <h5
+                  className="mb-0 fw-bold text-capitalize"
+                  style={{
+                    fontSize: "clamp(16px, 4vw, 20px)",
+                    fontFamily: "Poppins, sans-serif",
+                    color: "#000",
+                  }}
+                >
+                  {selected.name}
+                </h5>
+                <small
+                  className="text-muted text-uppercase fw-medium"
+                  style={{
+                    fontSize: "clamp(12px, 3vw, 14px)",
+                    fontFamily: "Poppins, sans-serif",
+                    color: "#555",
+                  }}
+                >
+                  {selected.course}
+                </small>
+              </div>
+              <button
+                onClick={closeModal}
+                className="btn p-0 ms-2"
+                style={{
+                  fontSize: "clamp(18px, 4vw, 22px)",
+                  fontWeight: 600,
+                  color: "#FF4C4C",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  lineHeight: 1,
+                }}
+              >
+                ✕
+              </button>
+            </div>
 
-      {/* Scrollable Message */}
-      <div
-        style={{
-          overflowY: "auto",
-          maxHeight: "calc(90vh - 120px)", // Adjust space for header
-          paddingRight: "4px",
-        }}
-      >
-        <p
-          className="mb-0"
-          style={{
-            fontSize: "clamp(14px, 3.5vw, 16px)",
-            lineHeight: "1.6",
-            fontWeight: 400,
-            fontFamily: "Poppins, sans-serif",
-            color: "#333",
-            wordBreak: "break-word",
-          }}
-        >
-          {selected.message}
-        </p>
-      </div>
-    </div>
-  </div>
-)}
+            {/* Scrollable Message */}
+            <div
+              style={{
+                overflowY: "auto",
+                maxHeight: "calc(90vh - 120px)", // Adjust space for header
+                paddingRight: "4px",
+              }}
+            >
+              <p
+                className="mb-0"
+                style={{
+                  fontSize: "clamp(14px, 3.5vw, 16px)",
+                  lineHeight: "1.6",
+                  fontWeight: 400,
+                  fontFamily: "Poppins, sans-serif",
+                  color: "#333",
+                  wordBreak: "break-word",
+                }}
+              >
+                {selected.message}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
     </section>
   );
