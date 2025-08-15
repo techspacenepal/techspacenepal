@@ -241,7 +241,7 @@ export default function BlogDetailPage() {
             </Head>
 
             <div className="container py-5">
-                <div className="row">
+                <div className="row g-5">
                     <div className="col-md-9">
                         <h1 className="fw-bold text-primary">{blog.title}</h1>
                         {/* Social Media Share Buttons */}
@@ -262,7 +262,7 @@ export default function BlogDetailPage() {
                                 <img
                                     src={`http://localhost:5000/uploads/${blog.image}`}
                                     alt={blog.title}
-                                    className="w-100 rounded mb-3 me-3"
+                                    className="w-100 mb-3"
                                     style={{ maxHeight: '400px', objectFit: 'cover' }}
                                 />
                             </div>

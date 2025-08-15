@@ -157,7 +157,7 @@ export default function BlogList({ page }: BlogListProps): React.JSX.Element {
                         {currentBlogs.map((blog) => (
                             <div key={blog._id} className="col-12 col-sm-6 col-lg-4">
                                 <div
-                                    className="card border-1 shadow-md w-100 h-100"
+                                    className="card border-1 shadow-md w-100 h-100  rounded-0"
                                     style={{
                                         transition: 'transform 0.3s ease',
                                         minHeight: '470px',
@@ -171,10 +171,12 @@ export default function BlogList({ page }: BlogListProps): React.JSX.Element {
                                             sessionStorage.setItem("recentBlogs", JSON.stringify(currentBlogs));
                                         }}
                                         className="d-block"
-                                    >                                        <img
+
+                                    >                                       
+                                     <img
                                             src={`http://localhost:5000/uploads/${blog.image}`}
                                             alt={blog.title}
-                                            className="card-img-top"
+                                            className="card-img-top  rounded-0"
                                             style={{
                                                 height: '207px',
                                                 objectFit: 'cover',
@@ -202,7 +204,7 @@ export default function BlogList({ page }: BlogListProps): React.JSX.Element {
                                         >
                                             <h5
                                                 className="fw-bold text-dark"
-                                                style={{ lineHeight: '1.4', fontSize: '1.8rem' }}
+                                                style={{ lineHeight: '1.4', fontSize: '1.3rem' }}
                                             >
                                                 {blog.title}
                                             </h5>

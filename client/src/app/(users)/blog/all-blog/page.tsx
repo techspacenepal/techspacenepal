@@ -108,44 +108,51 @@ export default function BlogListPage({ page }: BlogListProps): React.JSX.Element
 
     const createSlug = (title: string) =>
         title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-    const currentBlogs = sortedBlogs.slice(0, 6);
+    const currentBlogs = sortedBlogs.slice(0, 3);
 
     return (
         <>
 
 
-            <section className='bg-light'>
-                <div className="container py-5">
+            <section className='bg-light py-3'>
+                <div className="container py-2">
                     {blogs.length === 0 && (
                         <p className="text-center text-muted">No blogs found.</p>
                     )}
 
                     <h2
-                        className='text-center mb-0'
+                        className='text-center mb-4'
                         style={{
                             fontFamily: 'Poppins, sans-serif',
                             fontWeight: '700',
-                            fontSize: '2.5rem',
+                            fontSize: '2rem', // adjusted for uniformity
                             color: '#00214D',
-                            letterSpacing: '2px',
-                            paddingBottom: '30px', // equal space below heading
+                            letterSpacing: '1.5px',
+                            marginBottom: '30px',
                         }}
                     >
                         Blog
                     </h2>
 
                     <div
-                        className="row g-4"
+                        className="row flex-nowrap blog-scroll-row"
                         style={{
-                            paddingBottom: '30px', // equal space below cards
+                            marginBottom: '30px',
+                            overflowX: 'auto',
+                            scrollbarWidth: 'none',
+                            msOverflowStyle: 'none', 
                         }}
                     >
                         {currentBlogs.map((blog) => (
-                            <div key={blog._id} className="col-12 col-sm-6 col-lg-4">
+                            <div
+                                key={blog._id}
+                                className="col-12 col-sm-6 col-lg-4"
+                                style={{ flex: '0 0 auto' }} 
+                            >
+
                                 <div
-                                    className="card border-1 shadow-md w-100 h-100 mb-0"
+                                    className="card border-1 w-100 h-100 mb-0  rounded-0"
                                     style={{
-                                        transition: 'transform 0.3s ease',
                                         minHeight: '470px',
                                         display: 'flex',
                                         flexDirection: 'column',
@@ -161,7 +168,7 @@ export default function BlogListPage({ page }: BlogListProps): React.JSX.Element
                                         <img
                                             src={`http://localhost:5000/uploads/${blog.image}`}
                                             alt={blog.title}
-                                            className="card-img-top"
+                                            className="card-img-top  rounded-0"
                                             style={{
                                                 height: '207px',
                                                 objectFit: 'cover',
@@ -181,7 +188,6 @@ export default function BlogListPage({ page }: BlogListProps): React.JSX.Element
                                                     year: "numeric",
                                                 })}
                                             </div>
-                                            {/* 👁 NEW: BlogViews */}
                                             <BlogViews blogId={blog._id} />
                                         </div>
                                         <Link
@@ -193,7 +199,7 @@ export default function BlogListPage({ page }: BlogListProps): React.JSX.Element
                                         >
                                             <h5
                                                 className="fw-bold text-dark"
-                                                style={{ lineHeight: '1.4', fontSize: '1.8rem' }}
+                                                style={{ lineHeight: '1.4', fontSize: '1.25rem' }} // uniform size
                                             >
                                                 {blog.title}
                                             </h5>
@@ -206,25 +212,47 @@ export default function BlogListPage({ page }: BlogListProps): React.JSX.Element
                                         </p>
                                     </div>
                                 </div>
+
                             </div>
                         ))}
                     </div>
 
+                    {/* Explore Blogs Button */}
                     <div
                         className='text-center'
-                        style={{
-                            paddingTop: '30px', // equal space above button
-                        }}
+                        style={{ marginBottom: '30px' }} // uniform spacing
                     >
-                        <Link
-                            href="/blog"
-                            className="blog-btn"
-                        >
-                            Read More
-                        </Link>
+                        <div className="d-inline-block" style={{ paddingBottom: '5px' }}>
+                            <Link
+                                href="/blog"
+                                className="btn d-inline-flex align-items-center"
+                                style={{
+                                    backgroundColor: '#007bff',
+                                    color: '#ffffff',
+                                    fontWeight: '600',
+                                    padding: '12px 20px',
+                                    borderRadius: '12px',
+                                    border: 'none',
+                                    fontSize: '16px',
+                                    textDecoration: 'none',
+                                    gap: '10px',
+                                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                                    transition: 'transform 0.2s ease, background-color 0.3s ease',
+                                    whiteSpace: 'nowrap', // ensures inline scroll behavior
+                                }}
+                                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#0056b3')}
+                                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#007bff')}
+                            >
+                                Explore Blogs
+                                <i className="bi bi-arrow-right" style={{ fontSize: '18px' }}></i>
+                            </Link>
+                        </div>
                     </div>
                 </div>
+
+
             </section>
+
 
         </>
     );
