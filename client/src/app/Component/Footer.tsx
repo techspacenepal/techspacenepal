@@ -137,47 +137,41 @@ const Footer = () => {
     return (
         <>
             <footer
-                className="text-white pt-5 pb-3 bg-dark"
+                className="text-white pt-5 pb-3 bg-success"
                 style={{
-                    background: "linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)",
-                    fontFamily: "'Poppins', sans-serif",
+                    fontFamily: "'Poppins', sans-serif", // ✅ modern font family
                 }}
             >
                 <div className="container">
-                    <div className="row text-start">
+                    <div className="row text-start gy-4">
                         {/* Left - About & Logo */}
-                        <div className="col-md-4 mb-4">
-                            <a href="/" style={{ paddingLeft: 0, display: 'inline-block' }}>
+                        <div className="col-md-4">
+                            <a href="/">
                                 {logo ? (
                                     <Image
-                                        className="d-block mx-auto mb-3 bg-light"
+                                        className="d-block"
                                         src={`http://localhost:5000/uploads/${logo.imageUrl}`}
                                         alt="Logo"
                                         width={160}
                                         height={80}
                                         unoptimized={true}
                                         style={{
-                                            objectFit: 'contain',
-                                            width: '160px',
-                                            height: '80px',
-                                            borderRadius: '8px',
-                                            boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+                                            objectFit: "cover",
+                                            width: "160px",
+                                            height: "80px",
                                         }}
                                     />
                                 ) : (
                                     <span>Loading logo...</span>
                                 )}
                             </a>
-
                             <p
-                                className="text-white"
                                 style={{
-                                    textAlign: 'justify',
-                                    paddingLeft: 0,
-                                    fontSize: '0.95rem',
-                                    lineHeight: '1.6',
+                                    textAlign: "justify",
+                                    fontSize: "0.95rem",
+                                    lineHeight: "1.7",
                                     fontWeight: 400,
-                                    textTransform: 'capitalize',
+                                    color: "#e0e0e0",
                                 }}
                             >
                                 Tech Space Nepal promises to offer every course in the most professional way,
@@ -185,29 +179,45 @@ const Footer = () => {
                             </p>
                         </div>
 
-                        {/* Middle - Quick Links */}
-                        <div className="col-md-2 mb-4">
-                            <h5 className="fw-bold text-uppercase" style={{ fontSize: '1.1rem' }}>Quick Links</h5>
+                        {/* Quick Links */}
+                        <div className="col-6 col-md-2">
+                            <h5
+                                className="fw-bold text-uppercase mb-3"
+                                style={{
+                                    fontSize: "1.1rem",
+                                    color: "#fff",
+                                    letterSpacing: "0.5px",
+                                }}
+                            >
+                                Company
+                            </h5>
                             <ul className="list-unstyled">
                                 {[
-                                    { href: '/', text: 'Home' },
-                                    { href: '/about-us', text: 'About Us' },
-                                    { href: '/services', text: 'Our Services' },
-                                    { href: '/courses', text: 'Courses' },
-                                    { href: '/success-gallery', text: 'Success Gallery' },
-                                    { href: '/testimonial', text: 'Testimonials' },
-                                    { href: '/upcomming-classes', text: 'Upcoming Classes' },
-                                    { href: '/our-team', text: 'Our Team' },
-                                    { href: '/blog', text: 'Blog' },
-                                    { href: '/contact', text: 'Contact' },
+                                    { href: "/", text: "Home" },
+                                    { href: "/about-us", text: "About Us" },
+                                    { href: "/services", text: "Our Services" },
+                                    { href: "/courses", text: "Courses" },
+                                    { href: "/success-gallery", text: "Success Gallery" },
+                                    { href: "/our-team", text: "Our Team" },
+                                    { href: "/contact", text: "Contact Us" },
                                 ].map((link) => (
-                                    <li key={link.href} style={{ marginBottom: '0.5rem' }}>
+                                    <li key={link.href} className="mb-2">
                                         <a
                                             href={link.href}
-                                            className="text-white text-decoration-none text-capitalize"
+                                            className="text-decoration-none"
                                             style={{
-                                                fontSize: '0.95rem',
-                                                fontWeight: 400,
+                                                fontSize: "0.95rem",
+                                                fontWeight: 500,            // ✅ slightly bolder for clarity
+                                                color: "#e0e0e0",
+                                                textTransform: "capitalize", // ✅ clean capitalization
+                                                transition: "all 0.3s ease", // ✅ smooth hover
+                                                display: "inline-block",
+                                            }}
+                                            onMouseOver={(e) => {
+                                                e.currentTarget.style.color = "#FFD700"; // ✅ blue hover
+                                            }}
+                                            onMouseOut={(e) => {
+                                                e.currentTarget.style.color = "#e0e0e0";
                                             }}
                                         >
                                             {link.text}
@@ -218,20 +228,44 @@ const Footer = () => {
                         </div>
 
                         {/* Services */}
-                        <div className="col-md-3 mb-4">
-                            <h5 className="fw-bold text-uppercase" style={{ fontSize: '1.1rem' }}>Our Services</h5>
+                        <div className="col-6 col-md-3">
+                            <h5
+                                className="fw-bold text-uppercase mb-3"
+                                style={{
+                                    fontSize: "1.1rem",
+                                    color: "#fff",
+                                    letterSpacing: "0.5px",
+                                }}
+                            >
+                                Additional Links
+                            </h5>
                             <ul className="list-unstyled">
-                                {services.map((service, idx) => (
-                                    <li key={idx} style={{ marginBottom: '0.5rem' }}>
+                                {[
+                                    { href: "/testimonial", text: "Testimonials" },
+                                    { href: "/upcomming-classes", text: "Upcoming Classes" },
+                                    { href: "/blog", text: "Blog" },
+                                    { href: "", text: "Student Portal" },
+                                ].map((link) => (
+                                    <li key={link.href} className="mb-2">
                                         <a
-                                            href={`/services/${generateSlug(service.title)}`}
-                                            className="text-white text-decoration-none text-capitalize"
+                                            href={link.href}
+                                            className="text-decoration-none"
                                             style={{
-                                                fontSize: '0.95rem',
-                                                fontWeight: 400,
+                                                fontSize: "0.95rem",
+                                                fontWeight: 500,
+                                                color: "#e0e0e0",
+                                                textTransform: "capitalize",
+                                                transition: "all 0.3s ease",
+                                                display: "inline-block",
+                                            }}
+                                            onMouseOver={(e) => {
+                                                e.currentTarget.style.color = "#FFD700";
+                                            }}
+                                            onMouseOut={(e) => {
+                                                e.currentTarget.style.color = "#e0e0e0";
                                             }}
                                         >
-                                            {service.title}
+                                            {link.text}
                                         </a>
                                     </li>
                                 ))}
@@ -243,42 +277,69 @@ const Footer = () => {
                             {info ? (
                                 <>
                                     <div className="mb-4">
-                                        <h5 className="fw-bold text-uppercase" style={{ fontSize: '1.1rem' }}>Contact Us</h5>
-                                        <ul className="list-unstyled" style={{ paddingLeft: 0 }}>
-                                            <li style={{ marginBottom: '0.5rem', fontSize: '0.95rem' }}>
+                                        <h5
+                                            className="fw-bold text-uppercase mb-3"
+                                            style={{
+                                                fontSize: "1.1rem",
+                                                color: "#fff",
+                                                letterSpacing: "0.5px",
+                                            }}
+                                        >
+                                            Contact Us
+                                        </h5>
+                                        <ul className="list-unstyled ps-0">
+                                            <li className="mb-2" style={{ fontSize: "0.95rem", color: "#e0e0e0", fontWeight: 400 }}>
                                                 <i className="fas fa-map-marker-alt me-2"></i>
                                                 {info.address}
                                             </li>
-                                            <li style={{ marginBottom: '0.5rem', fontSize: '0.95rem' }}>
+                                            <li className="mb-2" style={{ fontSize: "0.95rem" }}>
                                                 <i className="fas fa-envelope me-2"></i>
                                                 <a
                                                     href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(info.email)}`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="text-white text-decoration-none"
-                                                    style={{ fontWeight: 400 }}
+                                                    className="text-decoration-none"
+                                                    style={{
+                                                        fontWeight: 500,
+                                                        color: "#e0e0e0",
+                                                        transition: "all 0.3s ease",
+                                                    }}
+                                                    onMouseOver={(e) => (e.currentTarget.style.color = "#FFD700")}
+                                                    onMouseOut={(e) => (e.currentTarget.style.color = "#e0e0e0")}
                                                 >
                                                     {info.email}
                                                 </a>
                                             </li>
-                                            <li style={{ marginBottom: '0.5rem', fontSize: '0.95rem' }}>
+                                            <li className="mb-2" style={{ fontSize: "0.95rem" }}>
                                                 <i className="fas fa-phone me-2"></i>
                                                 <a
                                                     href={`tel:${info.phone}`}
-                                                    className="text-white text-decoration-none"
-                                                    style={{ fontWeight: 400 }}
+                                                    className="text-decoration-none"
+                                                    style={{
+                                                        fontWeight: 500,
+                                                        color: "#e0e0e0",
+                                                        transition: "all 0.3s ease",
+                                                    }}
+                                                    onMouseOver={(e) => (e.currentTarget.style.color = "#FFD700")}
+                                                    onMouseOut={(e) => (e.currentTarget.style.color = "#e0e0e0")}
                                                 >
                                                     {info.phone}
                                                 </a>
                                             </li>
-                                            <li style={{ marginBottom: '0.5rem', fontSize: '0.95rem' }}>
+                                            <li className="mb-2" style={{ fontSize: "0.95rem" }}>
                                                 <i className="fab fa-whatsapp me-2"></i>
                                                 <a
                                                     href={`https://wa.me/${info.whatsapp.replace(/[^0-9]/g, "")}`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="text-white text-decoration-none"
-                                                    style={{ fontWeight: 400 }}
+                                                    className="text-decoration-none"
+                                                    style={{
+                                                        fontWeight: 500,
+                                                        color: "#e0e0e0",
+                                                        transition: "all 0.3s ease",
+                                                    }}
+                                                    onMouseOver={(e) => (e.currentTarget.style.color = "#FFD700")}
+                                                    onMouseOut={(e) => (e.currentTarget.style.color = "#e0e0e0")}
                                                 >
                                                     {info.whatsapp}
                                                 </a>
@@ -286,8 +347,17 @@ const Footer = () => {
                                         </ul>
                                     </div>
 
-                                    <h5 className="fw-bold text-uppercase" style={{ fontSize: '1.1rem' }}>Follow us On</h5>
-                                    <div className="d-flex gap-3 mb-3">
+                                    <h5
+                                        className="fw-bold text-uppercase mb-3"
+                                        style={{
+                                            fontSize: "1.1rem",
+                                            color: "#fff",
+                                            letterSpacing: "0.5px",
+                                        }}
+                                    >
+                                        Follow us On
+                                    </h5>
+                                    <div className="d-flex flex-wrap gap-2">
                                         {Object.entries(info.socialLinks || {}).map(([platform, url]) =>
                                             url ? (
                                                 <a
@@ -295,10 +365,10 @@ const Footer = () => {
                                                     href={url}
                                                     target="_blank"
                                                     rel="noreferrer"
-                                                    className="text-white text-decoration-none"
+                                                    className="text-decoration-none"
                                                 >
                                                     <div
-                                                        className="border p-2 rounded-circle d-flex align-items-center justify-content-center"
+                                                        className="p-2 rounded-circle d-flex align-items-center justify-content-center"
                                                         style={{
                                                             width: "40px",
                                                             height: "40px",
@@ -306,8 +376,9 @@ const Footer = () => {
                                                             cursor: "pointer",
                                                             backgroundColor: getBrandColor(platform),
                                                             color: "#fff",
-                                                            fontSize: '1rem',
+                                                            fontSize: "1rem",
                                                         }}
+                                                       
                                                     >
                                                         <i className={`fab fa-${platform} fa-lg`}></i>
                                                     </div>
@@ -320,45 +391,61 @@ const Footer = () => {
                                 <p className="text-white">Loading contact info...</p>
                             )}
                         </div>
-                        
                     </div>
 
                     {/* Bottom footer row */}
                     <div className="d-flex flex-column flex-md-row align-items-center justify-content-between pt-3 border-top mt-4 gap-3">
                         <small
-                            className="text-white text-center text-md-start"
-                            style={{ fontSize: '0.85rem', fontWeight: 500 }}
+                            className="text-center text-md-start"
+                            style={{
+                                fontSize: "0.85rem",
+                                fontWeight: 500,
+                                color: "#bfbfbf",
+                                letterSpacing: "0.3px",
+                            }}
                         >
-                            {copyright || '© 2025 techspacenepal.com. All rights reserved.'}
+                            {copyright || "© 2025 techspacenepal.com. All rights reserved."}
                         </small>
 
-                        {/* Payment Logos */}
+                        {/* Payment Logos (unchanged) */}
                         <div className="d-flex align-items-center flex-wrap justify-content-center gap-3">
                             <span
-                                className="fw-semibold text-white text-uppercase"
-                                style={{ fontSize: '0.9rem' }}
+                                className="fw-semibold text-uppercase"
+                                style={{ fontSize: "0.9rem", color: "#e0e0e0", letterSpacing: "0.5px" }}
                             >
                                 We Accept:
                             </span>
                             {paymentLogos.map((p) => (
-                                <img
+                                <div
                                     key={p._id}
-                                    src={`http://localhost:5000/uploads/${p.img}`}
-                                    alt={p.name}
-                                    width={80}
-                                    height={30}
-                                    className="rounded bg-white p-1"
-                                    style={{ cursor: 'pointer' }}
+                                    className="d-flex align-items-center justify-content-center bg-white shadow-sm rounded-3"
+                                    style={{
+                                        width: "100px",
+                                        height: "50px",
+                                        cursor: "pointer",
+                                        transition: "transform 0.3s ease",
+                                    }}
                                     onClick={() =>
                                         p.modalImage &&
                                         setActiveImage(`http://localhost:5000/uploads/${p.modalImage}`)
                                     }
-                                />
+                                >
+                                    <img
+                                        src={`http://localhost:5000/uploads/${p.img}`}
+                                        alt={p.name}
+                                        className="img-fluid"
+                                        style={{
+                                            maxHeight: "30px",
+                                            maxWidth: "100%",
+                                            objectFit: "contain",
+                                        }}
+                                    />
+                                </div>
                             ))}
                         </div>
                     </div>
 
-                    {/* Payment Modal */}
+                    {/* Payment Modal (unchanged) */}
                     {activeImage && (
                         <Modal show onHide={() => setActiveImage(null)} centered size="sm">
                             <Modal.Header closeButton className="bg-light border-0">
@@ -366,7 +453,7 @@ const Footer = () => {
                             </Modal.Header>
                             <Modal.Body
                                 className="bg-light rounded d-flex justify-content-center align-items-center"
-                                style={{ minHeight: '60vh' }}
+                                style={{ minHeight: "60vh" }}
                             >
                                 <div>
                                     <img
@@ -374,11 +461,11 @@ const Footer = () => {
                                         alt="QR Code Preview"
                                         className="img-fluid"
                                         style={{
-                                            width: '100%',
-                                            height: '100%',
-                                            objectFit: 'contain',
-                                            display: 'block',
-                                            margin: '0 auto',
+                                            width: "100%",
+                                            height: "100%",
+                                            objectFit: "contain",
+                                            display: "block",
+                                            margin: "0 auto",
                                         }}
                                     />
                                 </div>
@@ -387,6 +474,9 @@ const Footer = () => {
                     )}
                 </div>
             </footer>
+
+
+
 
 
             {/* Scroll to Top Button */}
