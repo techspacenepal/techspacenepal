@@ -173,14 +173,14 @@ export default function ManageServices() {
             onChange={handleChange}
             required
           />
-          <textarea
+          {/* <textarea
             className="form-control mb-3"
             placeholder="Service Description"
             value={form.desc}
             name="desc"
             onChange={handleChange}
             required
-          />
+          /> */}
           <input
             type="text"
             className="form-control mb-3"
@@ -190,7 +190,7 @@ export default function ManageServices() {
             onChange={handleChange}
             required
           />
-          <input
+          {/* <input
             type="text"
             className="form-control mb-3"
             placeholder="Heading"
@@ -198,7 +198,7 @@ export default function ManageServices() {
             name="heading"
             onChange={handleChange}
             required
-          />
+          /> */}
           <input
             type="file"
             className="form-control mb-3"

@@ -150,7 +150,7 @@ export default function ServicesSection() {
                                 gap: '8px'
                             }}
                         >
-                            View All Services <i className="bi bi-arrow-right" style={{ fontSize: '18px' }}></i>
+                            Explore All Services 
                         </Link>
                     </div>
                 </Row>

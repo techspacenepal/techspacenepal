@@ -57,7 +57,7 @@ export default async function ServiceDetailPage({ params }: { params: { slug: st
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-12 col-lg-9">
-              <nav aria-label="breadcrumb" className="mb-3">
+              <nav aria-label="breadcrumb" className="mb-2">
                 <ul
                   style={{
                     display: "flex",
@@ -89,19 +89,18 @@ export default async function ServiceDetailPage({ params }: { params: { slug: st
                 </ul>
               </nav>
 
-              <p className="mb-4">{service.desc}</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-5">
+      <section className="py-5 pt-0">
         <div className="container">
           <div className="row justify-content-center text-center text-lg-start">
             <div className="col-12 col-lg-9">
               {service.heading && (
                 <h2 className="fw-bold mb-4" style={{ color: "#004d40" }}>
-                  {service.heading}
+                  {service.title}
                 </h2>
               )}
 

@@ -2,8 +2,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
-import Image from 'next/image'; // ✅ Next.js Image import for better optimization
-       import { FiFilter } from "react-icons/fi"; // feather filter icon
+import Image from 'next/image';
 
 interface Course {
   _id: string;
@@ -62,95 +61,28 @@ export default function CoursesPage() {
   return (
     <div className="container my-5">
       {/* Top Row: Filter Button + Title + Search */}
-      <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+      <div className='mb-4'>
 
-<button
-  onClick={() => setShowFilters(!showFilters)}
-  className="d-flex align-items-center gap-2 px-3 py-2"
-  style={{
-    border: '1px solid #000',
-    backgroundColor: 'white',
-    borderRadius: '8px',
-    fontWeight: '500',
-    fontSize: '1rem',
-    color: '#000',
-  }}
->
-  <FiFilter style={{ fontSize: '1.1rem' }} />
-  <span>Filter</span>
-</button>
-
-
-
-        <div className="position-relative search-wrapper" style={{ maxWidth: 250 }}>
-          <input
-            type="text"
-            className="form-control pe-5"
-            placeholder="Search Courses"
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setShowDropdown(true);
-            }}
-            onFocus={() => setShowDropdown(true)}
-          />
-          {/* Close button - before search icon */}
-          <div className='align-items-center g-5'>
-            {searchTerm && (
-              <button
-                onClick={() => {
-                  setSearchTerm('');
-                  setShowDropdown(false);
-                  setSelectedCategory('All');
-                }}
-                className="btn position-absolute top-50 end-0 translate-middle-y me-4 p-0 border-0 bg-transparent"
-                style={{ fontSize: '1.2rem', color: '#888', zIndex: 2 }}
-              >
-                &times;
-              </button>
-            )}
+        <button
+          onClick={() => setShowFilters(!showFilters)}
+          style={{
+            backgroundColor: '#0057d8',
+            color: '#ffffff',
+            fontWeight: '500',
+            padding: '12px 17px',
+            borderRadius: '8px',
+            border: 'none',
+            fontSize: '16px',
+            textDecoration: 'none',
+            gap: '8px'
+          }}
+        >
+          Filter
+        </button>
 
 
-            {/* Search icon */}
-            <button
-              onClick={() => {
-                setShowDropdown(false);
-                setSelectedCategory('All');
-              }}
-              className="btn position-absolute top-50 end-0 translate-middle-y me-2 p-0 border-0 bg-transparent"
-              style={{ fontSize: '1rem', color: '#0d6efd' }}
-            >
-              <i className="bi bi-search"></i>
-            </button>
-          </div>
 
-          {showDropdown && searchTerm && filteredCourses.length > 0 && (
-            <ul
-              className="list-group position-absolute w-100 mt-1 z-3"
-              style={{
-                maxHeight: 200,
-                overflowY: 'auto',
-                boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                zIndex: 10,
-              }}
-            >
-              {filteredCourses.map((course) => (
-                <li
-                  key={course._id}
-                  className="list-group-item list-group-item-action"
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => {
-                    setSearchTerm(course.title);
-                    setShowDropdown(false);
-                    setFilteredCourses([course]);
-                  }}
-                >
-                  {course.title}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+
       </div>
 
       {/* ✅ Category Buttons */}
