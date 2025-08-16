@@ -133,6 +133,7 @@ export default function SuccessDetailPage() {
           {/* Left Sidebar */}
           <div className="col-12 col-md-3 mb-3 p-2">
             <div className="border-top py-3 pb-1">
+              
               <div className="position-relative">
                 <input
                   type="text"
@@ -168,6 +169,7 @@ export default function SuccessDetailPage() {
                   </span>
                 )}
               </div>
+
             </div>
 
             {showFilters && (

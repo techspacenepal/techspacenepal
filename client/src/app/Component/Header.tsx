@@ -7,6 +7,9 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import ContactInfo from "./ContactInfo";
 import { FaSignInAlt } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
+import SearchCourses from "./SearchCourses";
+
 interface Course {
   category: string;
   title: string;
@@ -180,16 +183,54 @@ export default function TopNavbar() {
                 <span>Loading logo...</span>
               )}
             </a>
-            <button className="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+
+            {/* Mobile Search Offcanvas */}
+            {/* Mobile Search Icon */}
+            <div className="d-lg-none ms-2">
+              <button
+                className="btn border-0 bg-transparent text-secondary"
+                style={{ fontSize: "27px"}}
+                data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasSearch"
+                aria-controls="offcanvasSearch"
+              >
+                <FaSearch />
+              </button>
+            </div>
+
+            <div
+              className="offcanvas offcanvas-end d-lg-none"
+              tabIndex={-1}
+              id="offcanvasSearch"
+              aria-labelledby="offcanvasSearchLabel"
+              style={{ height: '100vh', width: '100%' }} 
+            >
+              <div className="offcanvas-header border-bottom">
+                <h5 className="offcanvas-title" id="offcanvasSearchLabel">Search Courses</h5>
+                <button
+                  type="button"
+                  className="btn-close bg-primary"
+                  data-bs-dismiss="offcanvas"
+                  aria-label="Close"
+                  style={{ border: "none", outline: "none", boxShadow: "none" }}
+                />
+              </div>
+              <div className="offcanvas-body">
+                <SearchCourses />
+              </div>
+            </div>
+
+
+            <button className="navbar-toggler bg-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation" style={{ border: "none", outline: "none", boxShadow: "none" }}>
               <span className="navbar-toggler-icon" />
             </button>
 
+
             <div className="offcanvas offcanvas-end" tabIndex={-1} id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" style={{
               height: '100vh',
-
             }}>
 
-              <div className="offcanvas-header">
+              <div className="offcanvas-header border-bottom">
                 <h5 className="offcanvas-title" id="offcanvasNavbarLabel">
                   <a className="navbar-brand" href="/">
                     {logo ? (
@@ -199,14 +240,16 @@ export default function TopNavbar() {
                         width={120}
                         height={60}
                         unoptimized={true}
-                        style={{ width: '120px', height: '60px', objectFit: 'contain' }}
+                        style={{ width: '120px', height: '60px', objectFit: 'cover' }}
                       />
 
                     ) : (
                       <span>Loading logo...</span>
                     )}
                   </a></h5>
-                <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" />
+                <button type="button" className="btn-close bg-primary" style={{ border: "none", outline: "none", boxShadow: "none" }}
+                  data-bs-dismiss="offcanvas" aria-label="Close" />
+
               </div>
               <div className="offcanvas-body align-items-lg-center ">
                 <ul className="navbar-nav justify-content-end flex-grow-1 pe-3 mx-lg-auto align-items-lg-center">
@@ -300,6 +343,9 @@ export default function TopNavbar() {
                     <a className="nav-link" aria-current="page" href="/about-us">About Us</a>
                   </li>
 
+
+
+
                   <li className="nav-item">
                     <a className="nav-link" href="/services">Services</a>
                   </li>
@@ -339,6 +385,7 @@ export default function TopNavbar() {
                   <li className="d-block d-lg-none">
                     <div className="nav-link">
                       <ContactInfo />
+
                     </div>
                   </li>
 
@@ -346,44 +393,6 @@ export default function TopNavbar() {
 
 
 
-                {/* <div className="d-none d-lg-block ms-3">
-                  <Link
-                    href="/inquiry"
-                    className="btn btn-primary px-3 py-2 fw-semibold"
-                    style={{
-                      color: "#fff",
-                      fontFamily: "Poppins, sans-serif",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.5px",
-                    }}
-                  >
-                    Send Inquiry
-                  </Link>
-
-                    <Link className="btn btn-outline-primary fw-semibold px-3" href="/student-login">
-                      Login
-                    </Link>
-
-                  {isAuthenticated &&
-                    ["admin", "user", "student", "teacher"].includes(
-                      user?.role ?? ""
-                    ) && (
-                      <Link
-                        href={
-                          user?.role === "admin"
-                            ? "/auth/Dashboard/adminDashboard"
-                            : user?.role === "student"
-                              ? "/studentdashboard"
-                              : user?.role === "teacher"
-                                ? "/auth/Dashboard/teacherDashboard"
-                                : "/auth/Dashboard/userDashboard"
-                        }
-                        className="btn btn-outline-primary px-3 py-2 ms-2"
-                      >
-                        Dashboard
-                      </Link>
-                    )}
-                </div> */}
 
                 <div className="d-none d-lg-flex align-items-center gap-2 ms-3">
                   <Link

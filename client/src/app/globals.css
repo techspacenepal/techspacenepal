@@ -166,12 +166,12 @@
 @media (max-width: 991.98px) {
   .offcanvas-title {
     padding-left: 0 !important;
-    border-left: solid 5px red;
+    /* border-left: solid 5px red; */
   }
 
   .offcanvas-body .navbar-nav .nav-link {
     padding-left: 0 !important;
-    border-left: solid 5px red;
+    /* border-left: solid 5px red; */
 
   }
 }

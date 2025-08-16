@@ -60,9 +60,8 @@ export default function CoursesPage() {
 
   return (
     <div className="container my-5">
-      {/* Top Row: Filter Button + Title + Search */}
+      {/* Top Row: Filter Button + Search */}
       <div className='mb-4'>
-
         <button
           onClick={() => setShowFilters(!showFilters)}
           style={{
@@ -80,12 +79,44 @@ export default function CoursesPage() {
           Filter
         </button>
 
-
-
-
+        <div className="position-relative">
+          <input
+            type="text"
+            placeholder="Search courses..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="form-control mb-2 pe-5"
+            style={{ paddingLeft: "15px" }}
+          />
+          {searchTerm ? (
+            <button
+              onClick={() => {
+                setSearchTerm("");
+                setFilteredCourses(courses);
+              }}
+              className="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
+              style={{ padding: "0 10px", cursor: "pointer" }}
+            >
+              <i
+                className="bi bi-x-circle-fill"
+                style={{ fontSize: "18px", color: "#888" }}
+              ></i>
+            </button>
+          ) : (
+            <span
+              className="position-absolute end-0 top-50 translate-middle-y"
+              style={{ padding: "0 10px" }}
+            >
+              <i
+                className="bi bi-search"
+                style={{ fontSize: "18px", color: "#888" }}
+              ></i>
+            </span>
+          )}
+        </div>
       </div>
 
-      {/* ✅ Category Buttons */}
+      {/* Category Buttons */}
       {showFilters && (
         <div
           className="mb-5 d-flex flex-nowrap justify-content-start gap-3 overflow-auto"
@@ -95,10 +126,10 @@ export default function CoursesPage() {
           }}
         >
           <style jsx>{`
-      div::-webkit-scrollbar {
-        display: none;
-      }
-    `}</style>
+            div::-webkit-scrollbar {
+              display: none;
+            }
+          `}</style>
 
           {categories.map((cat) => (
             <button
@@ -132,17 +163,14 @@ export default function CoursesPage() {
           const slug = slugify(c.title);
           return (
             <div key={c._id} className="col-12 col-sm-6 col-md-4 col-lg-3">
-
               <div
                 className="card h-100 rounded-2 overflow-hidden"
                 style={{
                   border: "0.4px solid #dee2e6",
                   boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)",
                 }}
-
               >
                 <div className="position-relative overflow-hidden">
-                  {/* ✅ Using Next.js Image for optimization */}
                   <Link href={`/courses/${slug}`}>
                     <Image
                       src={`http://localhost:5000${c.image}`}
@@ -160,7 +188,6 @@ export default function CoursesPage() {
                     />
                   </Link>
 
-                  {/* ✅ Duration Badge */}
                   <span
                     className="badge bg-success text-white fw-semibold position-absolute"
                     style={{
@@ -175,7 +202,6 @@ export default function CoursesPage() {
                   </span>
                 </div>
 
-                {/* ✅ Card Body */}
                 <div
                   className="card-body d-flex flex-column justify-content-between pt-0"
                   style={{ minHeight: '117px' }}
@@ -207,11 +233,16 @@ export default function CoursesPage() {
                   </div>
                 </div>
               </div>
-
-
             </div>
           );
         })}
+
+        {/* No Result Found */}
+        {visibleCourses.length === 0 && (
+          <div className="col-12 text-center py-5">
+            <h5 style={{ color: "#888" }}>No Result Found!</h5>
+          </div>
+        )}
       </div>
 
       {/* Load More Button */}
