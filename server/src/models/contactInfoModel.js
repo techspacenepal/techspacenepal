@@ -1,19 +1,31 @@
 import mongoose from 'mongoose';
 
 const contactInfoSchema = new mongoose.Schema({
-  address: String,
-  email: String,
-  phone: String,
-  whatsapp: String,
-  socialLinks: {
-    facebook: String,
-    linkedin: String,
-    twitter: String,
-    instagram: String,
-    youtube: String,
-    tiktok: String,     // <-- Added TikTok here
-    whatsapp: String,   // <-- Added WhatsApp here (if you want socialLinks.whatsapp separate from main whatsapp field)
+  address: {
+    type: String,
+    required: true
   },
-}, { timestamps: true });
+  email: {
+    type: [String],  // multiple emails
+    required: true
+  },
+  phone: {
+    type: [String],  // multiple phones
+    required: true
+  },
+  whatsapp: {
+    type: String,
+    required: true
+  },
+  socialLinks: {
+    facebook: { type: String, default: '' },
+    linkedin: { type: String, default: '' },
+    twitter: { type: String, default: '' },
+    instagram: { type: String, default: '' },
+    youtube: { type: String, default: '' },
+    tiktok: { type: String, default: '' },
+    whatsapp: { type: String, default: '' }
+  }
+});
 
 export default mongoose.model('ContactInfo', contactInfoSchema);

@@ -1,17 +1,57 @@
-
-
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { CgMail } from "react-icons/cg";
+import axios from "axios"; // ✅ import axios
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+const BASE_URL = 'http://localhost:5000/api';
 
+interface Course {
+  _id: string;
+  title: string;
+  duration: string;
+  category: string;
+  image: string;
+}
 
+interface ContactInfoType {
+  address: string;
+  email: string;
+  phone: string;
+  whatsapp: string;
+  socialLinks: Record<string, string>;
+}
+
+const getBrandColor = (platform: string) => {
+  switch (platform.toLowerCase()) {
+    case 'facebook':
+      return '#1877F2';
+    case 'whatsapp':
+      return '#25D366';
+    case 'instagram':
+      return '#E1306C';
+    case 'twitter':
+      return '#1DA1F2';
+    case 'linkedin':
+      return '#0077B5';
+    case 'youtube':
+      return '#FF0000';
+    default:
+      return '#6b7280';
+  }
+};
 export default function SendInquiry() {
   const [mobile, setMobile] = useState("");
   const [loading, setLoading] = useState(false);
+  const [coursesList, setCoursesList] = useState<{ _id: string; title: string }[]>([]); // ✅ move state outside handleSubmit
 
+  // ✅ Fetch courses once when component mounts
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/courses")
+      .then((res: { data: { _id: string; title: string }[] }) => setCoursesList(res.data))
+      .catch((err: any) => console.error("Failed to fetch courses", err));
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +85,7 @@ export default function SendInquiry() {
       } else {
         toast.error(data.error || "Something went wrong.");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       toast.error("Network error. Please try again.");
     } finally {
@@ -60,131 +100,270 @@ export default function SendInquiry() {
     }
   };
 
+  const [info, setInfo] = useState<ContactInfoType | null>(null);
+
+  useEffect(() => {
+    axios
+      .get(`${BASE_URL}/contact-info`)
+      .then((res) => setInfo(res.data))
+      .catch((err) => console.error('Error fetching contact info:', err));
+  }, []);
+
+
+
+
+
   return (
-    <div className="container py-5">
-       {/* Toast container */}
-            <ToastContainer position="top-right" autoClose={3000} />
+    <>
+      <section className="py-5 bg-light">
+        <ToastContainer position="top-right" autoClose={3000} />
 
-      <div className="row">
-        {/* Left Section */}
-        <div className="col-md-6 mb-4 px-4">
-          <h4 className="mb-3 fw-bold">Get In Touch</h4>
-          <p className="text-muted">Contact us directly for quick interaction.</p>
+        <div className="container">
+          <div className="row g-4">
+            {/* Left Section - Contact Info */}
+            <div className="col-12 col-lg-5">
+              <div className="card h-100 shadow-sm border-0 bg-inquiry">
+                {info ? (
+                  <div className="card-body">
+                    <h5 className="fw-bold mb-3 text-primary">We're Here to Help</h5>
+                    <p className="text-muted small mb-4">
+                      Contact us anytime through the following channels:
+                    </p>
 
-          <div className="row py-3">
-            <div className="col-sm-6 mb-3">
-              <h6>📱 Viber/Whatsapp</h6>
-              <p className="mb-0">+977-9841002000</p>
-            </div>
-            <div className="col-sm-6 mb-3">
-              <h6>📞 Contact</h6>
-              <p className="mb-0">
-                +977-981-0938993<br />
-                +977-981-0938993<br />
-                +977-9827598918
-              </p>
-            </div>
-          </div>
+                    {/* Email */}
+                    <div className="mb-3">
+                      <h6 className="text-secondary small mb-2">Email Address</h6>
+                      {Array.isArray(info.email) ? (
+                        <ul className="list-unstyled">
+                          {info.email.map((mail, idx) => (
+                            <li key={idx}>
+                              <a
+                                href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(mail)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-decoration-none text-dark d-flex align-items-center mb-1"
+                              >
+                                <i className="fas fa-envelope text-primary me-2"></i>
+                                {mail}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : info.email ? (
+                        <a
+                          href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(info.email)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-decoration-none text-dark d-flex align-items-center"
+                        >
+                          <i className="fas fa-envelope text-primary me-2"></i>
+                          {info.email}
+                        </a>
+                      ) : null}
+                    </div>
 
-          <div className="row py-3">
-            <div className="col-sm-6 mb-3">
-              <h6>☎️ Hotline</h6>
-              <p className="mb-0">+977-9810938993</p>
-            </div>
-            <div className="col-sm-6 mb-3">
-              <h6><CgMail /> Email</h6>
-              <p className="mb-0">
-                tachspace@gmail.com<br />
-                hr@techspacenepal.com<br />
-                support@techspacenepal.com<br />
-                inquiry@techspacenepal.com
-              </p>
-            </div>
-          </div>
 
-          <h5 className="mt-4 fw-bold">Upcoming Classes</h5>
-          <div className="d-flex gap-3 overflow-auto">
-            {[
-              { title: "📘 Digital Marketing 360°", time: "05:30 PM - 07:00 PM" },
-              { title: "💾 SQL Server Training", time: "10:00 AM - 11:30 AM" },
-              { title: "📱 Social Media Marketing", time: "05:30 PM - 07:00 PM" },
-            ].map((cls, i) => (
-              <div key={i} className="card shadow-sm" style={{ width: "150px" }}>
+                    {/* Phone */}
+                    <div className="mb-3">
+                      <h6 className="text-secondary small mb-2">Phone Number</h6>
+                      {Array.isArray(info.phone) ? (
+                        <ul className="list-unstyled">
+                          {info.phone.map((num, idx) => (
+                            <li key={idx}>
+                              <a
+                                href={`tel:${num}`}
+                                className="text-decoration-none text-dark d-flex align-items-center mb-1"
+                              >
+                                <i className="fas fa-phone-alt text-primary me-2"></i>
+                                {num}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        info.phone && (
+                          <a
+                            href={`tel:${info.phone}`}
+                            className="text-decoration-none text-dark d-flex align-items-center"
+                          >
+                            <i className="fas fa-phone-alt text-primary me-2"></i>
+                            {info.phone}
+                          </a>
+                        )
+                      )}
+                    </div>
+
+                    {/* WhatsApp */}
+                    {info.whatsapp && (
+                      <div className="mb-4">
+                        <h6 className="text-secondary small mb-2">WhatsApp</h6>
+                        <a
+                          href={`https://wa.me/${info.whatsapp.replace(/[^0-9]/g, "")}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-decoration-none text-dark d-flex align-items-center"
+                        >
+                          <i className="fab fa-whatsapp text-success me-2"></i>
+                          {info.whatsapp}
+                        </a>
+                      </div>
+                    )}
+
+                    {/* Social Links */}
+                    <h6 className="fw-bold text-uppercase small mb-3">Follow Us</h6>
+                    <div className="d-flex flex-wrap gap-2">
+                      {Object.entries(info.socialLinks || {}).map(
+                        ([platform, url]) =>
+                          url && (
+                            <a
+                              key={platform}
+                              href={url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="btn btn-outline-primary btn-sm rounded-circle d-flex align-items-center justify-content-center"
+                              style={{ width: "38px", height: "38px" }}
+                            >
+                              <i className={`fab fa-${platform}`}></i>
+                            </a>
+                          )
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="d-flex justify-content-center align-items-center py-5">
+                    <div className="spinner-border text-primary" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Right Section - Form */}
+            <div className="col-12 col-lg-7" >
+              <div className="card shadow-sm h-100"
+                style={{
+                  border: "0.4px solid #dee2e6",
+                  boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)",
+                }}>
                 <div className="card-body">
-                  <h6>{cls.title}</h6>
-                  <p className="small mb-0">🕒 {cls.time}</p>
+                  <h4 className="fw-bold mb-3 text-dark">Course Inquiry</h4>
+                  <p className="text-muted small mb-4">
+                    Please submit your details via the form below. Our support team will
+                    get back to you as soon as possible.
+                  </p>
+
+                  <form onSubmit={handleSubmit}>
+                    {/* Course Dropdown */}
+                    <div className="mb-3">
+                      <label className="form-label">Course *</label>
+                      <select
+                        name="course"
+                        className="form-select"
+                        required
+                        style={{ borderRadius: "6px" }}
+                      >
+                        <option value="">Choose a Course...</option>
+                        {coursesList.map((c) => (
+                          <option key={c._id} value={c.title}>
+                            {c.title}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Full Name */}
+                    <div className="mb-3">
+                      <label className="form-label">Full Name *</label>
+                      <input
+                        type="text"
+                        name="fullName"
+                        className="form-control"
+                        required
+                      />
+                    </div>
+
+                    {/* Email */}
+                    <div className="mb-3">
+                      <label className="form-label">Email *</label>
+                      <input
+                        type="email"
+                        name="email"
+                        className="form-control"
+                        required
+                      />
+                    </div>
+
+                    {/* Mobile */}
+                    <div className="mb-3">
+                      <label className="form-label">Mobile *</label>
+                      <div className="input-group">
+                        <span className="input-group-text">+977</span>
+                        <input
+                          type="text"
+                          name="phone"
+                          value={mobile}
+                          onChange={handleMobileChange}
+                          className="form-control"
+                          maxLength={10}
+                          placeholder="98XXXXXXXX"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    {/* Message */}
+                    <div className="mb-3">
+                      <label className="form-label">Message *</label>
+                      <textarea
+                        name="message"
+                        className="form-control"
+                        rows={4}
+                        required
+                      ></textarea>
+                    </div>
+
+                    <div className="text-end">
+                      <button
+                        type="submit"
+                        disabled={loading}
+                        className="fw-semibold btn d-inline-flex align-items-center" style={{
+                          backgroundColor: '#0057d8',
+                          color: '#ffffff',
+                          fontWeight: '500',
+                          padding: '12px 17px',
+                          borderRadius: '8px',
+                          border: 'none',
+                          fontSize: '16px',
+                          textDecoration: 'none',
+                          gap: '8px'
+                        }}
+                      >
+                        {loading ? (
+                          <>
+                            <span
+                              className="spinner-border spinner-border-sm me-2"
+                              role="status"
+                              aria-hidden="true"
+                            ></span>
+                            Sending...
+                          </>
+                        ) : (
+                          <>
+                            Send Inquiry <i className="bi bi-arrow-right ms-2"></i>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </form>
                 </div>
               </div>
-            ))}
+            </div>
           </div>
         </div>
-
-        {/* Right Section */}
-        <div className="col-md-6 px-4">
-          <h4 className="mb-3">Course Inquiry</h4>
-          <p>
-            Please submit your details via the form below. Our support team will
-            get back to you as soon as possible.
-          </p>
-
-          <form onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <label className="form-label">
-                Course <span className="text-danger">*</span>
-              </label>
-              <select name="course" className="form-select" required>
-                <option value="">Choose a Course...</option>
-                <option value="Web Development">Web Development</option>
-                <option value="Digital Marketing">Digital Marketing</option>
-              </select>
-            </div>
-
-            <div className="mb-3">
-              <label className="form-label">
-                Full Name <span className="text-danger">*</span>
-              </label>
-              <input name="fullName" type="text" className="form-control" required />
-            </div>
-
-            <div className="mb-3">
-              <label className="form-label">
-                Email <span className="text-danger">*</span>
-              </label>
-              <input name="email" type="email" className="form-control" required />
-            </div>
-
-            <div className="mb-3">
-              <label className="form-label">
-                Mobile <span className="text-danger">*</span>
-              </label>
-              <div className="input-group">
-                <span className="input-group-text">+977</span>
-                <input
-                  name="phone"
-                  type="text"
-                  value={mobile}
-                  onChange={handleMobileChange}
-                  className="form-control"
-                  maxLength={10}
-                  placeholder="98XXXXXXXX"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="mb-3">
-              <label className="form-label">
-                Message <span className="text-danger">*</span>
-              </label>
-              <textarea name="message" className="form-control" rows={3} required></textarea>
-            </div>
-
-            <button type="submit" className="btn btn-primary w-100" disabled={loading}>
-              {loading ? "Sending..." : "Send Inquiry"}
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
+      </section>
+    </>
   );
+
+
 }

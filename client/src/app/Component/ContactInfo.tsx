@@ -51,28 +51,77 @@ const ContactInfo = () => {
               Contact:
             </h5>
             <ul className="list-unstyled text-dark" style={{ paddingLeft: 0 }}>
-              <li style={{ marginBottom: '0.5rem', fontSize: '0.95rem' }}>
-                <i className="fas fa-envelope me-2"></i>
-                <a
-                  href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(info.email)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-dark text-decoration-none"
-                  style={{ fontWeight: 400 }}
-                >
-                  {info.email}
-                </a>
+
+              <li className="mb-3 pb-2 border-bottom" style={{ fontSize: "0.95rem" }}>
+                <p className="fw-semibold mb-1 text-light">Email Address</p>
+                {Array.isArray(info.email) ? (
+                  info.email.map((mail, idx) => (
+                    <div key={idx} className="mb-1">
+                      <a
+                        href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(mail)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-decoration-none"
+                        style={{ fontWeight: 500, color: "#e0e0e0", transition: "all 0.3s ease" }}
+                        onMouseOver={(e) => e.currentTarget.style.color = "#FFD700"}
+                        onMouseOut={(e) => e.currentTarget.style.color = "#e0e0e0"}
+                      >
+                        {mail}
+                      </a>
+                    </div>
+                  ))
+                ) : info.email ? (
+                  <a
+                    href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(info.email)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-decoration-none"
+                    style={{ fontWeight: 500, color: "#e0e0e0", transition: "all 0.3s ease" }}
+                    onMouseOver={(e) => e.currentTarget.style.color = "#FFD700"}
+                    onMouseOut={(e) => e.currentTarget.style.color = "#e0e0e0"}
+                  >
+                    {info.email}
+                  </a>
+                ) : null}
               </li>
-              <li style={{ marginBottom: '0.5rem', fontSize: '0.95rem' }}>
-                <i className="fas fa-phone me-2"></i>
-                <a
-                  href={`tel:${info.phone}`}
-                  className="text-dark text-decoration-none"
-                  style={{ fontWeight: 400 }}
-                >
-                  {info.phone}
-                </a>
+
+              <li className="mb-3 pb-2 border-bottom" style={{ fontSize: "0.95rem" }}>
+                <p className="fw-semibold mb-1 text-light">Telephone Contact</p>
+                {Array.isArray(info.phone) ? (
+                  info.phone.map((num, idx) => (
+                    <div key={idx} className="mb-1">
+                      <a
+                        href={`tel:${num}`}
+                        className="text-decoration-none"
+                        style={{ fontWeight: 500, color: "#e0e0e0", transition: "all 0.3s ease" }}
+                        onMouseOver={(e) => e.currentTarget.style.color = "#FFD700"}
+                        onMouseOut={(e) => e.currentTarget.style.color = "#e0e0e0"}
+                      >
+                        {num}
+                      </a>
+                    </div>
+                  ))
+                ) : info.phone ? (
+                  <a
+                    href={`tel:${info.phone}`}
+                    className="text-decoration-none"
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    style={{ fontWeight: 500, color: "#e0e0e0", transition: "all 0.3s ease" }}
+                    onMouseOver={(e) => e.currentTarget.style.color = "#FFD700"}
+                    onMouseOut={(e) => e.currentTarget.style.color = "#e0e0e0"}
+                  >
+                    {info.phone}
+                  </a>
+                ) : null}
               </li>
+
+
               <li style={{ marginBottom: '0.5rem', fontSize: '0.95rem' }}>
                 <i className="fab fa-whatsapp me-2"></i>
                 <a
