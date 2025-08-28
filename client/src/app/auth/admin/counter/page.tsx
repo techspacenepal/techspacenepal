@@ -56,74 +56,119 @@ export default function StatsAdminPanel() {
     };
 
     return (
-        <div className="container py-4">
-            <h4 className="mb-4">Manage Stats</h4>
-            <div className="mb-3">
-                <label className="form-label fw-semibold">
-                    Icon <span className="text-danger">*</span>
-                </label>
-                <input
-                    type="text"
-                    className="form-control mb-3"
-                    placeholder="e.g., bi bi-person, bi bi-book"
-                    value={form.icon}
-                    onChange={(e) => setForm({ ...form, icon: e.target.value })}
-                    required
-                />
+        <>
 
-                <label className="form-label fw-semibold">
-                    Value <span className="text-danger">*</span>
-                </label>
-                <input
-                    className="form-control mb-2"
-                    placeholder="Value"
-                    type="number"
-                    value={form.value}
-                    onChange={(e) => setForm({ ...form, value: +e.target.value })}
-                />
+            <section>
+                <div className="container py-4">
+                    <h4 className="mb-4 fw-bold text-primary text-center">Manage Stats</h4>
+                    {/* Form */}
+                    <div className="row justify-content-center">
+                        <div className="col-md-12 col-12">
+                            <div className="card shadow-sm border mb-4">
+                                <div className="card-body">
+                                    <div className="mb-3">
+                                        <label className="form-label fw-semibold">
+                                            Icon <span className="text-danger">*</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="e.g., bi bi-person, bi bi-book"
+                                            value={form.icon}
+                                            onChange={(e) =>
+                                                setForm({ ...form, icon: e.target.value })
+                                            }
+                                            required
+                                        />
+                                    </div>
 
-                <label className="form-label fw-semibold">
-                    Label <span className="text-danger">*</span>
-                </label>
-                <input
-                    className="form-control mb-2"
-                    placeholder="Label"
-                    value={form.label}
-                    onChange={(e) => setForm({ ...form, label: e.target.value })}
-                />
+                                    <div className="mb-3">
+                                        <label className="form-label fw-semibold">
+                                            Value <span className="text-danger">*</span>
+                                        </label>
+                                        <input
+                                            className="form-control"
+                                            placeholder="Value"
+                                            type="number"
+                                            value={form.value}
+                                            onChange={(e) =>
+                                                setForm({ ...form, value: +e.target.value })
+                                            }
+                                        />
+                                    </div>
 
-                <div className="d-flex gap-2">
-                    <button className="btn btn-primary" onClick={handleSubmit}>
-                        {form._id ? 'Update' : 'Add'} Stat
-                    </button>
-                    {form._id && (
-                        <button
-                            className="btn btn-secondary"
-                            onClick={() => setForm({ icon: '', value: 0, label: '' })}
-                        >
-                            Cancel
-                        </button>
-                    )}
-                </div>
-            </div>
+                                    <div className="mb-3">
+                                        <label className="form-label fw-semibold">
+                                            Label <span className="text-danger">*</span>
+                                        </label>
+                                        <input
+                                            className="form-control"
+                                            placeholder="Label"
+                                            value={form.label}
+                                            onChange={(e) =>
+                                                setForm({ ...form, label: e.target.value })
+                                            }
+                                        />
+                                    </div>
 
-
-            <hr />
-            <div className="row">
-                {stats.map((stat) => (
-                    <div key={stat._id} className="col-md-3 mb-3">
-                        <div className="border rounded p-3 text-center">
-                            <i className={`${stat.icon} fs-2 text-primary`}></i>
-                            <h5>{stat.value.toLocaleString()}+</h5>
-                            <p>{stat.label}</p>
-                            <button onClick={() => handleEdit(stat)} className="btn btn-sm btn-warning me-2">Edit</button>
-                            <button onClick={() => handleDelete(stat._id!)} className="btn btn-sm btn-danger">Delete</button>
+                                    <div className="d-flex gap-2">
+                                        <button className="btn btn-primary" onClick={handleSubmit}>
+                                            {form._id ? "Update" : "Add"} Stat
+                                        </button>
+                                        {form._id && (
+                                            <button
+                                                className="btn btn-secondary"
+                                                onClick={() =>
+                                                    setForm({ icon: "", value: 0, label: "" })
+                                                }
+                                            >
+                                                Cancel
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                ))}
-            </div>
 
-        </div>
+                   
 
+                    {/* Stats Cards */}
+                    <div className="row">
+                        {stats.map((stat) => (
+                            <div
+                                key={stat._id}
+                                className="col-xl-3 col-lg-4 col-md-6 col-12 mb-4"
+                            >
+                                <div className="card border-0 shadow-sm h-100 text-center">
+                                    <div className="card-body">
+                                        <i className={`${stat.icon} fs-1 text-primary mb-2`}></i>
+                                        <h5 className="fw-bold">{stat.value.toLocaleString()}+</h5>
+                                        <p className="text-muted">{stat.label}</p>
+                                        <div className="d-flex justify-content-center gap-2 mt-2">
+                                            <button
+                                                onClick={() => handleEdit(stat)}
+                                                className="btn btn-sm btn-warning"
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(stat._id!)}
+                                                className="btn btn-sm btn-danger"
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    
+                </div>
+            </section>
+
+
+        </>
     );
 }

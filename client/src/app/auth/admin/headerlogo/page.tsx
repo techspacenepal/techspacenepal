@@ -44,50 +44,85 @@ export default function LogoAdmin() {
     };
 
     return (
-        <div className="container my-5">
-            <Toaster />
-            <div className="card shadow p-4 rounded-4">
-                <h3 className="text-center text-uppercase mb-4 fw-bold">Logo Upload Panel</h3>
 
-                {logo && (
-                    <div className="text-center mb-4">
-                        <Image
-                            src={`http://localhost:5000/uploads/${logo.imageUrl}`} // imageUrl अब केवल filename भएकोले सही URL हुन्छ
-                            alt="Uploaded Logo"
-                            width={120}
-                            height={120}
-                            className="rounded-circle border p-2"
-                            unoptimized={true}
-                        />
+        <section className="py-5 bg-light">
+            <div className="container">
+                <div className="row justify-content-center">
+                    <div className="col-12">
+                        <div className="card border shadow-sm rounded p-4">
+                            <h3 className="text-center fw-bold text-uppercase mb-4">
+                                Header and Footer Logo Upload Panel
+                            </h3>
 
+                            <div className="row g-4 align-items-center">
+                                {/* ==== Form Section ==== */}
+                                <div className="col-lg-6 col-md-12">
+                                    <form onSubmit={handleUpload} className="px-2">
+                                        <div className="mb-3">
+                                            <label
+                                                htmlFor="image"
+                                                className="form-label fw-semibold"
+                                            >
+                                                Select New Logo <span className="text-danger">*</span>
+                                            </label>
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={(e) =>
+                                                    setImage(e.target.files?.[0] || null)
+                                                }
+                                                className="form-control"
+                                                id="image"
+                                                required
+                                            />
+                                        </div>
+                                        <div className="text-center">
+                                            <button
+                                                type="submit"
+                                                className="btn btn-primary px-5"
+                                            >
+                                                {logo ? "Replace Logo" : "Upload Logo"}
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
 
-                        <div className="mt-3">
-                            <button className="btn btn-danger btn-sm px-4" onClick={handleDelete}>
-                                Delete Logo
-                            </button>
+                                {/* ==== Logo Preview Section ==== */}
+                                <div className="col-lg-6 col-md-12">
+                                    <div className="card shadow-sm rounded p-4 h-100 d-flex justify-content-center">
+                                        {logo ? (
+                                            <div className="text-center">
+                                                <Image
+                                                    src={`http://localhost:5000/uploads/${logo.imageUrl}`}
+                                                    alt="Uploaded Logo"
+                                                    width={140}
+                                                    height={140}
+                                                    className="rounded-circle border border-3 border-primary p-2 bg-white"
+                                                    unoptimized
+                                                />
+                                                <div className="mt-3">
+                                                    <button
+                                                        className="btn btn-outline-danger btn-sm px-4"
+                                                        onClick={handleDelete}
+                                                    >
+                                                        <i className="bi bi-trash me-1"></i> Delete Logo
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <p className="text-center text-muted mb-0">
+                                                No logo uploaded yet
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                )}
-
-                <form onSubmit={handleUpload} className="text-center">
-                    <div className="mb-3">
-                        <label htmlFor="image" className="form-label fw-semibold">
-                            Select New Logo
-                        </label>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => setImage(e.target.files?.[0] || null)}
-                            className="form-control"
-                            id="image"
-                            required
-                        />
-                    </div>
-                    <button type="submit" className="btn btn-primary px-5">
-                        {logo ? 'Replace Logo' : 'Upload Logo'}
-                    </button>
-                </form>
+                </div>
             </div>
-        </div>
+        </section>
+
+
     );
 }

@@ -90,46 +90,129 @@ export default function AdminSlidePanel() {
 
   return (
     <>
-    <div className="container mt-4">
-      <Toaster />
-      <h2 className="mb-3">Slide Admin Panel</h2>
-      <form onSubmit={handleSubmit} className="mb-4">
-        <input type="text" name="title" value={formData.title} onChange={handleChange} placeholder="Title" className="form-control mb-2" required />
-        <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Description" className="form-control mb-2" required />
-        <input type="file" accept="image/*" onChange={handleFileChange} className="form-control mb-2" />
-        <button type="submit" className="btn btn-primary">{editingId ? 'Update' : 'Upload'}</button>
-      </form>
-      <div className="row">
-        {slides.map(slide => (
-          <div className="col-md-4 mb-3" key={slide._id}>
-            <div className="card">
-              <Image src={`${BASE_URL}${slide.src}`} alt={slide.title} className="card-img-top" width={400} height={250} />
-              <div className="card-body">
-                <h5 className="card-title">{slide.title}</h5>
-                <p className="card-text">{slide.description}</p>
-                <button onClick={() => handleEdit(slide)} className="btn btn-warning btn-sm me-2">Edit</button>
-                <button onClick={() => handleDelete(slide._id)} className="btn btn-danger btn-sm">Delete</button>
+      <section className='bg-light'>
+        <div className="container py-5">
+          <Toaster />
+
+          {/* Page Header */}
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <h2 className="fw-bold mx-auto">Slide Admin Panel</h2>
+          </div>
+
+          {/* Upload / Edit Form */}
+          <div className="row justify-content-center">
+            <div className="col-12">
+              <div className="card shadow-sm mb-5"
+                style={{
+                  border: "0.4px solid #dee2e6",
+                  boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)",
+                }}>
+                <div className="card-body">
+                  <form onSubmit={handleSubmit} className="row g-3">
+                    <div className="col-12">
+                      <label className="form-label fw-semibold">
+                        Title <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        name="title"
+                        value={formData.title}
+                        onChange={handleChange}
+                        placeholder="Enter title"
+                        className="form-control"
+                        required
+                      />
+                    </div>
+
+                    <div className="col-12">
+                      <label className="form-label fw-semibold">
+                        Description <span className="text-danger">*</span>
+                      </label>
+                      <textarea
+                        name="description"
+                        value={formData.description}
+                        onChange={handleChange}
+                        placeholder="Enter description"
+                        className="form-control"
+                        rows={3}
+                        required
+                      />
+                    </div>
+
+                    <div className="col-12">
+                      <label className="form-label fw-semibold">
+                        Upload Image <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="form-control"
+                        required
+                      />
+                    </div>
+
+                    <div className="col-12 text-end">
+                      <button type="submit" className="btn btn-primary px-4">
+                        {editingId ? "Update" : "Upload"}
+                      </button>
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
-        ))}
-      </div>
-    </div>
 
-    <section>
-      <div className="container">
-        <div className="row">
-          <StatsAdminPanel/>
+          {/* Slides Grid */}
+          <div className="row g-4">
+            
+            {slides.map((slide) => (
+              <div className="col-12 col-sm-6 col-lg-4" key={slide._id}>
+                <div className="card h-100 shadow-sm" style={{
+                  border: "0.4px solid #dee2e6",
+                  boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)",
+                }}>
+                  <Image
+                    src={`${BASE_URL}${slide.src}`}
+                    alt={slide.title}
+                    className="card-img-top p-3"
+                    width={400}
+                    height={250}
+                    style={{ objectFit: "cover", height: "200px" }}
+                  />
+                  <div className="card-body d-flex flex-column">
+                    <h5 className="fw-semibold mb-2">{slide.title}</h5>
+                    <p className="text-muted small flex-grow-1">{slide.description}</p>
+                    <div className="d-flex justify-content-between">
+                      <button
+                        onClick={() => handleEdit(slide)}
+                        className="btn btn-sm btn-outline-warning"
+                      >
+                        ✏️ Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(slide._id)}
+                        className="btn btn-sm btn-outline-danger"
+                      >
+                        🗑 Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* home counter section  */}
+      <StatsAdminPanel />
 
 
-    <section>
-      <div className="container">
-        <LogoAdmin/>
-      </div>
-    </section>
+      {/* header and footer logo */}
+      <LogoAdmin />
+
     </>
   );
 }
