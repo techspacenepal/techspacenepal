@@ -5,6 +5,7 @@ import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
 import Image from 'next/image';
 import StatsAdminPanel from '../counter/page';
+import LogoAdmin from '../headerlogo/page';
 
 const BASE_URL = 'http://localhost:5000';
 
@@ -120,6 +121,13 @@ export default function AdminSlidePanel() {
         <div className="row">
           <StatsAdminPanel/>
         </div>
+      </div>
+    </section>
+
+
+    <section>
+      <div className="container">
+        <LogoAdmin/>
       </div>
     </section>
     </>

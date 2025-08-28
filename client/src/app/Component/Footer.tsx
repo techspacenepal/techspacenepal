@@ -174,7 +174,7 @@ const Footer = () => {
                                     { href: "/courses", text: "Courses" },
                                     { href: "/success-gallery", text: "Success Gallery" },
                                     { href: "/our-team", text: "Our Team" },
-                                    { href: "/contact", text: "Contact Us" },
+                                    { href: "/contact-us", text: "Contact Us" },
                                 ].map((link) => (
                                     <li key={link.href} className="mb-2">
                                         <a

@@ -144,16 +144,15 @@
 }
 
 
-
 /* header nav link styling */
 .navbar-nav .nav-link {
-  font-family: 'Poppins', sans-serif !important;
-  font-weight: 600 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.5px !important;
+  font-family: 'Roboto', sans-serif !important;  
+  font-weight: 500 !important;                 
+    text-transform: capitalize !important;
+  letter-spacing: 0.3px !important;             
   color: #001f3f !important;
-  font-size: 14px !important;
-  padding: 8px 14px !important;
+  font-size: 16px !important;                  
+  padding: 8px 16px !important;                 
   transition: color 0.3s ease-in-out;
   text-decoration: none !important;
 }
@@ -720,3 +719,20 @@ img.img-fluid.rounded.shadow:hover {
 .bg-inquiry{
   background-color: #EDF3FA;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

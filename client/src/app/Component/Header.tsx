@@ -5,10 +5,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import ContactInfo from "./ContactInfo";
-import { FaSignInAlt } from "react-icons/fa";
+// import ContactInfo from "./ContactInfo";
+// import { FaSignInAlt } from "react-icons/fa";
 import { FaSearch } from "react-icons/fa";
 import SearchCourses from "./SearchCourses";
+import { FaUser } from 'react-icons/fa';
 
 interface Course {
   category: string;
@@ -160,13 +161,10 @@ export default function TopNavbar() {
 
         <nav
           ref={navRef}
-          className="navbar navbar-expand-lg py-2 shadow-sm"
-          style={{
-            backgroundColor: "#f0f6ff",
-            // borderBottom: "3px solid #dbe9ff",
-          }}
+          className="navbar navbar-expand-lg py-2 shadow-sm bg-light"
+
         >
-          <div className="container">
+          <div className="container align-items-center">
 
             <a className="navbar-brand" href="/">
               {logo ? (
@@ -189,7 +187,7 @@ export default function TopNavbar() {
             <div className="d-lg-none ms-2">
               <button
                 className="btn border-0 bg-transparent text-secondary"
-                style={{ fontSize: "27px"}}
+                style={{ fontSize: "27px" }}
                 data-bs-toggle="offcanvas"
                 data-bs-target="#offcanvasSearch"
                 aria-controls="offcanvasSearch"
@@ -203,7 +201,7 @@ export default function TopNavbar() {
               tabIndex={-1}
               id="offcanvasSearch"
               aria-labelledby="offcanvasSearchLabel"
-              style={{ height: '100vh', width: '100%' }} 
+              style={{ height: '100vh', width: '100%' }}
             >
               <div className="offcanvas-header border-bottom">
                 <h5 className="offcanvas-title" id="offcanvasSearchLabel">Search Courses</h5>
@@ -269,7 +267,7 @@ export default function TopNavbar() {
                   >
                     <a
                       className="nav-link dropdown-toggle no-caret d-flex align-items-center gap-2"
-                      href="#"
+                      href="/courses"
                       role="button"
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
@@ -339,15 +337,15 @@ export default function TopNavbar() {
                   </li>
 
 
-                  <li className="nav-item">
-                    <a className="nav-link" aria-current="page" href="/about-us">About Us</a>
+                  <li className="nav-item d-lg-none">
+                    <a className="nav-link" aria-current="page" href="/about-us">About us</a>
                   </li>
 
 
 
 
-                  <li className="nav-item">
-                    <a className="nav-link" href="/services">Services</a>
+                  <li className="nav-item d-lg-none">
+                    <a className="nav-link" href="/our-services">Our Services</a>
                   </li>
                   <li className="nav-item d-lg-none">
                     <a className="nav-link active" aria-current="page" href="/courses">all Courses</a>
@@ -362,11 +360,11 @@ export default function TopNavbar() {
                     <a className="nav-link active" aria-current="page" href="/our-team">Our team</a>
                   </li>
 
-                  <li className="nav-item d-lg-none">
-                    <a className="nav-link active" aria-current="page" href="/upcomming-classes">upcomming classes ({classes.length}) </a>
+                  <li className="nav-item">
+                    <a className="nav-link active" aria-current="page" href="/upcomming-classes">upcomming classes <span className="text-danger">({classes.length})</span></a>
                   </li>
 
-                  <li className="nav-item d-lg-none">
+                  <li className="nav-item">
                     <a className="nav-link active" aria-current="page" href="/testimonial">testimonial</a>
                   </li>
 
@@ -376,74 +374,80 @@ export default function TopNavbar() {
                     <a className="nav-link" href="/blog">blog</a>
                   </li>
 
+                  <li className="nav-item d-lg-none">
+                    <a className="nav-link" href="/contact-us">Contact Us</a>
+                  </li>
                   <li className="nav-item">
-                    <a className="nav-link" href="/contact">Contact Us</a>
+                    <a className="nav-link" href="">
+                      {isAuthenticated &&
+                        ["admin", "user", "student", "teacher"].includes(user?.role ?? "") && (
+                          <Link
+                            href={
+                              user?.role === "admin"
+                                ? "/auth/Dashboard/adminDashboard"
+                                : user?.role === "student"
+                                  ? "/studentdashboard"
+                                  : user?.role === "teacher"
+                                    ? "/auth/Dashboard/teacherDashboard"
+                                    : "/auth/Dashboard/userDashboard"
+                            }
+                            className="text-decoration-none"
+                          >
+                            Dashboard
+                          </Link>
+                        )}
+                    </a>
                   </li>
 
 
 
-                  <li className="d-block d-lg-none">
-                    <div className="nav-link">
-                      <ContactInfo />
-
-                    </div>
-                  </li>
 
                 </ul>
 
 
 
 
-                <div className="d-none d-lg-flex align-items-center gap-2 ms-3">
+                <div className="d-flex flex-column flex-lg-row align-items-start justify-content-start gap-3 ms-lg-3">
+
                   <Link
                     href="/inquiry"
-                    className="btn btn-primary px-3 py-2 fw-semibold rounded-2"
+                    className="btn d-inline-flex align-items-center"
                     style={{
-                      fontFamily: "Poppins, sans-serif",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.5px",
+                      backgroundColor: '#0057d8',
+                      color: '#ffffff',
+                      fontWeight: '500',
+                      padding: '12px 17px',
+                      borderRadius: '8px',
+                      border: 'none',
+                      fontSize: '16px',
+                      textDecoration: 'none',
+                      gap: '8px'
                     }}
                   >
                     Send Inquiry
+                    <i className="bi bi-arrow-right" style={{ fontSize: '18px' }}></i>
+
                   </Link>
 
 
 
                   <Link
-                    href="/student-login"
-                    className="btn btn-outline-primary px-3 py-2 fw-semibold rounded-2"
+                    className="btn d-inline-flex align-items-center bg-success"
+                    href="/auth/studentLogin" 
                     style={{
-                      fontFamily: "Poppins, sans-serif",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.5px",
+                      color: '#ffffff',
+                      fontWeight: '500',
+                      padding: '12px 17px',
+                      borderRadius: '8px',
+                      border: 'none',
+                      fontSize: '16px',
+                      textDecoration: 'none',
+                      gap: '8px'
                     }}
                   >
-                    <FaSignInAlt />
+                    <i className="fa-regular fa-user fs-6"></i>
+                    Student Portal
                   </Link>
-
-
-                  {isAuthenticated &&
-                    ["admin", "user", "student", "teacher"].includes(user?.role ?? "") && (
-                      <Link
-                        href={
-                          user?.role === "admin"
-                            ? "/auth/Dashboard/adminDashboard"
-                            : user?.role === "student"
-                              ? "/studentdashboard"
-                              : user?.role === "teacher"
-                                ? "/auth/Dashboard/teacherDashboard"
-                                : "/auth/Dashboard/userDashboard"
-                        }
-                        className="btn btn-outline-primary px-3 py-2 fw-semibold rounded-2"
-                        style={{
-                          fontFamily: "Poppins, sans-serif",
-                          textTransform: "uppercase",
-                          letterSpacing: "0.5px",
-                        }}
-                      >
-                        Dashboard
-                      </Link>
-                    )}
                 </div>
 
 

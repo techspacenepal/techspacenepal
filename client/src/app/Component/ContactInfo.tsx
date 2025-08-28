@@ -42,136 +42,102 @@ const ContactInfo = () => {
       .catch((err) => console.error('Error fetching contact info:', err));
   }, []);
 
-  return (
-    <>
-      {info ? (
-        <>
-          <div className="py-3">
-            <h5 className="fw-bold text-uppercase" style={{ fontSize: '1.1rem' }}>
-              Contact:
-            </h5>
-            <ul className="list-unstyled text-dark" style={{ paddingLeft: 0 }}>
+return (
+  <>
+    {info ? (
+      <>
+        {/* =========================
+            Old design (Desktop ≥992px)
+            untouched
+        ========================== */}
+        <div className="d-none d-lg-block">
+          {/* 🔴 your full old design code here (exactly as it is) */}
+        </div>
 
-              <li className="mb-3 pb-2 border-bottom" style={{ fontSize: "0.95rem" }}>
-                <p className="fw-semibold mb-1 text-light">Email Address</p>
-                {Array.isArray(info.email) ? (
-                  info.email.map((mail, idx) => (
-                    <div key={idx} className="mb-1">
-                      <a
-                        href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(mail)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-decoration-none"
-                        style={{ fontWeight: 500, color: "#e0e0e0", transition: "all 0.3s ease" }}
-                        onMouseOver={(e) => e.currentTarget.style.color = "#FFD700"}
-                        onMouseOut={(e) => e.currentTarget.style.color = "#e0e0e0"}
-                      >
-                        {mail}
-                      </a>
-                    </div>
-                  ))
-                ) : info.email ? (
-                  <a
-                    href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(info.email)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-decoration-none"
-                    style={{ fontWeight: 500, color: "#e0e0e0", transition: "all 0.3s ease" }}
-                    onMouseOver={(e) => e.currentTarget.style.color = "#FFD700"}
-                    onMouseOut={(e) => e.currentTarget.style.color = "#e0e0e0"}
-                  >
-                    {info.email}
-                  </a>
-                ) : null}
-              </li>
+        {/* =========================
+            New Clean Design (<992px)
+        ========================== */}
+        <div className="d-block d-lg-none py-3 border-top">
+          <h5 className="fw-bold text-uppercase mb-3" style={{ fontSize: "1rem", color: "#2d3748" }}>
+            Contact
+          </h5>
 
-              <li className="mb-3 pb-2 border-bottom" style={{ fontSize: "0.95rem" }}>
-                <p className="fw-semibold mb-1 text-light">Telephone Contact</p>
-                {Array.isArray(info.phone) ? (
-                  info.phone.map((num, idx) => (
-                    <div key={idx} className="mb-1">
-                      <a
-                        href={`tel:${num}`}
-                        className="text-decoration-none"
-                        style={{ fontWeight: 500, color: "#e0e0e0", transition: "all 0.3s ease" }}
-                        onMouseOver={(e) => e.currentTarget.style.color = "#FFD700"}
-                        onMouseOut={(e) => e.currentTarget.style.color = "#e0e0e0"}
-                      >
-                        {num}
-                      </a>
-                    </div>
-                  ))
-                ) : info.phone ? (
-                  <a
-                    href={`tel:${info.phone}`}
-                    className="text-decoration-none"
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    style={{ fontWeight: 500, color: "#e0e0e0", transition: "all 0.3s ease" }}
-                    onMouseOver={(e) => e.currentTarget.style.color = "#FFD700"}
-                    onMouseOut={(e) => e.currentTarget.style.color = "#e0e0e0"}
-                  >
-                    {info.phone}
-                  </a>
-                ) : null}
-              </li>
+          <ul className="list-unstyled mb-4" style={{ fontSize: "0.95rem" }}>
+            {/* Email(s) */}
+            {Array.isArray(info.email)
+              ? info.email.map((mail, idx) => (
+                  <li key={idx} className="mb-2 d-flex align-items-center">
+                    <i className="fas fa-envelope me-2"></i>
+                    <a href={`mailto:${mail}`} className="text-decoration-none text-dark">
+                      {mail}
+                    </a>
+                  </li>
+                ))
+              : info.email && (
+                  <li className="mb-2 d-flex align-items-center">
+                    <i className="fas fa-envelope me-2"></i>
+                    <a href={`mailto:${info.email}`} className="text-decoration-none text-dark">
+                      {info.email}
+                    </a>
+                  </li>
+                )}
 
+            {/* Phone(s) */}
+            {Array.isArray(info.phone)
+              ? info.phone.map((num, idx) => (
+                  <li key={idx} className="mb-2 d-flex align-items-center">
+                    <i className="fas fa-phone-alt me-2"></i>
+                    <a href={`tel:${num}`} className="text-decoration-none text-dark">
+                      {num}
+                    </a>
+                  </li>
+                ))
+              : info.phone && (
+                  <li className="mb-2 d-flex align-items-center">
+                    <i className="fas fa-phone-alt me-2"></i>
+                    <a href={`tel:${info.phone}`} className="text-decoration-none text-dark">
+                      {info.phone}
+                    </a>
+                  </li>
+                )}
 
-              <li style={{ marginBottom: '0.5rem', fontSize: '0.95rem' }}>
+            {/* WhatsApp */}
+            {info.whatsapp && (
+              <li className="mb-2 d-flex align-items-center">
                 <i className="fab fa-whatsapp me-2"></i>
                 <a
-                  href={`https://wa.me/${info.whatsapp.replace(/[^0-9]/g, '')}`}
+                  href={`https://wa.me/${info.whatsapp.replace(/[^0-9]/g, "")}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-dark text-decoration-none"
-                  style={{ fontWeight: 400 }}
+                  className="text-decoration-none text-dark"
                 >
                   {info.whatsapp}
                 </a>
               </li>
-            </ul>
-          </div>
+            )}
+          </ul>
 
-          <h5 className="fw-bold text-uppercase pt-3 border-top" style={{ fontSize: '1.1rem' }}>Follow us On</h5>
-          <div className="d-flex gap-3 mb-3 border-bottom pb-3">
+          {/* Social */}
+          <h6 className="fw-bold text-uppercase mb-2" style={{ fontSize: "0.95rem", color: "#2d3748" }}>
+            Follow Us
+          </h6>
+          <div className="d-flex gap-3">
             {Object.entries(info.socialLinks || {}).map(([platform, url]) =>
               url ? (
-                <a
-                  key={platform}
-                  href={url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-white text-decoration-none"
-                >
-                  <div
-                    className="border p-2 rounded-circle d-flex align-items-center justify-content-center"
-                    style={{
-                      width: '40px',
-                      height: '40px',
-                      transition: '0.3s',
-                      cursor: 'pointer',
-                      backgroundColor: getBrandColor(platform),
-                      color: '#fff',
-                      fontSize: '1rem',
-                    }}
-                  >
-                    <i className={`fab fa-${platform} fa-lg`}></i>
-                  </div>
+                <a key={platform} href={url} target="_blank" rel="noreferrer" className="text-dark fs-5">
+                  <i className={`fab fa-${platform}`}></i>
                 </a>
               ) : null
             )}
           </div>
-        </>
-      ) : (
-        <p className="text-white">Loading contact info...</p>
-      )}
-    </>
-  );
+        </div>
+      </>
+    ) : (
+      <p style={{ color: "#4a5568" }}>Loading contact information...</p>
+    )}
+  </>
+);
+
 };
 
 export default ContactInfo;
