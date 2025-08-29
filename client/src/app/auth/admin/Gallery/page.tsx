@@ -199,33 +199,75 @@ export default function GalleryPage() {
     <div className="container py-5">
       <ToastContainer />
       <div className="mx-auto" style={{ maxWidth: 960 }}>
-        <h2 className="text-center mb-4">📸 Student Gallery</h2>
+        <h2 className="text-center mb-4">Student Success Gallery</h2>
         {/* Form */}
-        <div ref={formRef}>
-          <form onSubmit={handleSubmit} className="row g-3 mb-5">
-            <div className="col-md-6">
-              <input ref={studentRef} placeholder="Student Name" className="form-control" required />
+        <div ref={formRef} className="container my-5">
+          <div className="card shadow-sm border rounded">
+            <div className="card-body p-4">
+              <h4 className="text-center mb-4 fw-bold text-success">
+                {editingId ? "Update Student Info" : "Upload Student Info"}
+              </h4>
+
+              <form onSubmit={handleSubmit} className="row g-3">
+                <div className="col-12">
+                  <input
+                    ref={studentRef}
+                    placeholder="Student Name"
+                    className="form-control form-control w-100"
+                    required
+                  />
+                </div>
+                <div className="col-12">
+                  <input
+                    ref={collegeRef}
+                    placeholder="College"
+                    className="form-control form-control w-100"
+                    required
+                  />
+                </div>
+                <div className="col-12">
+                  <input
+                    ref={facultyRef}
+                    placeholder="Faculty"
+                    className="form-control form-control w-100"
+                    required
+                  />
+                </div>
+                <div className="col-12">
+                  <input
+                    ref={companyRef}
+                    placeholder="Company"
+                    className="form-control form-control w-100"
+                    required
+                  />
+                </div>
+                <div className="col-12">
+                  <input
+                    ref={designationRef}
+                    placeholder="Designation"
+                    className="form-control form-control w-100"
+                    required
+                  />
+                </div>
+                <div className="col-12">
+                  <input
+                    type="file"
+                    ref={imageRef}
+                    accept="image/*"
+                    className="form-control form-control w-100"
+                  />
+                </div>
+
+                <div className="col-12">
+                  <button className="btn btn-success btn shadow-sm">
+                    {editingId ? "Update" : "Upload"}
+                  </button>
+                </div>
+              </form>
             </div>
-            <div className="col-md-6">
-              <input ref={collegeRef} placeholder="College" className="form-control" required />
-            </div>
-            <div className="col-md-6">
-              <input ref={facultyRef} placeholder="Faculty" className="form-control" required />
-            </div>
-            <div className="col-md-6">
-              <input ref={companyRef} placeholder="Company" className="form-control" required />
-            </div>
-            <div className="col-md-6">
-              <input ref={designationRef} placeholder="Designation" className="form-control" required />
-            </div>
-            <div className="col-md-6">
-              <input type="file" ref={imageRef} accept="image/*" className="form-control" />
-            </div>
-            <div className="col-12">
-              <button className="btn btn-success w-100">{editingId ? "Update" : "Upload"}</button>
-            </div>
-          </form>
+          </div>
         </div>
+
 
         {/* Search and Filter */}
         <div className="row g-3 mb-4">
