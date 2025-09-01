@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -48,18 +48,18 @@ const StudentRegisterPage: React.FC = () => {
     }
 
     try {
- 
-  const usernameCheck = await axios.get(`http://localhost:5000/api/students/check-username/${username}`);
-  if (usernameCheck.data.exists) {
-    toast.error("Username already exits. Try a different one.");
-    setLoading(false);
-    return;
-  }
-} catch (checkError) {
-  toast.error("Failed to verify username uniqueness.");
-  setLoading(false);
-  return;
-}
+
+      const usernameCheck = await axios.get(`http://localhost:5000/api/students/check-username/${username}`);
+      if (usernameCheck.data.exists) {
+        toast.error("Username already exits. Try a different one.");
+        setLoading(false);
+        return;
+      }
+    } catch (checkError) {
+      toast.error("Failed to verify username uniqueness.");
+      setLoading(false);
+      return;
+    }
 
     try {
       await axios.post("http://localhost:5000/api/students/register", {
@@ -68,7 +68,7 @@ const StudentRegisterPage: React.FC = () => {
         email,
         number,
         password,
-        role: "student", 
+        role: "student",
       });
 
       toast.success("Registration successful! Please login.");
@@ -80,128 +80,191 @@ const StudentRegisterPage: React.FC = () => {
     }
   };
 
+
+  const [logo, setLogo] = useState<{ imageUrl: string } | null>(null);
+
+
+  // Fetch logo data on mount
+  useEffect(() => {
+    axios.get("http://localhost:5000/api/logo")
+      .then(res => setLogo(res.data))
+      .catch(() => console.error("Failed to load logo"));
+  }, []);
+
   return (
-    <div className="container d-flex align-items-center justify-content-center min-vh-100 bg-light px-3">
-      <Toaster position="top-right" />
-      <div className="card shadow p-4 w-100" style={{ maxWidth: "500px" }}>
-        <div className="text-center mb-3">
-          <Image src="/logo.png" alt="Logo" width={90} height={80} />
-          <p className="fw-bold text-muted mt-2">
-            Create your student account to begin your learning journey. 
-          </p>
-        </div>
+    <>
+      <section className="py-5 bg-light min-vh-100 d-flex align-items-center">
+        <div className="container">
+          <Toaster position="top-right" />
+          <div className="card shadow-sm mx-auto w-100 col-lg-8 rounded"
+            style={{
+              maxWidth: "570px",
+              border: "0.5px solid #dee2e6",
+              boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)",
+            }}>
+            <div className="card-body p-4">
+              {/* Logo + subtitle */}
+              <div className="text-center mb-4">
+                <Link className="navbar-brand" href="/">
+                  {logo && (
+                    <Image
+                      src={`http://localhost:5000/uploads/${logo.imageUrl}`}
+                      alt="Logo"
+                      width={180}
+                      height={80}
+                      unoptimized
+                      style={{ objectFit: "contain" }}
+                    />
+                  )}
+                </Link>
+                <p
+                  className="fw-semibold text-muted small"
+                  style={{
+                    fontSize: "clamp(0.8rem, 1.2vw, 1.2rem)"
+                  }}
+                >
+                  Create your student account to begin your learning journey.
+                </p>
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="form-label">Full Name</label>
-            <input
-              type="text"
-              className="form-control"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              required
-            />
-          </div>
+              </div>
 
-          <div className="mb-3">
-            <label className="form-label">Username</label>
-            <input
-              type="text"
-              className="form-control"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </div>
+              {/* Form */}
+              <form onSubmit={handleSubmit} className="needs-validation">
+                <div className="row">
+                  {/* Full Name */}
+                  <div className="mb-3 col-12 col-lg-6">
+                    <label className="form-label">
+                      Full Name <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Enter your full name"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      required
+                    />
+                  </div>
 
-          <div className="mb-3">
-            <label className="form-label">Email</label>
-            <input
-              type="email"
-              className="form-control"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
+                  {/* Username */}
+                  <div className="mb-3 col-12 col-lg-6">
+                    <label className="form-label">
+                      Username <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Enter your username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
 
-          <div className="mb-3">
-            <label className="form-label">Number</label>
-            <input
-              type="text"
-              className="form-control"
-              value={number}
-              onChange={(e) => {
-                const input = e.target.value;
-                // Allow only digits and max 10 characters
-                if (/^\d{0,10}$/.test(input)) {
-                  setNumber(input);
-                }
-              }}
-              placeholder="Enter 10-digit Nepali number"
-              required
-            />
-          </div>
+                {/* Email */}
+                <div className="mb-3">
+                  <label className="form-label">
+                    Email <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    className="form-control"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
 
-          <div className="mb-3">
-            <label className="form-label">Password</label>
-            <div className="position-relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                className="form-control"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <span
-                onClick={() => setShowPassword(!showPassword)}
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  right: "10px",
-                  transform: "translateY(-50%)",
-                  cursor: "pointer",
-                  color: "#999",
-                }}
-              >
-                <i
-                  className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"}`}
-                />
-              </span>
+                {/* Number */}
+                <div className="mb-3">
+                  <label className="form-label">
+                    Number <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter your mobile number"
+                    value={number}
+                    onChange={(e) => {
+                      const input = e.target.value;
+                      if (/^\d{0,10}$/.test(input)) setNumber(input);
+                    }}
+                    required
+                  />
+                </div>
+
+                {/* Password */}
+                <div className="mb-3">
+                  <label className="form-label">
+                    Password <span className="text-danger">*</span>
+                  </label>
+                  <div className="position-relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      className="form-control"
+                      placeholder="Enter your password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                    <span
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        right: "12px",
+                        transform: "translateY(-50%)",
+                        cursor: "pointer",
+                        color: "#6c757d",
+                      }}
+                    >
+                      <i className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"}`} />
+                    </span>
+                  </div>
+                </div>
+
+                {/* Register Button */}
+                <button
+                  type="submit"
+                  className="btn btn-danger w-100 py-2 fw-semibold"
+                  disabled={loading}
+                >
+                  {loading ? "Registering..." : "Register"}
+                </button>
+              </form>
+
+              {/* Footer links */}
+              <p className="text-center mt-4 mb-2">
+                Already have an account?{" "}
+                <Link
+                  href="/auth/studentLogin"
+                  className="text-primary fw-semibold text-decoration-none"
+                >
+                  Login here
+                </Link>
+              </p>
+
+              <div className="d-flex justify-content-center align-items-center">
+                <div className="d-flex align-items-center justify-content-center gap-2 mb-0">
+                  <span>Go back to</span>
+                  <Link
+                    href="/"
+                    className="text-danger fw-semibold d-inline-flex align-items-center text-decoration-none"
+                  >
+                    <HomeIcon className="me-1" size={18} />
+                    Home
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
+      </section>
 
-          <button
-            type="submit"
-            className="btn btn-danger w-100"
-            disabled={loading}
-          >
-            {loading ? "Registering..." : "Register"}
-          </button>
-        </form>
 
-        <p className="text-center mt-3">
-          Already have an account?{" "}
-          <Link
-            href="/auth/studentLogin"
-            className="text-primary fw-medium text-decoration-none"
-          >
-            Login here
-          </Link>
-        </p>
-
-        <p className="text-center">
-          Or go to{" "}
-          <Link
-            href="/"
-            className="text-danger fw-medium d-inline-flex align-items-center text-decoration-none"
-          >
-            <HomeIcon className="me-1" size={18} />
-            Home
-          </Link>
-        </p>
-      </div>
-    </div>
+    </>
   );
 };
 

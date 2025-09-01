@@ -154,7 +154,7 @@ const StudentLoginPage: React.FC = () => {
                     />
                   ) : null}
                 </Link>
-                <h4 className="fw-bold mb-1">Student Login</h4>
+                <h4 className="fw-bold mb-0">Student Login</h4>
                 <p className="text-muted mb-0">Access your account securely</p>
               </div>
 
@@ -168,13 +168,14 @@ const StudentLoginPage: React.FC = () => {
                   <div className="position-relative">
                     <input
                       type="email"
-                      className="form-control form-control"
+                      className="form-control"
                       id="email"
                       placeholder="Enter your email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
                       autoComplete="email"
+                      style={{ paddingRight: "40px" }}
                     />
                     <span
                       style={{
@@ -199,12 +200,13 @@ const StudentLoginPage: React.FC = () => {
                   <div className="position-relative">
                     <input
                       type={showPassword ? "text" : "password"}
-                      className="form-control form-control"
+                      className="form-control"
                       id="password"
                       placeholder="Enter your password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
+                      style={{ paddingRight: "40px" }}
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
@@ -217,9 +219,7 @@ const StudentLoginPage: React.FC = () => {
                         color: "#999",
                       }}
                     >
-                      <i
-                        className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"}`}
-                      />
+                      <i className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"}`} />
                     </span>
                   </div>
                 </div>
@@ -230,16 +230,13 @@ const StudentLoginPage: React.FC = () => {
                 <div className="d-grid mb-3">
                   <button
                     type="submit"
-                    className="btn btn-danger btn-lg"
+                    className="btn btn-danger btn-lg d-flex align-items-center justify-content-center"
                     disabled={loading}
-                    style={{ borderRadius: "8px" }}
+                    style={{ borderRadius: "8px", height: "50px" }}
                   >
                     {loading ? (
                       <>
-                        <span
-                          className="spinner-border spinner-border-sm me-2"
-                          role="status"
-                        />
+                        <span className="spinner-border spinner-border-sm me-2" role="status" />
                         Logging in...
                       </>
                     ) : (
@@ -248,38 +245,41 @@ const StudentLoginPage: React.FC = () => {
                   </button>
                 </div>
 
+                {/* Forgot Password */}
                 <div className="text-end mb-3">
-                  <Link href="/auth/studentForgotPassword" className="text-danger small">
+                  <Link
+                    href="/auth/studentForgotPassword"
+                    className="text-danger"
+                  >
                     Forgot Password?
                   </Link>
                 </div>
 
                 {/* Social Login */}
-                <div className="d-flex gap-3 justify-content-center align-items-center flex-wrap mb-3">
+                <div className="d-flex justify-content-center align-items-center gap-3 flex-wrap mb-3">
                   <button
-                    className="btn btn-outline-danger rounded-circle p-2"
+                    className="btn btn-outline-danger rounded d-flex align-items-center justify-content-center p-2"
                     onClick={() => handleSocialLogin(googleProvider, "google-login")}
                     type="button"
+                    style={{ width: "50px", height: "50px" }}
                   >
                     <FcGoogle size={24} />
                   </button>
                   <button
-                    className="btn btn-outline-danger rounded-circle p-2"
+                    className="btn btn-outline-danger rounded d-flex align-items-center justify-content-center p-2"
                     onClick={() => handleSocialLogin(githubProvider, "github-login")}
                     type="button"
+                    style={{ width: "50px", height: "50px" }}
                   >
                     <GithubIcon size={22} />
                   </button>
                   <button
-                    className="btn btn-outline-danger rounded-circle p-2"
+                    className="btn btn-outline-danger rounded d-flex align-items-center justify-content-center p-2"
                     onClick={() =>
-                      handleSocialLogin(
-                        facebookProvider,
-                        "facebook-login",
-                        "FacebookUser"
-                      )
+                      handleSocialLogin(facebookProvider, "facebook-login", "FacebookUser")
                     }
                     type="button"
+                    style={{ width: "50px", height: "50px" }}
                   >
                     <Facebook size={22} />
                   </button>
@@ -287,19 +287,43 @@ const StudentLoginPage: React.FC = () => {
 
                 {/* Links */}
                 <p className="text-center mb-1">
-                  <Link href="/" className="text-primary text-decoration-none small">
-                    ← Back to Home
+                  <Link
+                    href="/"
+                    className="d-inline-flex align-items-center text-primary text-decoration-none small"
+                    style={{
+                      color: '#ffffff',
+                      fontWeight: '500',
+                      border: 'none',
+                      fontSize: '16px',
+                      textDecoration: 'none',
+                      gap: '8px'
+                    }}
+                  >
+                    <i className="bi bi-arrow-left" style={{ fontSize: '18px' }}></i>
+                    Back to Home
                   </Link>
                 </p>
+
                 <p className="text-center mb-0">
                   <Link
                     href="/auth/studentRegister"
-                    className="text-primary text-decoration-none small"
+                    className="d-inline-flex align-items-center text-primary text-decoration-none small"
+                    style={{
+                      color: '#ffffff',
+                      fontWeight: '500',
+                      border: 'none',
+                      fontSize: '16px',
+                      textDecoration: 'none',
+                      gap: '8px'
+                    }}
                   >
-                    Register Now →
+                    Register Now
+                    <i className="bi bi-arrow-right" style={{ fontSize: '18px' }}></i>
                   </Link>
                 </p>
+
               </form>
+
             </div>
           </div>
         </div>
