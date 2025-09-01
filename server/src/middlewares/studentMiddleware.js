@@ -1,6 +1,5 @@
 
 
-
 import jwt from "jsonwebtoken";
 import Student from "../models/student.js";
 

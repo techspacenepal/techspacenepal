@@ -156,7 +156,6 @@ export const getStudentsByTeacherAndCourse = async (req, res) => {
   }
 };
 
-
 // Total unique students per teacher
 export const getTotalStudentsByTeacher = async (req, res) => {
   try {

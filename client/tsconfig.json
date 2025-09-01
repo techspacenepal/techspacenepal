@@ -31,13 +31,9 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/types"
-  ],
-
-  
+, "src/app/(users)/upcomming-classes/page.jsx", "src/app/auth/admin/UpcomingClasses/page.jsx"  ]
 
   
 }
-
-
 
 

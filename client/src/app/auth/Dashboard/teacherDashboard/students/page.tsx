@@ -14,6 +14,7 @@ interface Student {
 }
 
 export default function StudentsPage() {
+  
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCourse, setSelectedCourse] = useState("All");

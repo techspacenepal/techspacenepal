@@ -52,14 +52,7 @@ export default function AdminTeamPage() {
     }
   };
 
-  // const handleChange = (e) => {
-  //   const { name, value, files } = e.target;
-  //   setForm((prev) => ({
-  //     ...prev,
-  //     [name]: files ? files[0] : value,
-  //   }));
-  // };
-
+ 
 const handleChange = (
   e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
 ) => {
@@ -72,43 +65,6 @@ const handleChange = (
     [name]: file ?? value,
   }));
 };
-
-
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-
-  //   const fd = new FormData();
-  //   fd.append("name", form.name);
-  //   fd.append("role", form.role);
-  //   fd.append("bio", form.bio);
-  //   if (form.image) fd.append("image", form.image);
-
-  //   try {
-  //     if (editId) {
-  //       await axios.put(`http://localhost:5000/api/team/${editId}`, fd, {
-  //         headers: { "Content-Type": "multipart/form-data" },
-  //       });
-  //       toast.success("Team member updated");
-  //     } else {
-  //       await axios.post("http://localhost:5000/api/team", fd, {
-  //         headers: { "Content-Type": "multipart/form-data" },
-  //       });
-  //       toast.success("Team member added");
-  //     }
-
-  //     setForm({ name: "", role: "", bio: "", image: null });
-  //     setEditId(null);
-  //     fetchTeam();
-  //   } catch (err) {
-  //     toast.error("Failed to save team member");
-  //   }
-  // };
-
-  // const handleEdit = (member) => {
-  //   setForm({ name: member.name, role: member.role, bio: member.bio, image: null });
-  //   setEditId(member._id);
 
 
 
@@ -164,25 +120,37 @@ const handleDelete = async (id: string) => {
     }
   };
 
-//   if (pageLoading) {
-//   return (
-//     <div
-//        className="d-flex justify-content-center align-items-center"
-//       style={{ height: '50vh', paddingTop: '50px' }}
-//     >
-//       <img
-//         src="/logo.png"
-//         alt="Loading..."
-//         style={{
-//           width: "100px",
-//           height: "100px",
-//           borderRadius: "50%",
-//           animation: "spin 1s linear infinite"
-//         }}
-//       />
-//     </div>
-//   );
-// }
+  if (pageLoading) {
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}
+      >
+        <div className="multi-spinner"></div>
+        <style jsx>{`
+          .multi-spinner {
+            width: 4rem;
+            height: 4rem;
+            border: 8px solid transparent;
+            border-top: 8px solid red;
+            border-right: 8px solid blue;
+            border-bottom: 8px solid green;
+            border-left: 8px solid orange;
+            border-radius: 50%;
+            animation: spin 1.2s linear infinite;
+          }
+          @keyframes spin {
+            0% {
+              transform: rotate(0deg);
+            }
+            100% {
+              transform: rotate(360deg);
+            }
+          }
+        `}</style>
+      </div>
+    );
+  }
 
   return (
     <div className="container py-5">

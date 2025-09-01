@@ -1,21 +1,35 @@
-
-
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { CgMail } from "react-icons/cg";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function SendInquiry() {
   const [mobile, setMobile] = useState("");
   const [loading, setLoading] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState("");
+  const [courses, setCourses] = useState<string[]>([]);
 
+  // ✅ Fix for 'searchParams' is possibly 'null'
+  const searchParams = useSearchParams();
+const courseFromQuery = searchParams?.get("title") || "";
+
+  useEffect(() => {
+    // Fetch courses from backend
+    fetch("http://localhost:5000/api/courses")
+      .then((res) => res.json())
+      .then((data) => setCourses(data.map((c: any) => c.title)))
+      .catch((err) => console.error(err));
+
+    if (courseFromQuery) {
+      setSelectedCourse(courseFromQuery);
+    }
+  }, [courseFromQuery]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     const form = e.target as HTMLFormElement;
     const course = (form.elements.namedItem("course") as HTMLSelectElement).value;
     const fullName = (form.elements.namedItem("fullName") as HTMLInputElement).value;
@@ -29,7 +43,6 @@ export default function SendInquiry() {
 
     try {
       setLoading(true);
-
       const res = await fetch("http://localhost:5000/api/inquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -42,6 +55,7 @@ export default function SendInquiry() {
         toast.success("Inquiry sent successfully!");
         form.reset();
         setMobile("");
+        setSelectedCourse(""); // Reset after submit
       } else {
         toast.error(data.error || "Something went wrong.");
       }
@@ -55,15 +69,12 @@ export default function SendInquiry() {
 
   const handleMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    if (/^\d{0,10}$/.test(value)) {
-      setMobile(value);
-    }
+    if (/^\d{0,10}$/.test(value)) setMobile(value);
   };
 
   return (
     <div className="container py-5">
-       {/* Toast container */}
-            <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer position="top-right" autoClose={3000} />
 
       <div className="row">
         {/* Left Section */}
@@ -79,8 +90,10 @@ export default function SendInquiry() {
             <div className="col-sm-6 mb-3">
               <h6>📞 Contact</h6>
               <p className="mb-0">
-                +977-981-0938993<br />
-                +977-981-0938993<br />
+                +977-981-0938993
+                <br />
+                +977-981-0938993
+                <br />
                 +977-9827598918
               </p>
             </div>
@@ -92,11 +105,16 @@ export default function SendInquiry() {
               <p className="mb-0">+977-9810938993</p>
             </div>
             <div className="col-sm-6 mb-3">
-              <h6><CgMail /> Email</h6>
+              <h6>
+                <CgMail /> Email
+              </h6>
               <p className="mb-0">
-                tachspace@gmail.com<br />
-                hr@techspacenepal.com<br />
-                support@techspacenepal.com<br />
+                tachspace@gmail.com
+                <br />
+                hr@techspacenepal.com
+                <br />
+                support@techspacenepal.com
+                <br />
                 inquiry@techspacenepal.com
               </p>
             </div>
@@ -123,8 +141,7 @@ export default function SendInquiry() {
         <div className="col-md-6 px-4">
           <h4 className="mb-3">Course Inquiry</h4>
           <p>
-            Please submit your details via the form below. Our support team will
-            get back to you as soon as possible.
+            Please submit your details via the form below. Our support team will get back to you as soon as possible.
           </p>
 
           <form onSubmit={handleSubmit}>
@@ -132,10 +149,20 @@ export default function SendInquiry() {
               <label className="form-label">
                 Course <span className="text-danger">*</span>
               </label>
-              <select name="course" className="form-select" required>
+              <select
+                name="course"
+                className="form-select"
+                required
+                value={selectedCourse}
+                onChange={(e) => setSelectedCourse(e.target.value)}
+                disabled={!!courseFromQuery}
+              >
                 <option value="">Choose a Course...</option>
-                <option value="Web Development">Web Development</option>
-                <option value="Digital Marketing">Digital Marketing</option>
+                {courses.map((course, idx) => (
+                  <option key={idx} value={course}>
+                    {course}
+                  </option>
+                ))}
               </select>
             </div>
 

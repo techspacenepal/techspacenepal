@@ -115,25 +115,37 @@ function TestimonialPage() {
     }
   };
 
-  //    if (pageLoading) {
-  //   return (
-  //     <div
-  //        className="d-flex justify-content-center align-items-center"
-  //       style={{ height: '50vh', paddingTop: '50px' }}
-  //     >
-  //       <img
-  //         src="/logo.png"
-  //         alt="Loading..."
-  //         style={{
-  //           width: "100px",
-  //           height: "100px",
-  //           borderRadius: "50%",
-  //           animation: "spin 1s linear infinite"
-  //         }}
-  //       />
-  //     </div>
-  //   );
-  // }
+  if (pageLoading) {
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}
+      >
+        <div className="multi-spinner"></div>
+        <style jsx>{`
+          .multi-spinner {
+            width: 4rem;
+            height: 4rem;
+            border: 8px solid transparent;
+            border-top: 8px solid red;
+            border-right: 8px solid blue;
+            border-bottom: 8px solid green;
+            border-left: 8px solid orange;
+            border-radius: 50%;
+            animation: spin 1.2s linear infinite;
+          }
+          @keyframes spin {
+            0% {
+              transform: rotate(0deg);
+            }
+            100% {
+              transform: rotate(360deg);
+            }
+          }
+        `}</style>
+      </div>
+    );
+  }
 
   return (
     <section className="bg-light py-5">

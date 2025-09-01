@@ -1,79 +1,115 @@
-// "use client";
+'use client';
 
-// import React from "react";
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-// const AboutSection = () => {
-//   return (
-//     <section className="py-5 bg-light">
-//       <div className="container">
-//         <div className="row align-items-center flex-lg-row flex-column-reverse">
-          
-//           {/* Text Section */}
-//           <div className="col-lg-6 mt-4 mt-lg-0">
-//             <h2 className="fw-bold text-dark mb-3">Who We Are</h2>
-//             <div className="border-start border-4 border-primary ps-3 mb-4">
-//               <h4 className="text-primary">Tech Space Nepal – Your IT Future Starts Here</h4>
-//             </div>
-//             <p className="text-muted" style={{ lineHeight: "1.8" }}>
-//               Tech Space Nepal is a leading IT training center based in Dang. 
-//             </p>
-//             <p className="text-muted" style={{ lineHeight: "1.8" }}>
-//               Our mission is to empower students with practical IT skills through hands-on training, industry-expert instructors,
-//               and a curriculum aligned with real-world needs. Whether you're starting your journey or upgrading your tech career,
-//               we’re here to guide you every step of the way.
-//             </p>
-//           </div>
+type About = {
+    _id: string;
+    title: string;
+    description: string;
+    imageUrl?: string;
+    phone?: string;
+    email?: string;
+};
 
-//           {/* Image Section */}
-//         <div className="col-lg-6 position-relative text-center">
-//   <div className="p-3 bg-white rounded-4 shadow-lg position-relative d-inline-block">
-//     <img
-//       src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80"
-//       alt="Tech Students"
-//       className="img-fluid rounded-4"
-//       style={{
-//         maxHeight: "400px",
-//         objectFit: "cover",
-//         width: "100%",
-//       }}
-//     />
+export default function AboutSection() {
+    const [about, setAbout] = useState<About | null>(null);
 
-//     {/* Top-left glowing rotated square (diamond) */}
-//     <div
-//       className="position-absolute glowing-box"
-//       style={{
-//         top: "-20px",
-//         left: "-20px",
-//         width: "50px",
-//         height: "50px",
-//         border: "2px solid #0d6efd",
-//         transform: "rotate(45deg)",
-//         borderRadius: "8px",
-//         zIndex: 1,
-//       }}
-//     ></div>
+    useEffect(() => {
+        async function fetchAbout() {
+            try {
+                const res = await axios.get('http://localhost:5000/api/about');
+                // Assuming API returns an array, take first item
+                if (res.data && Array.isArray(res.data) && res.data.length > 0) {
+                    setAbout(res.data[0]);
+                }
+            } catch (error) {
+                console.error('Failed to load About data', error);
+            }
+        }
 
-//     {/* Bottom-right skewed animated box */}
-//     <div
-//       className="position-absolute floating-box"
-//       style={{
-//         bottom: "-20px",
-//         right: "-20px",
-//         width: "60px",
-//         height: "60px",
-//         background: "linear-gradient(135deg, #ff3c3c, #ff8c66)",
-//         transform: "skew(-10deg, -10deg)",
-//         borderRadius: "6px",
-//         zIndex: 1,
-//       }}
-//     ></div>
-//   </div>
-// </div>
+        fetchAbout();
+    }, []);
 
-//         </div>
-//       </div>
-//     </section>
-//   );
-// };
+    // Fallback content if data not loaded yet
+    if (!about) {
+        return (
+            <div className="container py-5 border">
+                <p className="text-center text-muted">Loading About information...</p>
+            </div>
+        );
+    }
 
-// export default AboutSection;
+    return (
+        <>
+        <section className='py-5 bg-white'>
+        <div className="container py-3">
+            <div className="row align-items-center gy-5 g-5">
+                {/* Left: Image */}
+                <div className="col-lg-6">
+                    <div
+                        className="rounded overflow-hidden shadow-sm"
+                        style={{ height: '100%', maxHeight: '420px' }}
+                    >
+                        {about.imageUrl ? (
+                            <img
+                                src={`http://localhost:5000${about.imageUrl}`}
+                                alt={about.title}
+                                className="w-100 h-100"
+                                style={{
+                                    objectFit: 'cover',
+                                    transition: 'transform 0.4s ease-in-out',
+                                }}
+                            />
+                        ) : (
+                            <div
+                                className="w-100 h-100 bg-secondary"
+                                style={{ minHeight: '420px' }}
+                            />
+                        )}
+                    </div>
+                </div>
+
+                {/* Right: Text */}
+                <div className="col-lg-6">
+                    <h2 className="fw-bold text-primary mb-4 display-6">{about.title || 'About Us'}</h2>
+
+                    <p className="text-muted fs-6 lh-lg mb-4" style={{ whiteSpace: 'pre-wrap' }}>
+                        {about.description ||
+                            ''}
+                    </p>
+
+                    {/* Contact Info Card */}
+                    <div className="">
+                        <h5 className="fw-semibold mb-3 text-dark">Contact Us</h5>
+                        <p className="mb-2">
+                            <span className="fw-medium">Email:</span>{' '}
+                            <a
+                                href={`https://mail.google.com/mail/?view=cm&fs=1&to=${about.email}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-decoration-none text-primary fw-semibold"
+                            >
+                                {about.email || 'info@example.com'}
+                            </a>
+
+
+                        </p>
+                        <p className="mb-0">
+                            <span className="fw-medium">Phone:</span>{' '}
+                            <a
+                                href={`tel:${about.phone || '1234567890'}`}
+                                className="text-decoration-none text-primary fw-semibold"
+                            >
+                                {about.phone || '123-456-7890'}
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </section>
+        </>
+    );
+}

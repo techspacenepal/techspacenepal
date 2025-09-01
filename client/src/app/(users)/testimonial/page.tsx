@@ -1,8 +1,11 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+<<<<<<< HEAD
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+=======
+>>>>>>> 7453090f9c5f566d6f69ef17f9461d2243a08ac7
 
 interface Testimonial {
   _id: string;
@@ -12,11 +15,19 @@ interface Testimonial {
   image: string;
 }
 
+<<<<<<< HEAD
 function Testimonialpage() {
   // const [testimonials, setTestimonials] = useState([]);
   // const [selected, setSelected] = useState(null);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [selected, setSelected] = useState<Testimonial | null>(null);
+=======
+function TestimonialDetailspage() {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [visibleCount, setVisibleCount] = useState(6);
+  const [selected, setSelected] = useState<Testimonial | null>(null);
+  const [searchTerm, setSearchTerm] = useState(""); // ✅ NEW
+>>>>>>> 7453090f9c5f566d6f69ef17f9461d2243a08ac7
 
   useEffect(() => {
     fetchTestimonials();
@@ -24,15 +35,20 @@ function Testimonialpage() {
 
   const fetchTestimonials = async () => {
     try {
+<<<<<<< HEAD
       const { data } = await axios.get(
         "http://localhost:5000/api/testimonials"
       );
+=======
+      const { data } = await axios.get("http://localhost:5000/api/testimonials");
+>>>>>>> 7453090f9c5f566d6f69ef17f9461d2243a08ac7
       setTestimonials(data);
     } catch (error) {
       console.error("Failed to load testimonials");
     }
   };
 
+<<<<<<< HEAD
   // const openModal = (testimonial) => {
   //   setSelected(testimonial);
   // };
@@ -51,10 +67,24 @@ function Testimonialpage() {
     tablet: { breakpoint: { max: 992, min: 768 }, items: 1 },
     mobile: { breakpoint: { max: 768, min: 0 }, items: 1 },
   };
+=======
+  const openModal = (testimonial: Testimonial) => setSelected(testimonial);
+  const closeModal = () => setSelected(null);
+  const loadMore = () => setVisibleCount((prev) => prev + 6);
+
+  // ✅ Filter testimonials by search term
+  const filteredTestimonials = testimonials.filter((t) =>
+    t.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    t.course.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const visibleTestimonials = filteredTestimonials.slice(0, visibleCount);
+>>>>>>> 7453090f9c5f566d6f69ef17f9461d2243a08ac7
 
   return (
     <section className="bg-light py-5">
       <div className="container">
+<<<<<<< HEAD
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center">
           <div className="text-center text-md-start">
             <h2 className="fw-bold text-primary mb-2">What Our Students Say</h2>
@@ -142,10 +172,68 @@ function Testimonialpage() {
                     )}
 
                     <div className="d-flex align-items-center flex-nowrap mt-2 border-bottom">
+=======
+
+        {/* ✅ Search Input */}
+        <div className="text-center mb-4" style={{ maxWidth: "500px", margin: "0 auto" }}>
+          <label className="fw-semibold d-block mb-2" style={{ fontSize: "18px" }}>
+            Search Student/Course to see what our students say about it
+          </label>
+          <div className="input-group">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Student/Course"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button className="btn btn-outline-secondary" type="button">
+              <i className="bi bi-search"></i>
+            </button>
+          </div>
+        </div>
+
+        {filteredTestimonials.length === 0 ? (
+          <p className="text-center text-muted">No testimonials found.</p>
+        ) : (
+          <>
+            <div className="row g-4">
+              {visibleTestimonials.map((testimonial, idx) => (
+                <div key={testimonial._id || idx} className="col-12 col-sm-6 col-lg-4 px-3">
+                  <div
+                    className="card shadow-sm h-100"
+                    style={{
+                      border: "0.3px solid #dee2e6",
+                      boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)",
+                      minHeight: "300px",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "space-between"
+                    }}
+                  >
+
+                    <div className="card-body d-flex flex-column justify-content-between">
+                      <p className="text-secondary fst-italic mb-0">
+                        “{testimonial.message.split(" ").slice(0, 30).join(" ")}
+                        {testimonial.message.split(" ").length > 30 ? "..." : ""}”
+                      </p>
+                      {testimonial.message.split(" ").length > 30 && (
+                        <a
+                          className="fw-semibold p-0 mt-auto text-start"
+                          onClick={() => openModal(testimonial)}
+                          style={{ cursor: "pointer" }}
+                        >
+                          Read More
+                        </a>
+                      )}
+                    </div>
+                    <div className="card-footer bg-white border-0 d-flex align-items-center pt-3 pb-3">
+>>>>>>> 7453090f9c5f566d6f69ef17f9461d2243a08ac7
                       <img
                         src={
                           testimonial.image
                             ? `http://localhost:5000${testimonial.image}`
+<<<<<<< HEAD
                             : "https://via.placeholder.com/170"
                         }
                         alt={testimonial.name}
@@ -168,10 +256,53 @@ function Testimonialpage() {
                           {testimonial.course}
                         </small>
                       </div>
+=======
+                            : "https://via.placeholder.com/55"
+                        }
+                        alt={testimonial.name}
+                        className="rounded-circle me-3"
+                        width="75"
+                        height="75"
+                        style={{
+                          objectFit: "cover",
+                          objectPosition: "center top",
+                          border: "3px solid #ffffff",
+                          boxShadow: "0 0 0 4px #0d6efd",
+                        }}
+                      />
+                      <div>
+                        <h6
+                          className="mb-0"
+                          style={{
+                            fontSize: "clamp(14px, 2vw, 18px)",   
+                            fontWeight: 600,                      
+                            textTransform: "capitalize",       
+                            color: "#0d6efd",                     
+                            fontFamily: "Poppins, sans-serif"     
+                          }}
+                        >
+                          {testimonial.name}
+                        </h6>
+                        <small
+                          className="text-muted"
+                          style={{
+                            fontSize: "clamp(12px, 1.5vw, 14px)",
+                            fontWeight: 500,
+                            textTransform: "uppercase",
+                            color: "#6c757d",                     
+                            fontFamily: "Poppins, sans-serif"
+                          }}
+                        >
+                          {testimonial.course}
+                        </small>
+                      </div>
+
+>>>>>>> 7453090f9c5f566d6f69ef17f9461d2243a08ac7
                     </div>
                   </div>
                 </div>
               ))}
+<<<<<<< HEAD
             </Carousel>
           </div>
         )}
@@ -180,20 +311,62 @@ function Testimonialpage() {
       {/* Modal */}
       {selected && (
         <div className="modal-overlay" onClick={closeModal}>
+=======
+            </div>
+
+            {visibleCount < filteredTestimonials.length && (
+              <div className="text-center mt-4">
+                <button className="btn btn-primary" onClick={loadMore}>
+                  Load More
+                </button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      {selected && (
+        <div
+          className="modal-overlay"
+          onClick={closeModal}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            zIndex: 1040,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            animation: "fadeInBg 0.2s ease-in-out",
+          }}
+        >
+>>>>>>> 7453090f9c5f566d6f69ef17f9461d2243a08ac7
           <div
             className="modal-content card shadow"
             onClick={(e) => e.stopPropagation()}
             style={{
+<<<<<<< HEAD
               position: "fixed",
               top: "50%",
               left: "50%",
               transform: "translate(-50%, -50%)",
               zIndex: 1050,
+=======
+>>>>>>> 7453090f9c5f566d6f69ef17f9461d2243a08ac7
               width: "90%",
               maxWidth: "600px",
               padding: "20px",
               backgroundColor: "#fff",
               borderRadius: "10px",
+<<<<<<< HEAD
+=======
+              position: "relative",
+              transform: "translateY(0)",  // ✅ Ensures no top jump
+              animation: "fadeInModal 0.25s ease-in-out",
+>>>>>>> 7453090f9c5f566d6f69ef17f9461d2243a08ac7
             }}
           >
             <div className="row align-items-center w-100 mb-3">
@@ -235,8 +408,16 @@ function Testimonialpage() {
           </div>
         </div>
       )}
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7453090f9c5f566d6f69ef17f9461d2243a08ac7
     </section>
   );
 }
 
+<<<<<<< HEAD
 export default Testimonialpage;
+=======
+export default TestimonialDetailspage;
+>>>>>>> 7453090f9c5f566d6f69ef17f9461d2243a08ac7

@@ -6,17 +6,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { AuthProvider } from "./context/AuthContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import LoadingWrapper from "./loadingWrapper"; // Client loader import
 import Footer from "./Component/Footer";
 import Header from "./Component/Header";
-import { Roboto } from "next/font/google";
-
-
-
-const robotos = Roboto({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"], // customize as needed
-});
+import 'animate.css/animate.min.css';
+import 'owl.carousel/dist/assets/owl.carousel.css';
+import 'owl.carousel/dist/assets/owl.theme.default.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 const geistSans = Geist({
@@ -40,10 +35,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-     <body
-  className={`${robotos.className} ${geistSans.variable} ${geistMono.variable} antialiased`}
->
-
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <GoogleOAuthProvider
           clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
         >

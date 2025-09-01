@@ -1,9 +1,791 @@
-/* Logo spin animation */
-@keyframes spin {
+/* Header section styling start */
+
+/* Sticky navbar styles */
+.sticky {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1050;
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  animation: slideDown 0.4s ease forwards;
+}
+
+/* Slide down animation */
+@keyframes slideDown {
   0% {
-    transform: rotate(0deg);
+    transform: translateY(-100%);
+    opacity: 0;
   }
+
   100% {
-    transform: rotate(360deg);
+    transform: translateY(0);
+    opacity: 1;
   }
+}
+
+
+
+/* header dropdown styling */
+@media (min-width: 992px) {
+  /* header dropdown */
+  .dropdown-container {
+    position: relative;
+    display: inline-block;
+    font-family: 'Poppins', sans-serif;
+  }
+  .all-courses-btn {
+    background-color: transparent;
+    border: none;
+    color: #001e3c;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .dropdown-megamenu.menu-visible {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+  .dropdown-wrapper {
+    display: flex;
+    top: 100%;
+    left: 0;
+    margin-top: -2px;
+    z-index: 9999;
+    cursor: pointer;
+    padding: 15px 15px;
+
+  }
+
+  .main-dropdown {
+    width: 350px;
+    background-color: #ffffff;
+    border-radius: 6px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+
+  }
+
+
+
+  .main-dropdown .main-item a {
+    transition: color 0.3s ease;
+
+  }
+
+  .main-dropdown .main-item a:hover {
+    color: blue !important;
+  }
+
+
+
+  .main-dropdown.list-unstyled {
+    max-height: 500px;
+    overflow-y: auto;
+  }
+
+
+  .main-item {
+    cursor: pointer;
+    color: #001e3c;
+    transition: background-color 0.3s ease, color 0.3s ease;
+
+  }
+
+
+  .main-item:hover {
+    background-color: #f8f9fa;
+  }
+
+
+  .sub-dropdown {
+    width: 350px;
+    background-color: #ffffff;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    margin-left: 10px;
+  }
+
+  .sub-dropdown li {
+    cursor: pointer;
+  }
+
+  .sub-dropdown li:hover {
+    background-color: #f8f9fa;
+  }
+
+  .sub-dropdown a {
+    color: #0d1b2a;
+    font-size: 15px;
+    transition: color 0.3s ease;
+  }
+
+  .sub-dropdown a:hover {
+    color: blue !important;
+  }
+
+  .all-courses-btn {
+    display: flex;
+    align-items: center;
+  }
+
+  .main-dropdown .main-item span {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .no-caret::after {
+    display: none !important;
+  }
+}
+
+
+
+/* header nav link styling */
+.navbar-nav .nav-link {
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  color: #001f3f !important;
+  font-size: 14px !important;
+  padding: 8px 14px !important;
+  transition: color 0.3s ease-in-out;
+  text-decoration: none !important;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #0056b3 !important;
+}
+
+
+@media (max-width: 991.98px) {
+  .offcanvas-title {
+    padding-left: 0 !important;
+    border-left: solid 5px red;
+  }
+
+  .offcanvas-body .navbar-nav .nav-link {
+    padding-left: 0 !important;
+    border-left: solid 5px red;
+
+  }
+}
+
+/* header section styling end  */
+
+
+
+
+
+
+
+
+
+
+
+/* Home section counter styling start */
+
+/* home counter styling responsive design  */
+.child-card {
+  background-color: #f9f9f9;
+  border-radius: 1rem;
+  min-height: 100px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.03);
+  transition: 0.3s ease;
+}
+
+.child-card:hover {
+  background-color: #ccc;
+}
+
+.child-icon {
+  font-size: 1.5rem;
+  color: #28a745;
+}
+/* Home section counter styling end */
+
+
+
+/* courses section styling start*/
+.transition-courses {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.transition-courses:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+
+/* For horizontal scroll only on small screens */
+.course-scroll-wrapper {
+  overflow-x: auto;
+  padding-bottom: 1rem;
+
+  /* 👇 Hide the scrollbar line */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.course-scroll-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .course-scroll-wrapper {
+    overflow-x: unset;
+    /* remove scroll on md+ */
+  }
+}
+
+/* Optional smooth scrolling (keep if you want) */
+.course-scroll-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.course-scroll-wrapper::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
+
+/* Set card width and height for small screens */
+@media (max-width: 767px) {
+  .course-col {
+    flex: 0 0 auto;
+    width: 80%;
+    max-width: 300px;
+  }
+}
+
+
+
+/* courses slug page styling   */
+.responsive-text {
+  font-size: 1rem;
+  /* default for small screens */
+}
+
+@media (min-width: 576px) {
+  .responsive-text {
+    font-size: 1.05rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .responsive-text {
+    font-size: 1.1rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .responsive-text {
+    font-size: 1.15rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .responsive-text {
+    font-size: 1.2rem;
+  }
+}
+
+
+/* global.css or module.css */
+.responsive-heading {
+  font-size: 1rem;
+}
+
+@media (min-width: 576px) {
+  .responsive-heading {
+    font-size: 1.1rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .responsive-heading {
+    font-size: 1.2rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .responsive-heading {
+    font-size: 1.3rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .responsive-heading {
+    font-size: 1.4rem;
+  }
+}
+
+
+.hover-color {
+  position: relative;
+  display: inline-block;
+  transition: color 0.3s ease;
+}
+
+.hover-color::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 2px;
+  background-color: green;
+  transition: width 0.3s ease;
+}
+
+.hover-color:hover {
+  color: red !important;
+}
+
+.hover-color:hover::after {
+  width: 100%;
+}
+
+/* Responsive tweaks */
+@media (max-width: 992px) {
+  .row.align-items-center {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .row.align-items-center .col-12.col-lg-8 {
+    align-items: center !important;
+  }
+
+  .row.align-items-center .col-12.col-lg-4 {
+    margin-top: 2rem;
+  }
+
+  .d-flex.flex-wrap.gap-4.mb-4 {
+    justify-content: center;
+  }
+}
+
+@media (min-width: 1200px) {
+  .col-12.col-lg-8 h2 {
+    font-size: 2.5rem !important;
+  }
+
+  .col-12.col-lg-8 p {
+    font-size: 1.2rem !important;
+  }
+}
+
+/* Optional: image responsiveness and shadow enhancement */
+img.img-fluid.rounded.shadow {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+img.img-fluid.rounded.shadow:hover {
+  /* transform: scale(1.02); */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* From Uiverse.io by NorthFishHasNa */
+.courses-btn-viewdetails {
+  display: inline-block;
+  border-radius: 4px;
+  border: none;
+  color: #222;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 1px;
+  transition: all 0.4s ease;
+  cursor: pointer;
+  margin: 5px;
+  background: none;
+}
+
+.courses-btn-viewdetails:hover {
+  color: #1d4ed8;
+}
+
+.courses-btn-viewdetails span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.4s ease;
+}
+
+.courses-btn-viewdetails span:after {
+  content: '»';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -15px;
+  transition: 0.4s ease;
+}
+
+.courses-btn-viewdetails:hover span {
+  padding-right: 15px;
+}
+
+.courses-btn-viewdetails:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+/* From Uiverse.io by alexmaracinaru */
+.cta {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+}
+
+.cta span {
+  padding-bottom: 7px;
+  padding-right: 7px;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: capitalize;
+  color: #222;
+  transition: color 0.4s ease;
+}
+
+.cta i {
+  transform: translateX(-16px);
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.cta:hover i {
+  transform: translateX(0);
+  opacity: 1;
+  visibility: visible;
+  color: green;
+}
+
+.cta:active i {
+  transform: scale(0.9);
+}
+
+.hover-underline-animation {
+  position: relative;
+  color: #222;
+  padding-bottom: 20px;
+  transition: all 0.5s ease;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: 'Poppins', sans-serif;
+  text-transform: capitalize;
+  letter-spacing: 1.5px;
+}
+
+.hover-underline-animation:hover {
+  color: green;
+}
+
+.hover-underline-animation:after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: red;
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+
+.cta:hover .hover-underline-animation:after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+/* courses section styling end*/
+
+
+
+
+
+
+/* Testimonial  section styling start*/
+.slick-dots li button:before {
+  font-size: 18px !important;
+  color: #999 !important;
+}
+
+.slick-dots li.slick-active button:before {
+  color: #0057d8 !important;
+  font-size: 20px !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* services section styling start*/
+
+/* ✅ Hide horizontal scrollbar underline */
+.d-md-none.overflow-x-auto {
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
+}
+
+.d-md-none.overflow-x-auto::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari */
+}
+.service-icon {
+  background-color: #DDDD;
+  transition: all 0.5s ease;
+}
+
+.services-card-hover:hover .service-icon {
+  color: white;
+  background-color: #CD0037;
+}
+
+.services-tittle-color {
+  color: #00544A;
+}
+
+
+.services-btn {
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.services-btn {
+  --primary-color: #111;
+  --hovered-color: #c84747;
+  position: relative;
+  display: flex;
+  font-weight: 600;
+  font-size: 20px;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.services-btn p {
+  margin: 0;
+  position: relative;
+  font-size: 20px;
+  color: var(--primary-color);
+  transition: 0.5s ease;
+
+}
+
+.services-btn p:hover {
+  color: #c84747;
+}
+
+.services-btn::after {
+  position: absolute;
+  content: "";
+  width: 0;
+  left: 0;
+  bottom: -7px;
+  background: var(--hovered-color);
+  height: 2px;
+  transition: 0.3s ease-out;
+}
+
+.services-btn p::before {
+  position: absolute;
+  /*   box-sizing: border-box; */
+  content: "";
+  width: 0%;
+  inset: 0;
+  color: var(--hovered-color);
+  overflow: hidden;
+  transition: 0.3s ease-out;
+}
+
+.services-btn:hover::after {
+  width: 100%;
+}
+
+.services-btn:hover p::before {
+  width: 100%;
+}
+
+.services-btn:hover svg {
+  transform: translateX(4px);
+  color: var(--hovered-color);
+}
+
+.services-btn svg {
+  color: var(--primary-color);
+  transition: 0.2s;
+  position: relative;
+  width: 15px;
+  transition-delay: 0.2s;
+}
+
+
+
+/* services-inqury-btn styling */
+.services-inquery-btn {
+  display: inline-block;
+  padding: 0.9rem 1.8rem;
+  font-size: 16px;
+  font-weight: 700;
+  color: black;
+  border: 3px solid red;
+  cursor: pointer;
+  position: relative;
+  background-color: transparent;
+  text-decoration: none;
+  overflow: hidden;
+  z-index: 1;
+  font-family: inherit;
+  transition: all .5s;
+  border-radius: 7px;
+
+}
+.services-inquery-btn:hover{
+  color: white;
+}
+
+.services-inquery-btn::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: red;
+  transform: translateX(-100%);
+  transition: all .3s;
+  z-index: -1;
+}
+
+.services-inquery-btn:hover::before {
+  transform: translateX(0);
+  color: white;
+}
+/* services section styling end*/
+
+
+
+
+/* upcomming classes styling start */
+.upcomming-readmore-btn {
+ display: inline-block;
+ padding: 0.7rem 1.6rem;
+ font-size: 16px;
+ font-weight: 700;
+ color: black;
+ border: 3px solid blue;
+ cursor: pointer;
+ position: relative;
+ background-color: transparent;
+ text-decoration: none;
+ overflow: hidden;
+ z-index: 1;
+ font-family: inherit;
+ border-radius: 5px;
+  transition: all .5s;
+
+}
+
+.upcomming-readmore-btn:hover{
+  color: white;
+}
+.upcomming-readmore-btn::before {
+ content: "";
+ position: absolute;
+ left: 0;
+ top: 0;
+ width: 100%;
+ height: 100%;
+ background-color: blue;
+ transform: translateX(-100%);
+ transition: all .3s;
+ z-index: -1;
+}
+
+.upcomming-readmore-btn:hover::before {
+ transform: translateX(0);
+}
+
+
+
+/* blog section styling start */
+/* From Uiverse.io by adamgiebl */ 
+.blog-btn {
+  font-size: 18px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  display: inline-block;
+  text-align: center;
+  font-weight: bold;
+  padding: 0.6em 1.4em;
+  border: 3px solid #0084ff;
+  border-radius: 2px;
+  position: relative;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.1);
+  color: #0084ff;
+  text-decoration: none;
+  transition: 0.3s ease all;
+  z-index: 1;
+  border-radius: 5px;
+}
+
+.blog-btn:before {
+  transition: 0.5s all ease;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  right: 50%;
+  bottom: 0;
+  opacity: 0;
+  content: '';
+  background-color: #0084ff;
+  z-index: -1;
+}
+
+.blog-btn:hover, .blog-btn:focus {
+  color: white;
+}
+
+.blog-btn:hover:before, .blog-btn:focus:before {
+  transition: 0.5s all ease;
+  left: 0;
+  right: 0;
+  opacity: 1;
+}
+
+.blog-btn:active {
+  transform: scale(0.9);
 }

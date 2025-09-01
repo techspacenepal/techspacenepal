@@ -8,6 +8,7 @@ import { generateCertificate } from './generateCertificate.js';
 import Assignment from "../models/Assignment.js";
 
 
+import Course from '../models/Course.js';
 
 
 

@@ -1,50 +1,25 @@
-
 // import express from "express";
-// import { deleteCourseVideo, getCourseVideos, upload, uploadCourseVideo } from "../controllers/videoUploadController.js";
-// import Video from "../models/CourseVideo.js";
+// import Video from "../models/CourseVideo.js"; // Video model path अनुसार मिलाउनुहोस्
 
 // const router = express.Router();
 
-// router.post("/upload/:teacherId/:courseId", upload, uploadCourseVideo);
-// router.get("/videos/:courseId", getCourseVideos);
-// router.delete("/videos/:videoId", deleteCourseVideo);
+// router.get("/:courseId/:studentId", async (req, res) => {
+//   const { courseId, studentId } = req.params;
 
+//   if (!courseId || !studentId) {
+//     return res.status(400).json({ error: "Missing IDs" });
+//   }
 
-// router.get('/:id', async (req, res) => {
-//   const { id } = req.params;
 //   try {
-//     const video = await Video.findById(id);
-//     if (!video) return res.status(404).json({ message: 'Video not found' });
-//     res.json({ video });
+//     // तपाईँको logic अनुसार video खोज्नुहोस्
+//     const videos = await Video.find({ courseId });
+
+//     res.json(videos);
 //   } catch (error) {
-//     res.status(500).json({ message: 'Server error' });
+//     console.error(error);
+//     res.status(500).json({ error: "Server error" });
 //   }
 // });
-
-// //✅ Get all videos
-// router.get('/', async (req, res) => {
-//   try {
-//     const videos = await Video.find();
-//     res.json({ videos });
-//   } catch (err) {
-//     res.status(500).json({ message: "Server error" });
-//   }
-// });
-
-// // ✅ Keep only this:
-// router.get("/videos/:teacherId/:courseId", async (req, res) => {
-//   const { teacherId, courseId } = req.params;
-
-//   try {
-//     const videos = await Video.find({ teacherId, courseId });
-//     res.json({ videos });
-//   } catch (err) {
-//     console.error("Error fetching videos:", err);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// });
-
-
 
 // export default router;
 

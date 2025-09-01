@@ -404,7 +404,6 @@ export const getAllStudents = async (req, res) => {
   }
 };
 
-
 // export const loginStudent = async (req, res) => {
 //   const { email, password } = req.body;
 

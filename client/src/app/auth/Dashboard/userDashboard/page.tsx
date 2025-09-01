@@ -229,7 +229,6 @@ const Dashboard = () => {
         setInquiryCount(sortedInquiries.length);
         setContactCount(sortedContacts.length);
         setUserCount(users.length);
-
         setRecentInquiries(sortedInquiries.slice(0, 3));
         setRecentContacts(sortedContacts.slice(0, 3));
       } catch (err) {
@@ -353,7 +352,6 @@ const Dashboard = () => {
               <i className="bi bi-images" style={{ fontSize: "1rem" }}></i>
               <span className="sidebar-text">Success Gallery</span>
             </Link>
-
             <Link
               href="/auth/admin/testimonial"
               className="nav-link text-white d-flex align-items-center gap-2 sidebar-link"

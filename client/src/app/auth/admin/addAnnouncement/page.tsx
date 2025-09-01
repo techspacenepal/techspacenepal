@@ -47,6 +47,7 @@ export default function AddAnnouncementPage() {
   }, []);
 
   // ✅ Full-screen loading spinner
+<<<<<<< HEAD
 //    if (loading) {
 //   return (
 //     <div
@@ -67,6 +68,32 @@ export default function AddAnnouncementPage() {
 //   );
 // }
 
+=======
+  if (pageLoading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
+        <div className="multi-spinner"></div>
+        <style jsx>{`
+          .multi-spinner {
+            width: 4rem;
+            height: 4rem;
+            border: 8px solid transparent;
+            border-top: 8px solid red;
+            border-right: 8px solid blue;
+            border-bottom: 8px solid green;
+            border-left: 8px solid orange;
+            border-radius: 50%;
+            animation: spin 1.2s linear infinite;
+          }
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
+    );
+  }
+>>>>>>> 7453090f9c5f566d6f69ef17f9461d2243a08ac7
 
   // ✅ Input Change Handler
   const handleChange = (

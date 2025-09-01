@@ -4,6 +4,7 @@ import { sendEmail } from "../utils/sendEmail.js";
 import crypto from "crypto";
 import Student from "../models/student.js";
 import LoginSession from "../models/LoginSession.js";
+
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -18,7 +19,6 @@ const generateToken = (id, role) => {
 const isStrongPassword = (password) => {
   return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
 };
-
 
 export const registerAdmin = async (req, res) => {
   const { fullName, username, email, number, password, role } = req.body;
@@ -69,10 +69,12 @@ export const registerAdmin = async (req, res) => {
     console.error("Register Error:", error);
 
     // 👇 यो line पहिले try block मा थियो — अब यहाँ सही ठाउँमा राखिएको छ
+    // Moved error.code check here to avoid ReferenceError
     if (error.code === 11000 && error.keyPattern?.username) {
       return res.status(400).json({ message: "Username already exists" });
     }
 
+    console.error("Register Error:", error);
     res.status(500).json({ message: "Server error. Could not register user." });
   }
 };
@@ -113,6 +115,7 @@ export const loginAdmin = async (req, res) => {
 };
 
 
+// logout --------------------
 
 export const logoutAdmin = async (req, res) => {
   try {
@@ -149,7 +152,6 @@ export const getAdminById = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
 
 // ✅ Get User by ID
 export const getUserById = async (req, res) => {
@@ -198,7 +200,6 @@ export const deleteUserById = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
-
 
 // UPDATE user by email
 export const updateUserByEmail = async (req, res) => {

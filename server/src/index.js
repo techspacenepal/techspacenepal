@@ -24,11 +24,14 @@ import studentRoutes from './routes/studentRoutes.js';
 import enrolledCoursesRoutes from './routes/enrolledCoursesRoutes.js';
 import serviceRoutes from './routes/serviceRoutes.js';
 import todoRoutes from './routes/todoRoutes.js';
+import blogRoutes from './routes/blogRoutes.js'; // correct path
+import commentRoutes from './routes/commentRoutes.js';
 
 
 import courseRoutes from './routes/courseRoutes.js';
 import announcementRoutes from './routes/announcementRoutes.js';
 
+// Custom error middleware (dummy placeholder)
 import errorMiddleware from './middlewares/errorMiddleware.js';
 import teacherCourseRoutes from "./routes/teacherCourseRoutes.js";
 
@@ -41,6 +44,18 @@ import assignmentRoutes from "./routes/assignmentRoutes.js";
 import notificationsRouter from "./routes/studentnotificationsRoutes.js";  
 import studentNotificationRoutes from "./routes/studentnotificationsRoutes.js";
 
+import contactInfoRoutes from './routes/contactInfoRoutes.js';
+import footerRoutes from './routes/footerRoutes.js';
+import contentRoutes from './routes/contentRoutes.js';
+import paragraphRoutes from './routes/paragraphRoutes.js';
+
+import aboutRoutes from './routes/aboutRoutes.js';
+
+//header logo
+import logoRoutes from './routes/logoRoutes.js';
+import homesliderRoutes from './routes/homesliderRoutes.js'; // 👈 Correct path
+import statRoutes from "./routes/statRoutes.js";
+import upcommingregistrationRoutes from "./routes/upcommingregistrationRoutes.js";
 
 // __dirname define for ES module
 const __filename = fileURLToPath(import.meta.url);
@@ -66,6 +81,8 @@ app.use(cookieParser());
 
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Serve uploaded images from public/uploads correctly
+app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
   
 app.use("/certificates", express.static(path.join(process.cwd(), "public", "certificates")));
 
@@ -98,6 +115,18 @@ app.use("/api/assignments", assignmentRoutes);
 app.use("/api/notifications", notificationsRouter);
 app.use("/api/student", studentNotificationRoutes);
 
+
+app.use('/api/blogs', blogRoutes);
+app.use('/api/comments', commentRoutes);
+app.use('/api/logo', logoRoutes);
+app.use('/api/slide', homesliderRoutes); // 👈 API endpoint
+app.use("/api/stats", statRoutes);
+app.use('/api/contact-info', contactInfoRoutes);
+app.use('/api/footer', footerRoutes);
+app.use('/api/content', contentRoutes);
+app.use('/api/paragraph', paragraphRoutes);
+app.use('/api/about', aboutRoutes);
+app.use("/api/upcommingregistrations", upcommingregistrationRoutes);
 // Google OAuth login
 app.get(
   '/api/auth/google',
