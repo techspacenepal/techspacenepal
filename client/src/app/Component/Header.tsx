@@ -407,7 +407,7 @@ export default function TopNavbar() {
 
 
 
-                <div className="d-flex flex-column flex-lg-row align-items-start justify-content-start gap-3 ms-lg-3">
+                <div className="d-flex flex-column flex-lg-row align-items-start justify-content-start gap-3 ms-lg-3l align-items-center">
 
                   <Link
                     href="/inquiry"
@@ -421,7 +421,8 @@ export default function TopNavbar() {
                       border: 'none',
                       fontSize: '16px',
                       textDecoration: 'none',
-                      gap: '8px'
+                      gap: '8px',
+                       height: '48px',  
                     }}
                   >
                     Send Inquiry
@@ -436,18 +437,18 @@ export default function TopNavbar() {
                     href="/auth/studentLogin" 
                     style={{
                       color: '#ffffff',
-                      fontWeight: '500',
+                      fontWeight: '700',
                       padding: '12px 17px',
                       borderRadius: '8px',
                       border: 'none',
-                      fontSize: '16px',
                       textDecoration: 'none',
-                      gap: '8px'
+                      height: '48px',  
+                     
                     }}
                   >
-                    <i className="fa-regular fa-user fs-6"></i>
-                    Student Portal
+                    <i className="fa-regular fa-user fs-5"></i>
                   </Link>
+
                 </div>
 
 

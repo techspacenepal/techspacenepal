@@ -1,19 +1,46 @@
-
-
-
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+interface ClassSchedule {
+  secondDate: string;
+  secondTime: string;
+}
+
+interface ClassData {
+  _id: string;
+  title: string;
+  date: string;
+  time: string;
+  duration: string;
+  imageUrl?: string;
+  secondSchedules?: ClassSchedule[];
+}
+
+interface FormState {
+  title: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  duration: string;
+  image: File | null;
+}
+
+interface SecondFormState {
+  secondDate: string;
+  secondStartTime: string;
+  secondEndTime: string;
+}
+
 export default function UpcomingClassesAdmin() {
-  const [pageLoading, setPageLoading] = useState(true);
-  const [classes, setClasses] = useState([]);
-  const [form, setForm] = useState({
+  const [pageLoading, setPageLoading] = useState<boolean>(true);
+  const [classes, setClasses] = useState<ClassData[]>([]);
+  const [form, setForm] = useState<FormState>({
     title: "",
     date: "",
     startTime: "",
@@ -22,23 +49,23 @@ export default function UpcomingClassesAdmin() {
     image: null,
   });
 
-  const [secondForm, setSecondForm] = useState({
+  const [secondForm, setSecondForm] = useState<SecondFormState>({
     secondDate: "",
     secondStartTime: "",
     secondEndTime: "",
   });
 
-  const [editId, setEditId] = useState(null);
-  const [showEditForm, setShowEditForm] = useState(null);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [showEditForm, setShowEditForm] = useState<string | null>(null);
 
-  const [editingSchedule, setEditingSchedule] = useState(null);
-  const [editScheduleData, setEditScheduleData] = useState({
+  const [editingSchedule, setEditingSchedule] = useState<number | null>(null);
+  const [editScheduleData, setEditScheduleData] = useState<SecondFormState>({
     secondDate: "",
     secondStartTime: "",
     secondEndTime: "",
   });
 
-  const formRef = useRef(null);
+  const formRef = useRef<HTMLFormElement | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -51,32 +78,34 @@ export default function UpcomingClassesAdmin() {
         setPageLoading(false);
       }
     }, 800);
-  }, []);
+  }, [router]);
 
   const fetchClasses = () => {
     axios
-      .get("http://localhost:5000/api/classes")
+      .get<ClassData[]>("http://localhost:5000/api/classes")
       .then((res) => setClasses(res.data))
       .catch(() => toast.error("Failed to fetch classes!"));
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSecondChange = (e) => {
+  const handleSecondChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSecondForm({ ...secondForm, [e.target.name]: e.target.value });
   };
 
-  const handleEditScheduleChange = (e) => {
+  const handleEditScheduleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setEditScheduleData({ ...editScheduleData, [e.target.name]: e.target.value });
   };
 
-  const handleFileChange = (e) => {
-    setForm({ ...form, image: e.target.files[0] });
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.[0]) {
+      setForm({ ...form, image: e.target.files[0] });
+    }
   };
 
-  const formatTime = (time) => {
+  const formatTime = (time: string) => {
     if (!time) return "";
     const [hourStr, minute] = time.split(":");
     let hour = parseInt(hourStr);
@@ -85,24 +114,21 @@ export default function UpcomingClassesAdmin() {
     return `${hour.toString().padStart(2, "0")}:${minute} ${ampm}`;
   };
 
-  const to24Hour = (t) => {
+  const to24Hour = (t: string) => {
     if (!t) return "";
     const [time, ampm] = t.split(" ");
     let [hour, minute] = time.split(":");
-    hour = parseInt(hour);
-    if (ampm === "PM" && hour !== 12) hour += 12;
-    if (ampm === "AM" && hour === 12) hour = 0;
-    return `${hour.toString().padStart(2, "0")}:${minute}`;
+    let h = parseInt(hour);
+    if (ampm === "PM" && h !== 12) h += 12;
+    if (ampm === "AM" && h === 12) h = 0;
+    return `${h.toString().padStart(2, "0")}:${minute}`;
   };
 
-  // === UPDATED handleEditClick to toggle the edit & add time form only on clicked card ===
-  const handleEditClick = (cls) => {
+  const handleEditClick = (cls: ClassData) => {
     if (showEditForm === cls._id) {
-      // If clicking the same card's edit button, close the form
       setShowEditForm(null);
       setEditId(null);
     } else {
-      // Open the edit & add time form for the clicked card
       const [startTime, endTime] = cls.time?.split(" - ").map(to24Hour) || ["", ""];
       setForm({
         title: cls.title,
@@ -121,7 +147,7 @@ export default function UpcomingClassesAdmin() {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData();
     const timeRange = `${formatTime(form.startTime)} - ${formatTime(form.endTime)}`;
@@ -148,7 +174,7 @@ export default function UpcomingClassesAdmin() {
     }
   };
 
-  const handleSecondSubmit = async (e) => {
+  const handleSecondSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const secondTimeRange = `${formatTime(secondForm.secondStartTime)} - ${formatTime(secondForm.secondEndTime)}`;
     try {
@@ -164,7 +190,7 @@ export default function UpcomingClassesAdmin() {
     }
   };
 
-  const handleUpdateSchedule = async (clsId, scheduleIndex) => {
+  const handleUpdateSchedule = async (clsId: string, scheduleIndex: number) => {
     const secondTimeRange = `${formatTime(editScheduleData.secondStartTime)} - ${formatTime(editScheduleData.secondEndTime)}`;
     try {
       await axios.patch(`http://localhost:5000/api/classes/${clsId}/second-time/${scheduleIndex}`, {
@@ -179,9 +205,8 @@ export default function UpcomingClassesAdmin() {
     }
   };
 
-  const handleDeleteSchedule = async (clsId, scheduleIndex) => {
+  const handleDeleteSchedule = async (clsId: string, scheduleIndex: number) => {
     if (!window.confirm("Are you sure you want to delete this schedule?")) return;
-
     try {
       await axios.delete(`http://localhost:5000/api/classes/${clsId}/second-time/${scheduleIndex}`);
       toast.success("Schedule deleted");
@@ -191,7 +216,7 @@ export default function UpcomingClassesAdmin() {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm("Are you sure you want to delete?")) {
       try {
         await axios.delete(`http://localhost:5000/api/classes/${id}`);
