@@ -48,8 +48,7 @@ const Footer = () => {
     const [services, setServices] = useState<Service[]>([]);
     const [showButton, setShowButton] = useState(false);
     const pathname = typeof window !== "undefined" ? window.location.pathname : "";
-    const hideHeader = pathname === "/auth/adminLogin";
-    const hideFooter = pathname === "/auth/adminRegister/superAdmin";
+
 
     const [paymentLogos, setPaymentLogos] = useState<PaymentLogo[]>([]);
     const [activeImage, setActiveImage] = useState<string | null>(null);
@@ -102,8 +101,35 @@ const Footer = () => {
     const generateSlug = (title: string) =>
         title.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]+/g, "");
 
-    if (hideHeader || hideFooter) return null;
 
+   
+
+    // Use let to allow reassignment if needed
+    let hideHeader = false;
+    let hideFooter = false;
+
+    // Pages where header should be hidden
+    if (
+        pathname === "/auth/studentLogin" ||
+        pathname === "/auth/studentRegister" ||
+        pathname === "/auth/adminLogin" ||
+        pathname === "/auth/studentForgotPassword" ||
+        pathname === "/auth/studentResetPassword/[token]" 
+    ) {
+        hideHeader = true;
+    }
+
+    // Pages where footer should be hidden
+    if (
+        pathname === "/auth/studentLogin" ||
+        pathname === "/auth/studentRegister" ||
+        pathname === "/auth/adminRegister/superAdmin"
+    ) {
+        hideFooter = true;
+    }
+
+    // In render
+    if (hideHeader || hideFooter) return null;
     return (
         <>
             <footer
@@ -201,7 +227,7 @@ const Footer = () => {
                                     { href: "/testimonial", text: "Testimonials" },
                                     { href: "/upcomming-classes", text: "Upcoming Classes" },
                                     { href: "/blog", text: "Blog" },
-                                    { href: "", text: "Student Portal" },
+                                    { href: "/auth/studentLogin", text: "Student Portal" },
                                 ].map((link) => (
                                     <li key={link.href} className="mb-2">
                                         <a

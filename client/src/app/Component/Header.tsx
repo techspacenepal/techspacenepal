@@ -148,12 +148,30 @@ export default function TopNavbar() {
 
 
 
+
   const pathname = usePathname();
-  const hideHeader = pathname === "/auth/adminLogin";
-  const hideFooter = pathname === "/auth/adminRegister/superAdmin";
 
+  // single declaration using let for reassign
+  let hideHeader = false;
+  let hideFooter = false;
+
+  // conditionally set hideHeader / hideFooter
+  if (
+    pathname === "/auth/studentLogin" ||
+    pathname === "/auth/studentRegister" ||
+    pathname === "/auth/adminLogin" ||
+    pathname === "/auth/studentForgotPassword" ||
+    pathname === "/auth/studentResetPassword/[token]" 
+  ) {
+    hideHeader = true;
+  }
+
+  if (pathname === "/auth/adminRegister/superAdmin") {
+    hideFooter = true;
+  }
+
+  // later in render
   if (hideHeader || hideFooter) return null;
-
   return (
     <>
 
@@ -166,7 +184,7 @@ export default function TopNavbar() {
         >
           <div className="container align-items-center">
 
-            <a className="navbar-brand" href="/">
+            <Link className="navbar-brand" href="/">
               {logo ? (
                 <Image
                   src={`http://localhost:5000/uploads/${logo.imageUrl}`}
@@ -180,7 +198,7 @@ export default function TopNavbar() {
               ) : (
                 <span>Loading logo...</span>
               )}
-            </a>
+            </Link>
 
             {/* Mobile Search Offcanvas */}
             {/* Mobile Search Icon */}
@@ -230,7 +248,7 @@ export default function TopNavbar() {
 
               <div className="offcanvas-header border-bottom">
                 <h5 className="offcanvas-title" id="offcanvasNavbarLabel">
-                  <a className="navbar-brand" href="/">
+                  <Link className="navbar-brand" href="/">
                     {logo ? (
                       <Image
                         src={`http://localhost:5000/uploads/${logo.imageUrl}`}
@@ -244,7 +262,7 @@ export default function TopNavbar() {
                     ) : (
                       <span>Loading logo...</span>
                     )}
-                  </a></h5>
+                  </Link></h5>
                 <button type="button" className="btn-close bg-primary" style={{ border: "none", outline: "none", boxShadow: "none" }}
                   data-bs-dismiss="offcanvas" aria-label="Close" />
 
@@ -253,7 +271,7 @@ export default function TopNavbar() {
                 <ul className="navbar-nav justify-content-end flex-grow-1 pe-3 mx-lg-auto align-items-lg-center">
 
                   <li className="nav-item d-lg-none">
-                    <a className="nav-link active" aria-current="page" href="/">Home</a>
+                    <Link className="nav-link active" aria-current="page" href="/">Home</Link>
                   </li>
 
 
@@ -265,7 +283,7 @@ export default function TopNavbar() {
                       setActiveCategory(null);
                     }}
                   >
-                    <a
+                    <Link
                       className="nav-link dropdown-toggle no-caret d-flex align-items-center gap-2"
                       href="/courses"
                       role="button"
@@ -273,7 +291,7 @@ export default function TopNavbar() {
                       aria-expanded="false"
                     >
                       All Courses <i className="bi bi-chevron-down fs-6"></i>
-                    </a>
+                    </Link>
 
                     <div className="dropdown-megamenu menu-visible cursor-pointer">
                       {showDropdown && (
@@ -338,47 +356,47 @@ export default function TopNavbar() {
 
 
                   <li className="nav-item d-lg-none">
-                    <a className="nav-link" aria-current="page" href="/about-us">About us</a>
+                    <Link className="nav-link" aria-current="page" href="/about-us">About us</Link>
                   </li>
 
 
 
 
                   <li className="nav-item d-lg-none">
-                    <a className="nav-link" href="/our-services">Our Services</a>
+                    <Link className="nav-link" href="/our-services">Our Services</Link>
                   </li>
                   <li className="nav-item d-lg-none">
-                    <a className="nav-link active" aria-current="page" href="/courses">all Courses</a>
+                    <Link className="nav-link active" aria-current="page" href="/courses">all Courses</Link>
                   </li>
 
                   <li className="nav-item d-lg-none">
-                    <a className="nav-link" aria-current="page" href="/success-gallery">Success Story</a>
+                    <Link className="nav-link" aria-current="page" href="/success-gallery">Success Story</Link>
                   </li>
 
 
                   <li className="nav-item d-lg-none">
-                    <a className="nav-link active" aria-current="page" href="/our-team">Our team</a>
+                    <Link className="nav-link active" aria-current="page" href="/our-team">Our team</Link>
                   </li>
 
                   <li className="nav-item">
-                    <a className="nav-link active" aria-current="page" href="/upcomming-classes">upcomming classes <span className="text-danger">({classes.length})</span></a>
+                    <Link className="nav-link active" aria-current="page" href="/upcomming-classes">upcomming classes <span className="text-danger">({classes.length})</span></Link>
                   </li>
 
                   <li className="nav-item">
-                    <a className="nav-link active" aria-current="page" href="/testimonial">testimonial</a>
+                    <Link className="nav-link active" aria-current="page" href="/testimonial">testimonial</Link>
                   </li>
 
 
 
                   <li className="nav-item">
-                    <a className="nav-link" href="/blog">blog</a>
+                    <Link className="nav-link" href="/blog">blog</Link>
                   </li>
 
                   <li className="nav-item d-lg-none">
-                    <a className="nav-link" href="/contact-us">Contact Us</a>
+                    <Link className="nav-link" href="/contact-us">Contact Us</Link>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" href="">
+                    <Link className="nav-link" href="">
                       {isAuthenticated &&
                         ["admin", "user", "student", "teacher"].includes(user?.role ?? "") && (
                           <Link
@@ -396,7 +414,7 @@ export default function TopNavbar() {
                             Dashboard
                           </Link>
                         )}
-                    </a>
+                    </Link>
                   </li>
 
 
@@ -407,7 +425,7 @@ export default function TopNavbar() {
 
 
 
-                <div className="d-flex flex-column flex-lg-row align-items-start justify-content-start gap-3 ms-lg-3l align-items-center">
+                <div className="d-flex flex-column flex-lg-row align-items-start justify-content-start gap-3 ms-lg-3l align-items-lg-center">
 
                   <Link
                     href="/inquiry"
@@ -422,7 +440,7 @@ export default function TopNavbar() {
                       fontSize: '16px',
                       textDecoration: 'none',
                       gap: '8px',
-                       height: '48px',  
+                      height: '48px',
                     }}
                   >
                     Send Inquiry
@@ -434,7 +452,7 @@ export default function TopNavbar() {
 
                   <Link
                     className="btn d-inline-flex align-items-center bg-success"
-                    href="/auth/studentLogin" 
+                    href="/auth/studentLogin"
                     style={{
                       color: '#ffffff',
                       fontWeight: '700',
@@ -442,8 +460,8 @@ export default function TopNavbar() {
                       borderRadius: '8px',
                       border: 'none',
                       textDecoration: 'none',
-                      height: '48px',  
-                     
+                      height: '48px',
+
                     }}
                   >
                     <i className="fa-regular fa-user fs-5"></i>

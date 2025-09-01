@@ -4,13 +4,14 @@
 import { useState } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
-import { useRouter } from "next/navigation"; // ✅ import router
-
+import { useRouter } from "next/navigation";
+import { FaEnvelope, FaEye, FaEyeSlash } from "react-icons/fa";
+import Link from "next/link";
 export default function ResetPassword() {
   const [form, setForm] = useState({ email: "", otp: "", newPassword: "" });
   const [loading, setLoading] = useState(false);
   const router = useRouter(); // ✅ use router
-
+  const [showPassword, setShowPassword] = useState(false);
   const handleChange = (e: any) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -35,41 +36,104 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light">
-      <Toaster position="top-right" />
-      <form onSubmit={handleReset} className="p-4 card shadow w-100" style={{ maxWidth: 400 }}>
-        <h4 className="mb-3 text-center">Reset Password</h4>
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          className="form-control mb-2"
-          value={form.email}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="otp"
-          placeholder="Enter OTP"
-          className="form-control mb-2"
-          value={form.otp}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="newPassword"
-          placeholder="New Password"
-          className="form-control mb-3"
-          value={form.newPassword}
-          onChange={handleChange}
-          required
-        />
-        <button type="submit" className="btn btn-success w-100" disabled={loading}>
-          {loading ? "Resetting..." : "Reset Password"}
-        </button>
-      </form>
-    </div>
+    <>
+      <section>
+        <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light px-3">
+          <Toaster position="top-right" />
+          <form
+            onSubmit={handleReset}
+            className="p-4 card shadow-sm w-100 rounded"
+            style={{ maxWidth: 400 }}
+          >
+            {/* Heading */}
+            <h4 className="mb-3 text-center text-success">Reset Password</h4>
+
+            {/* Email */}
+            <div className="mb-3">
+              <label htmlFor="email" className="form-label">
+                Email Address <span className="text-danger">*</span>
+              </label>
+              <div className="position-relative">
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="Enter your email"
+                  className="form-control pe-5"
+                  value={form.email}
+                  onChange={handleChange}
+                  required
+                />
+                <FaEnvelope
+                  className="position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
+                />
+              </div>
+            </div>
+
+            {/* OTP */}
+            <div className="mb-3">
+              <label htmlFor="otp" className="form-label">
+                OTP <span className="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                id="otp"
+                name="otp"
+                placeholder="Enter OTP"
+                className="form-control"
+                value={form.otp}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            {/* New Password */}
+            <div className="mb-3">
+              <label htmlFor="newPassword" className="form-label">
+                New Password <span className="text-danger">*</span>
+              </label>
+              <div className="position-relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="newPassword"
+                  name="newPassword"
+                  placeholder="Enter new password"
+                  className="form-control pe-5"
+                  value={form.newPassword}
+                  onChange={handleChange}
+                  required
+                />
+                <span
+                  role="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </span>
+              </div>
+            </div>
+
+            {/* Submit */}
+            <div className="d-grid mb-3">
+              <button type="submit" className="btn btn-success" disabled={loading}>
+                {loading ? "Resetting..." : "Reset Password"}
+              </button>
+            </div>
+
+            {/* Back Link */}
+            <div className="text-center">
+              <Link
+                href="/auth/studentForgotPassword"
+                className="text-decoration-none d-inline-flex align-items-center gap-1"
+              >
+                <i className="bi bi-arrow-left"></i> Back to Forgot Password
+              </Link>
+            </div>
+
+          </form>
+        </div>
+      </section>
+
+    </>
   );
 }
