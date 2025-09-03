@@ -65,29 +65,21 @@ router.get('/google/callback',
 );
 
 
+// authRoutes.js (router file)
+router.get("/me", authenticateToken, async (req, res) => {
+  try {
+    const user = await Auth.findById(req.user.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Get current user error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
-// router.post('/google', async (req, res) => {
-//   const { token } = req.body;
-
-//   try {
-//     // Verify token with Google
-//     const googleRes = await axios.get(`https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${token}`);
-//     const { email, name, picture } = googleRes.data;
-
-//     let user = await Auth.findOne({ email });
-//     if (!user) {
-//       user = await Auth.create({ email, name, image: picture });
-//     }
-
-//     const userToken = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
-
-//     res.json({ token: userToken, user });
-//   } catch (err) {
-//     console.error(err.response?.data || err.message);
-//     res.status(400).json({ message: 'Invalid Google token' });
-//   }
-// });
 
 
 

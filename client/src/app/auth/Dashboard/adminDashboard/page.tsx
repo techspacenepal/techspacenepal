@@ -21,6 +21,8 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/context/AuthContext";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 interface Inquiry {
   _id: string;
@@ -74,6 +76,7 @@ const getInitials = (name: string) => {
   }
   return "";
 };
+
 
 const NotificationDropdown: React.FC<{ items: NotificationItem[] }> = ({
   items,
@@ -282,28 +285,45 @@ const Dashboard = () => {
   }, []);
 
 
-  // Add this state for user info
-  const [currentUser, setCurrentUser] = useState({
+
+
+
+  // Greeting function
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good Morning";
+    if (hour < 18) return "Good Afternoon";
+    return "Good Evening";
+  };
+
+
+  // ✅ Single user state
+  const [currentUser, setCurrentUser] = useState<{ name: string; image?: string }>({
     name: "",
     image: ""
   });
-
-  // Add this useEffect to load user data
   useEffect(() => {
     const loadUserData = async () => {
       try {
         const token = Cookies.get("adminToken");
-        if (token) {
-          const response = await axios.get("http://localhost:5000/api/auth/me", {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          setCurrentUser({
-            name: response.data.username || response.data.name || "Admin",
-            image: response.data.image || ""
-          });
-        }
-      } catch (error) {
-        console.error("Failed to fetch user data:", error);
+        if (!token) return;
+
+        const res = await axios.get("http://localhost:5000/api/auth/me", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        // 👇 Adjust this depending on your backend response
+        const user = res.data.user || res.data;
+
+        // ✅ Ensure correct name
+        setCurrentUser({
+          name: user.username || user.fullName || user.name || "Admin",
+          image: user.image || ""
+        });
+
+        setUserInitials(getInitials(user.username || user.fullName || user.name || "Admin"));
+      } catch (err) {
+        console.error("Failed to fetch current user:", err);
       }
     };
 
@@ -311,11 +331,222 @@ const Dashboard = () => {
   }, []);
 
 
+
+
+  const [logo, setLogo] = useState<{ imageUrl: string } | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Fetch logo
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/logo")
+      .then((res) => setLogo(res.data))
+      .catch(() => console.error("Failed to load logo"));
+  }, []);
+
+
+  // Auto-close sidebar on route change
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+  const navItems = [
+    { href: "/auth/Dashboard/adminDashboard", icon: "bi-speedometer2", text: "Dashboard" },
+    { href: "/auth/admin/home", icon: "bi-house", text: "Home" },
+    { href: "/auth/admin/about", icon: "bi-info-circle", text: "About" },
+    { href: "/auth/admin/allUser", icon: "bi-person", text: "Users" },
+    { href: "/auth/admin/allContact", icon: "bi-chat-square-text", text: "Contacts" },
+    { href: "/auth/admin/allinquiry", icon: "bi-chat-square-text", text: "Inquiries" },
+    { href: "/auth/admin/ManageServices", icon: "bi-gear", text: "Services" },
+    { href: "/auth/admin/addblog", icon: "bi-book", text: "Blog" },
+    { href: "/auth/admin/Gallery", icon: "bi-image", text: "Success Gallery" },
+    { href: "/auth/admin/testimonial", icon: "bi-chat-square-text", text: "Testimonial" },
+    { href: "/auth/admin/addTeacherCourses", icon: "bi-book", text: "Add Teacher Courses" },
+    { href: "/auth/admin/teams", icon: "bi-person", text: "Teams" },
+    { href: "/auth/admin/courses", icon: "bi-book", text: "Courses" },
+    { href: "/auth/admin/addAnnouncement", icon: "bi-chat-square-text", text: "Add Announcements" },
+    { href: "/auth/admin/enrolledCourses", icon: "bi-book", text: "Enrolled Courses" },
+    { href: "/auth/admin/allstudents", icon: "bi-person", text: "All Students" },
+    { href: "/auth/admin/UpcomingClasses", icon: "bi-calendar", text: "Upcoming Classes" },
+    { href: "/auth/admin/footer", icon: "bi-speedometer2", text: "Footer" },
+    { href: "/auth/adminRegister", icon: "bi-person", text: "Register" },
+    // Conditional Login/Logout
+    ...(isAuthenticated
+      ? [{ action: logout, icon: "bi-box-arrow-right", text: "Logout", textClass: "text-danger fw-semibold" }]
+      : [{ href: "/auth/adminLogin", icon: "bi-person", text: "Login", textClass: "text-success" }]
+    )
+  ];
+
+
   return (
     <>
+      {/* Header */}
+      <header
+        className="w-100 sticky-top bg-light border-bottom px-3 py-2"
+      >
+        <div className="container-fluid">
+          <div className="d-flex align-items-center justify-content-between">
+            {/* Left side: Toggle + Title + Logo */}
+            <div className="d-flex align-items-center gap-3">
+              {/* Toggle */}
+              <button
+                className="btn btn-primary p-2 rounded d-flex align-items-center justify-content-center shadow-sm"
+                type="button"
+                onClick={() => setMenuOpen(true)}
+                style={{ width: "44px", height: "44px", minWidth: "44px" }}
+              >
+                <i className="bi bi-list fs-4 text-white"></i>
+              </button>
+
+              {/* Title */}
+              <h1 className="h4 h3-md fw-bold mb-0 d-none d-lg-block">Dashboard</h1>
+
+              {/* Logo */}
+              <Link href="/" className="navbar-brand ms-2">
+                {logo && (
+                  <Image
+                    src={`http://localhost:5000/uploads/${logo.imageUrl}`}
+                    alt="Logo"
+                    width={150}
+                    height={0}
+                    unoptimized={true}
+                    style={{ width: "120px", height: "60px", objectFit: "contain" }}
+                  />
+                )}
+              </Link>
+            </div>
+            <div className="text-center text-lg-center d-none d-lg-flex flex-column align-items-lg-center">
+              <h2 className="h5 fw-bold mb-1">
+                {getGreeting()}, {currentUser?.name} 👋
+              </h2>
+
+              <p className="text-muted mb-0">
+                Welcome to TechSpace Nepal Dashboard
+              </p>
+            </div>
+
+
+
+            {/* Right side: Notifications + User */}
+            <div className="d-flex gap-2 gap-md-3 align-items-center position-relative">
+
+
+
+
+
+
+              <button
+                className="btn btn-link position-relative p-0 border-0"
+                onClick={handleBellClick}
+              >
+                <Bell size={20} className="text-dark" />
+                {unreadCount > 0 && (
+                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Notification Dropdown */}
+              {showDropdown && (
+                <div
+                  ref={dropdownRef}
+                  className="position-absolute"
+                  style={{
+                    top: "120%",
+                    right: "0",
+                    left: "auto",
+                    zIndex: 1050,
+                    minWidth: "280px",
+                    maxWidth: "90vw",
+                  }}
+                >
+                  <NotificationDropdown items={allNotifications} />
+                </div>
+              )}
+
+              {/* User avatar */}
+              <div
+                className="rounded-circle bg-dark text-white d-flex justify-content-center align-items-center"
+                style={{
+                  width: "30px",
+                  height: "30px",
+                  fontSize: "12px",
+                }}
+                title="Logged in user"
+              >
+                {userInitials}
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </header>
+
+      {/* Overlay (click to close) */}
+      {menuOpen && (
+        <div
+          className="fixed-top bg-dark bg-opacity-50"
+          style={{ zIndex: 1039 }}
+          onClick={() => setMenuOpen(false)}
+        />
+      )}
+
+      {/* Sidebar responsive devices only */}
+      <div
+        className={`fixed-top bg-light border-end  h-100 p-3`}
+        style={{
+          width: "260px",
+          transform: menuOpen ? "translateX(0)" : "translateX(-100%)",
+          transition: "transform 0.3s ease-in-out",
+          zIndex: 1040,
+        }}
+      >
+        {/* Sidebar Header with Close Button */}
+        <div className="d-flex justify-content-between  align-items-center pb-3">
+          <h5 className="mb-0">Menu</h5>
+          <button
+            className="btn btn-sm btn-primary"
+            onClick={() => setMenuOpen(false)}
+            aria-label="Close"
+          >
+            <i className="bi bi-x-lg"></i>
+          </button>
+        </div>
+
+        {/* Navigation Links */}
+        <nav className="nav flex-column gap-2 py-3 border-top">
+          {navItems.map((item, index) =>
+            item.href ? (
+              <Link
+                key={index}
+                href={item.href}
+                className={`d-flex align-items-center gap-2 text-decoration-none ${item.textClass || ''}`}
+                onClick={() => setMenuOpen(false)}
+              >
+                <i className={`bi ${item.icon} me-2`}></i>
+                <span>{item.text}</span>
+              </Link>
+            ) : (
+              <button
+                key={index}
+                onClick={() => { item.action?.(); setMenuOpen(false); }}
+                className={`d-flex align-items-center gap-2 text-start p-0 border-0 bg-transparent ${item.textClass || ''}`}
+              >
+                <i className={`bi ${item.icon} me-2`}></i>
+                <span>{item.text}</span>
+              </button>
+
+
+            )
+          )}
+        </nav>
+
+      </div>
+
       <div className="d-flex min-vh-100 bg-light">
         {/* Sidebar */}
-        <div className="d-flex">
+        <div className="d-lg-flex d-none">
           <aside
             className="sidebar bg-dark text-white pt-0 d-flex flex-column"
             style={{
@@ -325,68 +556,11 @@ const Dashboard = () => {
               transition: "width 0.3s ease",
             }}
           >
-            {/* Fixed Profile Section at Top */}
-            <div className=""
-              style={{
-                position: 'sticky',
-                top: 0,
-                zIndex: 1,
-                backgroundColor: 'inherit',
-              }}
-            >
-              <div className="d-flex align-items-center mb-3 gap-2 mt-3">
-                <div className="d-flex align-items-center" >
-                  {currentUser.image ? (
-                    <img
-                      src={currentUser.image}
-                      alt="User Profile"
-                      className="rounded-circle"
-                      style={{
-                        width: "clamp(30px, 3vw, 40px)",
-                        height: "clamp(30px, 3vw, 40px)",
-                        objectFit: "cover",
-                        minWidth: "30px"
-                      }}
-                    />
-                  ) : (
-                    <div
-                      className="rounded-circle bg-white text-primary d-flex justify-content-center align-items-center fw-bold"
-                      style={{
-                        width: "clamp(30px, 3vw, 40px)",
-                        height: "clamp(30px, 3vw, 40px)",
-                        minWidth: "30px",
-                        fontSize: "clamp(12px, 1.5vw, 14px)"
-                      }}
-                    >
-                      {currentUser.name ? getInitials(currentUser.name) : "AD"}
-                    </div>
-                  )}
-                </div>
-                <div
-                  className={`${isSidebarExpanded ? "d-block" : "d-none"
-                    } d-lg-block`}
-                >
-                  <h2
-                    className="sidebar-title mb-0"
-                    style={{ fontSize: "clamp(1rem, 1.5vw, 1.25rem)" }}
-                  >
-                    Admin Panel
-                  </h2>
-                  <small
-                    className="text-white-50"
-                    style={{ fontSize: "clamp(0.7rem, 1vw, 0.85rem)" }}
-                  >
-                    {currentUser.name}
-                  </small>
-                </div>
-
-              </div>
-            </div>
 
 
 
             {/* Navigation */}
-            <nav className="nav flex-column gap-2">
+            <nav className="nav flex-column gap-2 py-3">
               {[
                 // All your existing navigation items
                 { href: "/auth/Dashboard/adminDashboard", icon: <LayoutDashboard size={18} />, text: "Dashboard" },
@@ -479,54 +653,15 @@ const Dashboard = () => {
             className="container px-3 px-md-4"
             style={{ maxWidth: "1280px", margin: "0 auto" }}
           >
-            {/* Header - Responsive adjustments */}
-            <div className="d-flex justify-content-between align-items-center mb-3 mb-md-4 flex-wrap gap-2">
-              <h1 className="h4 h3-md fw-bold mb-0">Dashboard</h1>
-              <div className="d-flex gap-2 gap-md-3 align-items-center position-relative">
-                <button
-                  className="btn btn-link position-relative p-0 border-0"
-                  onClick={handleBellClick}
-                >
-                  <Bell size={20} size-md={22} className="text-dark" />
-                  {unreadCount > 0 && (
-                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                      {unreadCount}
-                    </span>
-                  )}
-                </button>
 
-                {/* Notification Dropdown - Responsive positioning */}
-                {showDropdown && (
-                  <div
-                    ref={dropdownRef}
-                    className="position-absolute px-50"
-                    style={{
-                      top: "120%",
-                      right: "0",
-                      left: "auto",
-                      zIndex: 1050,
-                      minWidth: "280px",
-                      maxWidth: "90vw"
-                    }}
-                  >
-                    <NotificationDropdown items={allNotifications} />
-                  </div>
-                )}
+            <div className="mb-4 text-center text-lg-center d-lg-none flex-column align-items-lg-center">
+              <h2 className="h5 fw-bold mb-1">
+                {getGreeting()}, {currentUser?.name} 👋
+              </h2>
 
-                {/* User avatar - Responsive size */}
-                <div
-                  className="rounded-circle bg-dark text-white d-flex justify-content-center align-items-center"
-                  style={{
-                    width: "30px",
-                    height: "30px",
-                    fontSize: "12px",
-                   
-                  }}
-                  title="Logged in user"
-                >
-                  {userInitials}
-                </div>
-              </div>
+              <p className="text-muted mb-0">
+                Welcome to TechSpace Nepal Dashboard
+              </p>
             </div>
 
             {/* Stats Cards - Responsive grid */}
