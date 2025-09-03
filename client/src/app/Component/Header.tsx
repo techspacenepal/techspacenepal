@@ -161,7 +161,13 @@ export default function TopNavbar() {
     pathname === "/auth/studentRegister" ||
     pathname === "/auth/adminLogin" ||
     pathname === "/auth/studentForgotPassword" ||
-    pathname === "/auth/studentResetPassword/[token]" 
+    pathname === "/auth/studentResetPassword/[token]" ||
+    pathname === "/studentdashboard" ||
+    pathname === "/studentdashboard/profile" ||
+    pathname === "/studentdashboard/courses" ||
+    pathname === "/studentdashboard/gradebook" ||
+    pathname === "/studentdashboard/announcements" ||
+    pathname === "/studentdashboard/todoList" 
   ) {
     hideHeader = true;
   }

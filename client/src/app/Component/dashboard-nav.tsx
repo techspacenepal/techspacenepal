@@ -21,7 +21,7 @@ const navItems = [
   { href: "/studentdashboard/courses", label: "Courses", icon: BookOpen },
   { href: "/studentdashboard/gradebook", label: "Gradebook", icon: ClipboardList },
   { href: "/studentdashboard/announcements", label: "Announcements", icon: Megaphone },
-    { href: "/studentdashboard/todoList", label: "To Do List", icon: CheckSquare },
+  { href: "/studentdashboard/todoList", label: "To Do List", icon: CheckSquare },
 
 ];
 
@@ -37,9 +37,8 @@ export function DashboardNav() {
           <Link
             key={item.href}
             href={item.href}
-            className={`nav-link d-flex align-items-center gap-2 px-3 py-2 rounded ${
-              isActive ? "active bg-primary text-white" : "text-dark"
-            }`}
+            className={`nav-link d-flex align-items-center gap-2 px-3 py-2 rounded ${isActive ? "active bg-primary text-white" : "text-dark"
+              }`}
           >
             <item.icon size={18} />
             <span className="d-none d-md-inline">{item.label}</span>

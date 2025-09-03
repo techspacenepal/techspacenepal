@@ -102,7 +102,7 @@ const Footer = () => {
         title.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]+/g, "");
 
 
-   
+
 
     // Use let to allow reassignment if needed
     let hideHeader = false;
@@ -114,7 +114,13 @@ const Footer = () => {
         pathname === "/auth/studentRegister" ||
         pathname === "/auth/adminLogin" ||
         pathname === "/auth/studentForgotPassword" ||
-        pathname === "/auth/studentResetPassword/[token]" 
+        pathname === "/auth/studentResetPassword/[token]" ||
+        pathname === "/studentdashboard" ||
+        pathname === "/studentdashboard/profile" ||
+        pathname === "/studentdashboard/courses" ||
+        pathname === "/studentdashboard/gradebook" ||
+        pathname === "/studentdashboard/announcements" ||
+        pathname === "/studentdashboard/todoList"
     ) {
         hideHeader = true;
     }
