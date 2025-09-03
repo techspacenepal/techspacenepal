@@ -120,7 +120,13 @@ const Footer = () => {
         pathname === "/studentdashboard/courses" ||
         pathname === "/studentdashboard/gradebook" ||
         pathname === "/studentdashboard/announcements" ||
-        pathname === "/studentdashboard/todoList"
+        pathname === "/studentdashboard/todoList" ||
+        pathname === "/auth/Dashboard/teacherDashboard" ||
+        pathname === "/auth/Dashboard/teacherDashboard/courses" ||
+        pathname === "/auth/Dashboard/teacherDashboard/students" ||
+        pathname === "/auth/Dashboard/teacherDashboard/grades" ||
+        pathname === "/auth/Dashboard/teacherDashboard/teacherNotification" ||
+        pathname === "/auth/Dashboard/teacherDashboard/todolist"
     ) {
         hideHeader = true;
     }

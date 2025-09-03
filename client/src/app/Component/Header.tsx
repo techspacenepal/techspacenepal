@@ -5,8 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-// import ContactInfo from "./ContactInfo";
-// import { FaSignInAlt } from "react-icons/fa";
+
 import { FaSearch } from "react-icons/fa";
 import SearchCourses from "./SearchCourses";
 import { FaUser } from 'react-icons/fa';
@@ -167,7 +166,13 @@ export default function TopNavbar() {
     pathname === "/studentdashboard/courses" ||
     pathname === "/studentdashboard/gradebook" ||
     pathname === "/studentdashboard/announcements" ||
-    pathname === "/studentdashboard/todoList" 
+    pathname === "/studentdashboard/todoList" ||
+    pathname === "/auth/Dashboard/teacherDashboard" ||
+    pathname === "/auth/Dashboard/teacherDashboard/courses" ||
+    pathname === "/auth/Dashboard/teacherDashboard/students" ||
+    pathname === "/auth/Dashboard/teacherDashboard/grades" ||
+    pathname === "/auth/Dashboard/teacherDashboard/teacherNotification" ||
+    pathname === "/auth/Dashboard/teacherDashboard/todolist" 
   ) {
     hideHeader = true;
   }

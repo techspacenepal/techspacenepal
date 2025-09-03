@@ -407,7 +407,7 @@ const Dashboard = () => {
                 { href: "/auth/admin/allstudents", icon: <User size={18} />, text: "All Students" },
                 { href: "/auth/admin/UpcomingClasses", icon: <Calendar size={18} />, text: "Upcomming classes" },
                 { href: "/auth/admin/footer", icon: <LayoutDashboard size={18} />, text: "Footer" },
-                { href: "/auth/adminRegister/superAdmin", icon: <User size={18} />, text: "Register" },
+                { href: "/auth/adminRegister", icon: <User size={18} />, text: "Register" },
 
                 // Conditional login/logout item
                 ...(isAuthenticated

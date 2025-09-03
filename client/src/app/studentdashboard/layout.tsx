@@ -30,8 +30,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     <>
       {/* Header */}
       <header
-        className="w-100 sticky-top bg-light border-bottom d-flex align-items-center justify-content-between px-3"
-        style={{ height: "64px" }}
+        className="w-100 sticky-top bg-light border-bottom d-flex align-items-center justify-content-between px-3 py-3"
       >
         {/* Toggle */}
         <button
@@ -51,8 +50,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               alt="Logo"
               width={150}
               height={0}
-              unoptimized
-              style={{ width: "140px", height: "auto", objectFit: "contain" }}
+              unoptimized={true}
+              style={{ width: '120px', height: '60px', objectFit: 'contain' }}
             />
           )}
         </Link>
