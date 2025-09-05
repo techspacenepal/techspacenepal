@@ -174,7 +174,7 @@ export default function TopNavbar() {
     pathname === "/auth/Dashboard/teacherDashboard/teacherNotification" ||
     pathname === "/auth/Dashboard/teacherDashboard/todolist" ||
     pathname === "/auth/Dashboard/adminDashboard" ||
-    pathname === "/auth/adminRegister" 
+    pathname === "/auth/adminRegister"
   ) {
     hideHeader = true;
   }
@@ -198,20 +198,18 @@ export default function TopNavbar() {
           <div className="container align-items-center">
 
             <Link className="navbar-brand" href="/">
-              {logo ? (
+              {logo && (
                 <Image
                   src={`http://localhost:5000/uploads/${logo.imageUrl}`}
                   alt="Logo"
                   width={150}
                   height={0}
                   unoptimized={true}
-                  style={{ width: '120px', height: '60px', objectFit: 'contain' }}
+                  style={{ width: "120px", height: "60px", objectFit: "contain" }}
                 />
-
-              ) : (
-                <span>Loading logo...</span>
               )}
             </Link>
+
 
             {/* Mobile Search Offcanvas */}
             {/* Mobile Search Icon */}

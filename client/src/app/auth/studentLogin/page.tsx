@@ -138,22 +138,18 @@ const StudentLoginPage: React.FC = () => {
             <div className="card-body p-4">
               {/* Logo + Heading */}
               <div className="text-center mb-4">
-                <Link className="navbar-brand d-inline-block mb-3" href="/">
-                  {logo ? (
-                    <Image
-                      src={`http://localhost:5000/uploads/${logo.imageUrl}`}
-                      alt="Logo"
-                      width={220}
-                      height={100}
-                      unoptimized={true}
-                      style={{
-                        width: "180px",
-                        height: "80px",
-                        objectFit: "contain",
-                      }}
-                    />
-                  ) : null}
-                </Link>
+               <Link className="navbar-brand" href="/">
+              {logo && (
+                <Image
+                  src={`http://localhost:5000/uploads/${logo.imageUrl}`}
+                  alt="Logo"
+                  width={150}
+                  height={0}
+                  unoptimized={true}
+                  style={{ width: "120px", height: "60px", objectFit: "contain" }}
+                />
+              )}
+            </Link>
                 <h4 className="fw-bold mb-0">Student Login</h4>
                 <p className="text-muted mb-0">Access your account securely</p>
               </div>

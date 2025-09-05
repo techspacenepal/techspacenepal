@@ -734,5 +734,38 @@ img.img-fluid.rounded.shadow:hover {
 
 
 
+/* admin login form styling start */
+
+.animated-outline {
+  position: relative;
+  border-radius: 12px; /* same as card */
+  z-index: 0;
+}
+.animated-outline::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  padding: 3px;
+  background: linear-gradient(270deg, red, orange, yellow, green, cyan, blue, violet, red);
+  background-size: 400% 400%;
+  animation: borderFlow 6s linear infinite;
+
+  /* vendor-prefixed mask */
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+
+  /* standard mask property */
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+
+  z-index: -1;
+}
 
 
+/* Flow animation */
+@keyframes borderFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}

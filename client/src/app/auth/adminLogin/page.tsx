@@ -11,7 +11,7 @@ import { useAuth } from "@/app/context/AuthContext";
 
 const AdminLoginPage: React.FC = () => {
   const router = useRouter();
-  const { login } = useAuth(); 
+  const { login } = useAuth();
 
   // 🔐 Form state
   const [email, setEmail] = useState("");
@@ -103,40 +103,77 @@ const AdminLoginPage: React.FC = () => {
       setLoading(false);
     }
   };
+  // Fetch logo
+  const [logo, setLogo] = useState<{ imageUrl: string } | null>(null);
 
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/logo")
+      .then((res) => setLogo(res.data))
+      .catch(() => console.error("Failed to load logo"));
+  }, []);
   return (
     <div className="container d-flex align-items-center justify-content-center min-vh-100 px-3">
       <Toaster position="top-right" />
 
-      <div className="card shadow-lg p-4 w-100" style={{ maxWidth: "400px" }}>
+<div className="card shadow-sm p-4 w-100 animated-outline" style={{ maxWidth: "400px" }}>
         <div className="text-center mb-3">
-          <Image src="/logo.png" alt="Logo" width={90} height={80} />
+          <Link className="navbar-brand" href="/">
+            {logo && (
+              <Image
+                src={`http://localhost:5000/uploads/${logo.imageUrl}`}
+                alt="Logo"
+                width={150}
+                height={0}
+                unoptimized={true}
+                style={{ width: "120px", height: "60px", objectFit: "contain" }}
+              />
+            )}
+          </Link>
           <p className="text-muted">Please login to continue</p>
         </div>
 
         <form onSubmit={handleSubmit}>
           {/* Email Input */}
           <div className="mb-3">
-            <label className="form-label">Email address</label>
-            <input
-              type="email"
-              className="form-control"
-              placeholder="admin@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-            />
+            <label className="form-label">
+              Email address <span className="text-danger">*</span>
+            </label>
+            <div className="position-relative">
+              <input
+                type="email"
+                className="form-control"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+              />
+              <span
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  right: "10px",
+                  transform: "translateY(-50%)",
+                  color: "#999",
+                  pointerEvents: "none",
+                }}
+              >
+                <i className="fa fa-envelope" />
+              </span>
+            </div>
           </div>
 
           {/* Password Input */}
           <div className="mb-3">
-            <label className="form-label">Password</label>
+            <label className="form-label">
+              Password <span className="text-danger">*</span>
+            </label>
             <div className="position-relative">
               <input
                 type={showPassword ? "text" : "password"}
                 className="form-control"
-                placeholder="********"
+                placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -153,9 +190,7 @@ const AdminLoginPage: React.FC = () => {
                   color: "#999",
                 }}
               >
-                <i
-                  className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"}`}
-                />
+                <i className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"}`} />
               </span>
             </div>
           </div>
@@ -180,22 +215,28 @@ const AdminLoginPage: React.FC = () => {
 
           {/* Forgot Password Link */}
           <div className="text-end mb-2">
-            <Link
-              href="/auth/forgot-password"
-              className="text-danger text-decoration-none"
-            >
+            <Link href="/auth/forgot-password" className="text-danger">
               Forgot Password?
             </Link>
           </div>
 
           {/* Back to Home */}
+          {/* Back to Home */}
           <p className="text-center">
-            <Link href="/" className="text-primary text-decoration-none">
-              ← Back to Home
+            <Link
+              href="/"
+              className="text-primary text-decoration-none d-inline-flex align-items-center"
+            >
+              <i className="fa fa-home me-2"></i>
+              Back to Home
             </Link>
           </p>
+
+
         </form>
+
       </div>
+      
     </div>
   );
 };
