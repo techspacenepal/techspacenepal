@@ -173,7 +173,8 @@ export default function TopNavbar() {
     pathname === "/auth/Dashboard/teacherDashboard/grades" ||
     pathname === "/auth/Dashboard/teacherDashboard/teacherNotification" ||
     pathname === "/auth/Dashboard/teacherDashboard/todolist" ||
-    pathname === "/auth/Dashboard/adminDashboard" 
+    pathname === "/auth/Dashboard/adminDashboard" ||
+    pathname === "/auth/adminRegister" 
   ) {
     hideHeader = true;
   }
