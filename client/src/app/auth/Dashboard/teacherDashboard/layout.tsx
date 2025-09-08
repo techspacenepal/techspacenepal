@@ -1,21 +1,22 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
 import { MainNav } from '@/app/Component/main-nav';
 import { UserNav } from '@/app/Component/teacher-nav';
 import { instructor } from '@/lib/placeholder-data';
-import { List } from 'react-bootstrap-icons'; // Sidebar toggle icon
 import Image from 'next/image';
 import Link from 'next/link';
 import axios from 'axios';
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/app/context/AuthContext"; // 👈 useAuth import
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [logo, setLogo] = useState<{ imageUrl: string } | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+  const { logout } = useAuth(); // 👈 from context
 
   // Fetch logo
   useEffect(() => {
@@ -25,11 +26,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       .catch(() => console.error("Failed to load logo"));
   }, []);
 
-
   // Auto-close sidebar on route change
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
+
+  // Logout handler
+  const handleLogout = () => {
+    logout(); // clear auth context
+    router.push("/auth/adminLogin"); // redirect after logout
+  };
 
   return (
     <>
@@ -61,14 +67,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               )}
             </Link>
 
-
             <div className="ms-auto">
               <UserNav />
             </div>
-
           </div>
         </div>
       </header>
+
       {/* Overlay (click to close) */}
       {menuOpen && (
         <div
@@ -100,7 +105,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </button>
         </div>
 
-
         {/* Sidebar Links */}
         {[
           { href: "/studentdashboard", label: "Dashboard", icon: "bi bi-speedometer2" },
@@ -109,45 +113,44 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           { href: "/auth/Dashboard/teacherDashboard/grades", label: "Grades", icon: "bi bi-journal-check" },
           { href: "/auth/Dashboard/teacherDashboard/teacherNotification", label: "Send Notification", icon: "bi bi-megaphone" },
           { href: "/auth/Dashboard/teacherDashboard/todolist", label: "To Do List", icon: "bi bi-list-check" },
-
           { href: "/studentdashboard", label: "Settings", icon: "bi-gear" },
-          {
-            href: "/studentdashboard",
-            label: "Logout",
-            icon: "bi-box-arrow-right",
-            textClass: "text-danger fw-semibold",
-          },
-        ].map(({ href, label, icon, textClass }) => (
-          <Link
-            key={href + label}
-            href={href}
-            className={`d-block mb-3 text-decoration-none ${textClass || ""}`}
-            onClick={() => setMenuOpen(false)}
-          >
-            <i className={`bi ${icon} me-2`}></i> {label}
-          </Link>
-        ))}
+          { label: "Logout", icon: "bi bi-box-arrow-right", textClass: "text-danger fw-semibold", action: handleLogout },
+        ].map(({ href, label, icon, textClass, action }) =>
+          href ? (
+            <Link
+              key={href + label}
+              href={href}
+              className={`d-block mb-3 text-decoration-none ${textClass || ""}`}
+              onClick={() => setMenuOpen(false)}
+            >
+              <i className={`${icon} me-2`}></i> {label}
+            </Link>
+          ) : (
+            <button
+              key={label}
+              onClick={() => { action?.(); setMenuOpen(false); }}
+              className={`btn d-block mb-3 text-start bg-transparent border-0 p-0 ${textClass || ""}`}
+            >
+              <i className={`${icon} me-2`}></i> {label}
+            </button>
+          )
+        )}
       </div>
 
       <div className="d-flex min-vh-100">
-
         {/* Sidebar */}
         <aside
           className={`bg-light border-end d-flex flex-column justify-content-between p-3 ${collapsed ? 'collapsed-sidebar' : ''
-            } d-none d-lg-flex`}  // 👈 Added here
+            } d-none d-lg-flex`}
           style={{ width: collapsed ? '70px' : '250px', transition: 'width 0.3s' }}
         >
-          {/* Sidebar Header */}
           <div>
-            {/* Main Navigation */}
             <MainNav collapsed={collapsed} />
           </div>
         </aside>
 
-
         {/* Main Content */}
         <div className="flex-grow-1 d-flex flex-column">
-          {/* Children/Page Content */}
           <main className="p-4 flex-grow-1 bg-light">{children}</main>
         </div>
       </div>

@@ -174,7 +174,8 @@ export default function TopNavbar() {
     pathname === "/auth/Dashboard/teacherDashboard/teacherNotification" ||
     pathname === "/auth/Dashboard/teacherDashboard/todolist" ||
     pathname === "/auth/Dashboard/adminDashboard" ||
-    pathname === "/auth/adminRegister"
+    pathname === "/auth/adminRegister" ||
+    pathname === "/auth/Dashboard/userDashboard"
   ) {
     hideHeader = true;
   }
@@ -267,7 +268,7 @@ export default function TopNavbar() {
                         width={120}
                         height={60}
                         unoptimized={true}
-                        style={{ width: '120px', height: '60px', objectFit: 'cover' }}
+                        style={{ width: '120px', height: '60px', objectFit: 'contain' }}
                       />
 
                     ) : (

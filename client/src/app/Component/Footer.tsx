@@ -128,7 +128,9 @@ const Footer = () => {
         pathname === "/auth/Dashboard/teacherDashboard/teacherNotification" ||
         pathname === "/auth/Dashboard/teacherDashboard/todolist" ||
         pathname === "/auth/Dashboard/adminDashboard" ||
-        pathname === "/auth/adminRegister"
+        pathname === "/auth/adminRegister" ||
+        pathname === "/auth/Dashboard/userDashboard"
+
 
     ) {
         hideHeader = true;
@@ -164,7 +166,7 @@ const Footer = () => {
                                         width={160}
                                         height={80}
                                         unoptimized
-                                        style={{ objectFit: "cover", width: "160px", height: "80px" }}
+                                        style={{ objectFit: "contain", width: "160px", height: "80px" }}
                                     />
                                 ) : (
                                     <span>Loading logo...</span>

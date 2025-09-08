@@ -1,4 +1,5 @@
 "use client";
+import { usePathname } from "next/navigation";
 
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
@@ -15,6 +16,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/context/AuthContext";
+import Image from "next/image";
 
 interface Inquiry {
   _id: string;
@@ -217,12 +219,246 @@ const Dashboard = () => {
     }
   };
 
+  const [logo, setLogo] = useState<{ imageUrl: string } | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Fetch logo
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/logo")
+      .then((res) => setLogo(res.data))
+      .catch(() => console.error("Failed to load logo"));
+  }, []);
+
+
+  // Auto-close sidebar on route change
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+
+
+  // Greeting function
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good Morning";
+    if (hour < 18) return "Good Afternoon";
+    return "Good Evening";
+  };
+
+
+  // ✅ Single user state
+  const [currentUser, setCurrentUser] = useState<{ name: string; image?: string }>({
+    name: "",
+    image: ""
+  });
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const token = Cookies.get("adminToken");
+        if (!token) return;
+
+        const res = await axios.get("http://localhost:5000/api/auth/me", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        // 👇 Adjust this depending on your backend response
+        const user = res.data.user || res.data;
+
+        // ✅ Ensure correct name
+        setCurrentUser({
+          name: user.username || user.fullName || user.name || "Admin",
+          image: user.image || ""
+        });
+
+        setUserInitials(getInitials(user.username || user.fullName || user.name || "Admin"));
+      } catch (err) {
+        console.error("Failed to fetch current user:", err);
+      }
+    };
+
+    loadUserData();
+  }, []);
+
+
+
+const navItems = [
+  { href: "/auth/Dashboard/userDashboard", icon: "bi-speedometer2", text: "Dashboard", textClass: "text-dark" },
+  { href: "/auth/admin/allUser", icon: "bi-people", text: "Users", textClass: "text-dark" },
+  { href: "/auth/admin/allContact", icon: "bi-calendar", text: "Contacts", textClass: "text-dark" },
+  { href: "/auth/admin/allinquiry", icon: "bi-chat-square-text", text: "Inquiries", textClass: "text-dark" },
+  { href: "/auth/admin/services", icon: "bi-briefcase", text: "Services", textClass: "text-dark" },
+  { href: "/auth/admin/Gallery", icon: "bi-images", text: "Success Gallery", textClass: "text-dark" },
+  { href: "/auth/admin/testimonial", icon: "bi-chat-quote", text: "Testimonial", textClass: "text-dark" },
+  { href: "/auth/admin/teams", icon: "bi-people-fill", text: "Teams", textClass: "text-dark" },
+  isAuthenticated
+    ? { icon: "bi-box-arrow-right", text: "Logout", action: logout, textClass: "text-danger fw-bold" }
+    : { href: "/auth/adminLogin", icon: "bi-box-arrow-in-right", text: "Login", textClass: "text-success fw-bold" },
+];
+
+
   return (
     <>
+      {/* Header */}
+      <header
+        className="w-100 sticky-top bg-light border-bottom px-3 py-2"
+      >
+        <div className="container-fluid">
+          <div className="d-flex align-items-center justify-content-between">
+            {/* Left side: Toggle + Title + Logo */}
+            <div className="d-flex align-items-center gap-3">
+              {/* Toggle */}
+              <button
+                className="btn btn-primary p-2 rounded d-flex align-items-center justify-content-center shadow-sm"
+                type="button"
+                onClick={() => setMenuOpen(true)}
+                style={{ width: "44px", height: "44px", minWidth: "44px" }}
+              >
+                <i className="bi bi-list fs-4 text-white"></i>
+              </button>
+
+              {/* Title */}
+              <h1 className="h4 h3-md fw-bold mb-0 d-none d-lg-block">Dashboard</h1>
+
+              {/* Logo */}
+              <Link href="/" className="navbar-brand ms-2">
+                {logo && (
+                  <Image
+                    src={`http://localhost:5000/uploads/${logo.imageUrl}`}
+                    alt="Logo"
+                    width={150}
+                    height={0}
+                    unoptimized={true}
+                    style={{ width: "120px", height: "60px", objectFit: "contain" }}
+                  />
+                )}
+              </Link>
+            </div>
+            <div className="text-center text-lg-center d-none d-lg-flex flex-column align-items-lg-center">
+              <h2 className="h5 fw-bold mb-1">
+                {getGreeting()}, {currentUser?.name} 👋
+              </h2>
+
+              <p className="text-muted mb-0">
+                Welcome to TechSpace Nepal Dashboard
+              </p>
+            </div>
+
+
+
+            {/* Right side: Notifications + User */}
+            <div className="d-flex gap-3 align-items-center position-relative">
+              <button
+                className="btn btn-link position-relative p-0 border-0"
+                onClick={handleBellClick}
+              >
+                <Bell size={22} className="text-dark" />
+                {unreadCount > 0 && (
+                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+              {showDropdown && (
+                <div
+                  ref={dropdownRef}
+                  className="dropdown-menu dropdown-menu-end show p-2 shadow"
+                  style={{ minWidth: "280px", top: "110%", left: "-230px" }}
+                >
+                  <h6 className="dropdown-header">Notifications</h6>
+                  {[...recentContacts, ...recentInquiries]
+                    .slice(0, 5)
+                    .map((item, i) => (
+                      <div key={i} className="dropdown-item small">
+                        <strong>{item.name}</strong> sent a message
+                        <br />
+                        <small className="text-muted">
+                          {new Date(item.createdAt).toLocaleString("en-GB")}
+                        </small>
+                      </div>
+                    ))}
+                </div>
+              )}
+              <div
+                className="rounded-circle bg-dark text-white d-flex justify-content-center align-items-center"
+                style={{ width: 32, height: 32, fontSize: 14 }}
+              >
+                {userInitials}
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </header>
+
+      {/* Overlay (click to close) */}
+      {menuOpen && (
+        <div
+          className="fixed-top bg-dark bg-opacity-50"
+          style={{ zIndex: 1039 }}
+          onClick={() => setMenuOpen(false)}
+        />
+      )}
+
+      {/* Sidebar responsive devices only */}
+      <div
+        className={`fixed-top bg-light border-end  h-100 p-3`}
+        style={{
+          width: "260px",
+          transform: menuOpen ? "translateX(0)" : "translateX(-100%)",
+          transition: "transform 0.3s ease-in-out",
+          zIndex: 1040,
+        }}
+      >
+        {/* Sidebar Header with Close Button */}
+        <div className="d-flex justify-content-between  align-items-center pb-3">
+          <h5 className="mb-0">Menu</h5>
+          <button
+            className="btn btn-sm btn-primary"
+            onClick={() => setMenuOpen(false)}
+            aria-label="Close"
+          >
+            <i className="bi bi-x-lg"></i>
+          </button>
+        </div>
+
+        {/* Navigation Links */}
+        {/* Navigation Links */}
+        <nav className="nav flex-column gap-2 py-3 border-top">
+          {navItems.map((item, index) =>
+            item.href ? (
+              <Link
+                key={index}
+                href={item.href}
+                className={`d-flex align-items-center gap-2 text-decoration-none ${item.textClass || ""}`}
+                onClick={() => setMenuOpen(false)}
+              >
+                <i className={`bi ${item.icon} me-2`}></i>
+                <span>{item.text}</span>
+              </Link>
+            ) : (
+              <button
+                key={index}
+                onClick={() => {
+                  item.action?.();
+                  setMenuOpen(false);
+                }}
+                className={`d-flex align-items-center gap-2 text-start p-0 border-0 bg-transparent ${item.textClass || ""}`}
+              >
+                <i className={`bi ${item.icon} me-2`}></i>
+                <span>{item.text}</span>
+              </button>
+            )
+          )}
+        </nav>
+
+
+      </div>
+
       <div className="d-flex min-vh-100 bg-light">
         {/* Sidebar */}
-        <aside className="sidebar bg-dark text-white p-3">
-          <h2 className="mb-4 sidebar-title">Admin Panel</h2>
+        <aside className="d-lg-block d-none sidebar bg-dark text-white p-3">
           <nav className="nav flex-column gap-2">
             <Link
               href="/auth/Dashboard/userDashboard"
@@ -305,48 +541,14 @@ const Dashboard = () => {
             className="container px-4"
             style={{ maxWidth: "1280px", margin: "0 auto" }}
           >
-            {/* Header */}
-            <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap">
-              <h1 className="h3 fw-bold mb-2 mb-md-0">Dashboard</h1>
-              <div className="d-flex gap-3 align-items-center position-relative">
-                <button
-                  className="btn btn-link position-relative p-0 border-0"
-                  onClick={handleBellClick}
-                >
-                  <Bell size={22} className="text-dark" />
-                  {unreadCount > 0 && (
-                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                      {unreadCount}
-                    </span>
-                  )}
-                </button>
-                {showDropdown && (
-                  <div
-                    ref={dropdownRef}
-                    className="dropdown-menu dropdown-menu-end show p-2 shadow"
-                    style={{ minWidth: "280px", top: "110%", left: "-230px" }}
-                  >
-                    <h6 className="dropdown-header">Notifications</h6>
-                    {[...recentContacts, ...recentInquiries]
-                      .slice(0, 5)
-                      .map((item, i) => (
-                        <div key={i} className="dropdown-item small">
-                          <strong>{item.name}</strong> sent a message
-                          <br />
-                          <small className="text-muted">
-                            {new Date(item.createdAt).toLocaleString("en-GB")}
-                          </small>
-                        </div>
-                      ))}
-                  </div>
-                )}
-                <div
-                  className="rounded-circle bg-dark text-white d-flex justify-content-center align-items-center"
-                  style={{ width: 32, height: 32, fontSize: 14 }}
-                >
-                  {userInitials}
-                </div>
-              </div>
+            <div className="mb-4 text-center text-lg-center d-lg-none flex-column align-items-lg-center">
+              <h2 className="h5 fw-bold mb-1">
+                {getGreeting()}, {currentUser?.name} 👋
+              </h2>
+
+              <p className="text-muted mb-0">
+                Welcome to TechSpace Nepal Dashboard
+              </p>
             </div>
 
             {/* Stats Cards */}
@@ -406,22 +608,7 @@ const Dashboard = () => {
                   <div className="card-body">
                     <h5 className="card-title mb-3">Recent Contacts</h5>
                     <ul className="list-group list-group-flush">
-                      {/* {recentContacts
-                        .sort(
-                          (a, b) =>
-                            new Date(b.createdAt) - new Date(a.createdAt)
-                        )
-                        .slice(0, 3)
-                        .map((con) => (
-                          <li key={con._id} className="list-group-item">
-                            <strong>{con.name}</strong> - {con.course}
-                            <br />
-                            <small className="text-muted">
-                              {new Date(con.createdAt).toLocaleDateString()}
-                            </small>
-                          </li>
-                        ))} */}
-
+                      
                       {recentContacts
                         .sort(
                           (a, b) =>
