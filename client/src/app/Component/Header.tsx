@@ -17,10 +17,11 @@ interface Course {
 const slugify = (text?: string | null) =>
   (text ?? "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
 
-export default function TopNavbar() {
+export default function Header() {
 
   const [courses, setCourses] = useState<Course[]>([]);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+   const pathname = usePathname();
 
   // Fetch courses on mount
   useEffect(() => {
@@ -144,11 +145,18 @@ export default function TopNavbar() {
   }, []);
 
 
+ const [menuOpen, setMenuOpen] = useState(false);
+
+
+
+  // Auto-close sidebar on route change
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
 
 
 
 
-  const pathname = usePathname();
 
   // single declaration using let for reassign
   let hideHeader = false;
@@ -186,8 +194,14 @@ export default function TopNavbar() {
 
   // later in render
   if (hideHeader || hideFooter) return null;
+
+
+
+ 
+
   return (
     <>
+
 
       <header>
 
@@ -249,10 +263,187 @@ export default function TopNavbar() {
             </div>
 
 
-            <button className="navbar-toggler bg-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation" style={{ border: "none", outline: "none", boxShadow: "none" }}>
-              <span className="navbar-toggler-icon" />
-            </button>
 
+
+
+
+            {/* Sidebar responsive devices only */}
+            <div
+              className={`fixed-top bg-light border-end  h-100 p-3`}
+              style={{
+                width: "260px",
+                transform: menuOpen ? "translateX(0)" : "translateX(-100%)",
+                transition: "transform 0.3s ease-in-out",
+                zIndex: 1040,
+              }}
+            >
+              {/* Sidebar Header with Close Button */}
+              <div className="d-flex justify-content-between  align-items-center pb-3">
+                <h5 className="mb-0">Menu</h5>
+                <button
+                  className="btn btn-sm btn-primary"
+                  onClick={() => setMenuOpen(false)}
+                  aria-label="Close"
+                >
+                  <i className="bi bi-x-lg"></i>
+                </button>
+              </div>
+              <nav className="nav flex-column gap-2 py-3 border-top">
+                <Link
+                  href="/"
+                  className="d-flex align-items-center gap-2 text-decoration-none"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <i className="bi bi-house me-2"></i>
+                  <span>Home</span>
+                </Link>
+
+                <Link
+                  href="/about-us"
+                  className="d-flex align-items-center gap-2 text-decoration-none"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <i className="bi bi-info-circle me-2"></i>
+                  <span>About Us</span>
+                </Link>
+
+
+                <Link
+                  href="/courses"
+                  className="d-flex align-items-center gap-2 text-decoration-none"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <i className="bi bi-journal-bookmark me-2"></i>
+                  <span>All Courses</span>
+                </Link>
+
+
+                <Link
+                  href="/our-services"
+                  className="d-flex align-items-center gap-2 text-decoration-none"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <i className="bi bi-gear me-2"></i>
+                  <span>Services</span>
+                </Link>
+
+                <Link
+                  href="/success-gallery"
+                  className="d-flex align-items-center gap-2 text-decoration-none"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <i className="bi bi-trophy me-2"></i>
+                  <span>Success Story</span>
+                </Link>
+
+                <Link
+                  href="/our-team"
+                  className="d-flex align-items-center gap-2 text-decoration-none"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <i className="bi bi-people me-2"></i>
+                  <span>Our Team</span>
+                </Link>
+
+                <Link
+                  href="/upcomming-classes"
+                  className="d-flex align-items-center gap-2 text-decoration-none"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <i className="bi bi-calendar-event me-2"></i>
+                  <span>
+                    Upcoming Classes <span className="text-danger">({classes.length})</span>
+                  </span>
+                </Link>
+
+                <Link
+                  href="/testimonial"
+                  className="d-flex align-items-center gap-2 text-decoration-none"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <i className="bi bi-chat-left-text me-2"></i>
+                  <span>Testimonial</span>
+                </Link>
+
+                <Link
+                  href="/blog"
+                  className="d-flex align-items-center gap-2 text-decoration-none"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <i className="bi bi-pencil-square me-2"></i>
+                  <span>Blog</span>
+                </Link>
+
+                <Link
+                  href="/contact-us"
+                  className="d-flex align-items-center gap-2 text-decoration-none"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <i className="bi bi-envelope me-2"></i>
+                  <span>Contact Us</span>
+                </Link>
+
+                {/* Dashboard (Auth check) */}
+                {isAuthenticated &&
+                  ["admin", "user", "student", "teacher"].includes(user?.role ?? "") && (
+                    <Link
+                      href={
+                        user?.role === "admin"
+                          ? "/auth/Dashboard/adminDashboard"
+                          : user?.role === "student"
+                            ? "/studentdashboard"
+                            : user?.role === "teacher"
+                              ? "/auth/Dashboard/teacherDashboard"
+                              : "/auth/Dashboard/userDashboard"
+                      }
+                      className="d-flex align-items-center gap-2 text-decoration-none"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      <i className="bi bi-speedometer2 me-2"></i>
+                      <span>Dashboard</span>
+                    </Link>
+                  )}
+
+                {/* Buttons */}
+                <Link
+                  href="/inquiry"
+                  className="d-inline-flex align-items-center justify-content-center gap-2 btn"
+                  style={{
+                    backgroundColor: "#0057d8",
+                    color: "#ffffff",
+                    fontWeight: 500,
+                    padding: "12px 17px",
+                    borderRadius: "8px",
+                    height: "48px",
+                    textDecoration: "none",
+                  }}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <i className="bi bi-arrow-right"></i>
+                  <span>Send Inquiry</span>
+                </Link>
+
+                <Link
+                  href="/auth/studentLogin"
+                  className="d-inline-flex align-items-center justify-content-center gap-2 btn bg-success"
+                  style={{
+                    color: "#ffffff",
+                    fontWeight: 700,
+                    padding: "12px 17px",
+                    borderRadius: "8px",
+                    height: "48px",
+                    textDecoration: "none",
+                  }}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <i className="fa-regular fa-user fs-5"></i>
+                </Link>
+              </nav>
+
+
+
+
+            </div>
 
             <div className="offcanvas offcanvas-end" tabIndex={-1} id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" style={{
               height: '100vh',
@@ -484,11 +675,28 @@ export default function TopNavbar() {
 
               </div>
             </div>
+            {/* Toggle */}
+            <button
+              className="d-lg-none btn btn-primary p-2 rounded d-flex align-items-center justify-content-center shadow-sm"
+              type="button"
+              onClick={() => setMenuOpen(true)}
+              style={{ width: "44px", height: "44px", minWidth: "44px" }}
+            >
+              <i className="bi bi-list fs-4 text-white"></i>
+            </button>
 
           </div>
         </nav>
 
       </header>
+      {/* Overlay (click to close) */}
+      {menuOpen && (
+        <div
+          className="fixed-top bg-dark bg-opacity-50"
+          style={{ zIndex: 1039 }}
+          onClick={() => setMenuOpen(false)}
+        />
+      )}
 
     </>
   );
