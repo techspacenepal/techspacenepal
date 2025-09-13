@@ -1,12 +1,12 @@
-'use client';
+import BlogList from "../../BlogList";
 
-import BlogList from '../../page';
+export default async function BlogPagination({
+  params,
+}: {
+  params: Promise<{ page: string }>;
+}) {
+  const { page } = await params;
 
-interface PageProps {
-  params: { page: string };
-}
-
-export default function BlogPagination({ params }: PageProps) {
-  const pageNumber = parseInt(params.page, 15) || 1;
+  const pageNumber = Number(page) || 1;
   return <BlogList page={pageNumber} />;
 }

@@ -34,56 +34,62 @@ export default function ServicesSection() {
                     <h2
                         className="fw-bold text-uppercase"
                         style={{
-                            fontFamily: 'Poppins, sans-serif',
-                            fontSize: '1.8rem',
-                            letterSpacing: '1px',
-                            color: '#1e293b',
+                            fontFamily: "Poppins, sans-serif",
+                            fontSize: "clamp(1.2rem, 2vw + 0.5rem, 2.2rem)", // 👈 responsive font-size
+                            letterSpacing: "1px",
+                            color: "#1e293b",
                         }}
                     >
                         IT services offered by Tech Space Nepal
                     </h2>
-
                 </div>
+
 
                 {/* Desktop & Tablet */}
                 <Row className="g-4 d-none d-md-flex">
                     {services.slice(0, 6).map((service, index) => (
                         <Col key={index} xs={12} sm={6} lg={4}>
                             <div
-                                className="card h-100 rounded overflow-hidden p-4 services-card-hover d-flex flex-column"
+                                className="card h-100 shadow-sm rounded overflow-hidden p-4 services-card-hover d-flex flex-column service-card"
                                 style={{
                                     border: "0.3px solid #dee2e6",
-                                    boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)",
-                                    transition: "box-shadow 0.7s ease",
+                                    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.08)",
+                                    transition: "box-shadow 0.5s ease",
+                                    backgroundColor: "#fff",
+                                    position: "relative",
+                                    overflow: "hidden",
                                 }}
                                 onMouseEnter={(e) => {
-                                    e.currentTarget.style.boxShadow = "0 0 35px rgba(0, 0, 0, 0.25)";
+                                    e.currentTarget.style.boxShadow =
+                                        "0 6px 20px rgba(0, 0, 0, 0.18)";
                                 }}
                                 onMouseLeave={(e) => {
-                                    e.currentTarget.style.boxShadow = "0 0 8px rgba(0, 0, 0, 0.1)";
+                                    e.currentTarget.style.boxShadow =
+                                        "0 2px 10px rgba(0, 0, 0, 0.08)";
                                 }}
                             >
+
                                 {/* ICON - top-left */}
                                 <div
-                                    className="mx-auto d-flex align-items-center justify-content-center service-icon rounded-circle"
                                     style={{
-                                        width: '100px',
-                                        height: '100px',
-                                        fontSize: '2rem',
+
+                                        fontSize: "3rem",
+                                        color: "black",
                                     }}
                                     dangerouslySetInnerHTML={{ __html: service.icon }}
                                 />
 
                                 {/* Title */}
-                                <Link href={`/services/${slugify(service.title)}`}
-                                    className="fw-semibold text-center pt-3 services-tittle-color text-decoration-none"
+                                <Link
+                                    href={`/services/${slugify(service.title)}`}
+                                    className="fw-bold pt-3 services-tittle-color text-decoration-none"
                                     style={{
-                                        fontSize: '1.50rem',
-                                        fontWeight: 700,
-                                        letterSpacing: '0.6px',
-                                        textTransform: 'capitalize',
-                                        lineHeight: '1.4',
-                                        textShadow: '0 1px 2px rgba(0,0,0,0.05)',
+                                        fontSize: "1.5rem",
+                                        fontWeight: 800, // 👈 bold font
+                                        letterSpacing: "0.5px",
+                                        textTransform: "capitalize",
+                                        lineHeight: "1.4",
+                                        color: "#111827", // clean black
                                     }}
                                 >
                                     {service.title}
@@ -91,49 +97,37 @@ export default function ServicesSection() {
 
                                 {/* Description */}
                                 <p
-                                    className="text-muted small mb-0 text-center"
+                                    className="text-muted small mb-0"
                                     style={{
                                         fontFamily: "'Roboto', sans-serif",
-                                        fontSize: '1rem',
-                                        lineHeight: '1.7',
-                                        color: '#475569',
+                                        fontSize: "1rem",
+                                        lineHeight: "1.7",
+                                        color: "#475569",
                                         fontWeight: 400,
-                                        textTransform: 'capitalize',
-                                        letterSpacing: '0.1px',
-                                        wordSpacing: '0.1px',
-                                        marginTop: '0.5rem',
-                                        textShadow: '0 1px 1px rgba(0, 0, 0, 0.05)',
+                                        marginTop: "0.5rem",
                                     }}
                                 >
-                                    {service.desc.split(' ').slice(0, 15).join(' ')}
+                                    {service.desc.split(" ").slice(0, 15).join(" ")}
                                 </p>
 
-                                {/* Push button to bottom */}
-                                <div className="mt-auto pt-3 mx-auto">
+                                {/* Button */}
+                                <div className="pt-3 mt-auto">
                                     <Link
-                                        href={`/services/${slugify(service.title)}`} className="services-btn text-decoration-none">
-                                        <p>Read more</p>
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-6 w-6"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                            strokeWidth="4"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M14 5l7 7m0 0l-7 7m7-7H3"
-                                            ></path>
-                                        </svg>
+                                        href={`/services/${slugify(service.title)}`}
+                                        className=" text-decoration-none d-inline-flex align-items-center gap-1"
+                                        style={{
+                                            color: "#2563eb",
+                                            fontWeight: 500,
+                                            fontSize: "0.95rem",
+                                        }}
+                                    >
+                                        <span>Read more</span>
                                     </Link>
                                 </div>
                             </div>
-
-
                         </Col>
                     ))}
+
                     <div className="text-center mt-5 pb-0">
                         <Link
                             href="/services"
@@ -150,46 +144,45 @@ export default function ServicesSection() {
                                 gap: '8px'
                             }}
                         >
-                            Explore All Services 
+                            Explore All Services
                         </Link>
                     </div>
                 </Row>
 
-                {/* Mobile Scroll */}
                 <div className="d-md-none overflow-x-auto px-2">
                     <div className="d-flex flex-nowrap gap-3">
                         {services.map((service, index) => (
                             <div
                                 key={index}
-                                className="flex-shrink-0 text-center rounded p-3 services-card-hover"
+                                className="card flex-shrink-0 shadow-sm rounded overflow-hidden p-4 services-card-hover d-flex flex-column service-card"
                                 style={{
-                                    width: '345px',
+                                    width: "320px",
+                                    minHeight: "360px",
                                     border: "0.3px solid #dee2e6",
-                                    boxShadow: "0 0 8px rgba(0, 0, 0, 0.1)",
-                                    transition: "box-shadow 0.7s ease",
+                                    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.08)",
+                                    transition: "box-shadow 0.5s ease",
+                                    backgroundColor: "#fff",
+                                    position: "relative",
+                                    overflow: "hidden",
                                 }}
-
                             >
-
+                                {/* ICON */}
                                 <div
-                                    className="mx-auto d-flex align-items-center justify-content-center service-icon rounded-circle"
-                                    style={{
-                                        width: '100px',
-                                        height: '100px',
-                                        fontSize: '2rem',
-                                    }}
+                                    style={{ fontSize: "2.5rem", color: "black" }}
                                     dangerouslySetInnerHTML={{ __html: service.icon }}
                                 />
+
+                                {/* Title */}
                                 <Link
                                     href={`/services/${slugify(service.title)}`}
-                                    className="fw-semibold text-center pt-3 services-tittle-color text-decoration-none"
+                                    className="fw-bold pt-3 services-tittle-color text-decoration-none"
                                     style={{
-                                        fontSize: '1.50rem',
-                                        fontWeight: 700,
-                                        letterSpacing: '0.6px',
-                                        textTransform: 'capitalize',
-                                        lineHeight: '1.4',
-                                        textShadow: '0 1px 2px rgba(0,0,0,0.05)',
+                                        fontSize: "1.3rem",
+                                        fontWeight: 800,
+                                        letterSpacing: "0.5px",
+                                        textTransform: "capitalize",
+                                        lineHeight: "1.4",
+                                        color: "#111827",
                                     }}
                                 >
                                     {service.title}
@@ -197,49 +190,41 @@ export default function ServicesSection() {
 
                                 {/* Description */}
                                 <p
-                                    className="text-muted small mb-0 text-center"
+                                    className="text-muted small mb-0"
                                     style={{
                                         fontFamily: "'Roboto', sans-serif",
-                                        fontSize: '1rem',
-                                        lineHeight: '1.7',
-                                        color: '#475569',
+                                        fontSize: "0.95rem",
+                                        lineHeight: "1.6",
+                                        color: "#475569",
                                         fontWeight: 400,
-                                        textTransform: 'capitalize',
-                                        letterSpacing: '0.1px',
-                                        wordSpacing: '0.1px',
-                                        marginTop: '0.5rem',
-                                        textShadow: '0 1px 1px rgba(0, 0, 0, 0.05)',
+                                        marginTop: "0.5rem",
                                     }}
                                 >
-                                    {service.desc.split(' ').slice(0, 15).join(' ')}
+                                    {service.desc.split(" ").slice(0, 35).join(" ")}
                                 </p>
-                                {/* Push button to bottom */}
-                                <div className="mt-auto pt-3 mx-auto d-flex justify-content-center">
+
+                                {/* Button */}
+                                <div className="pt-3">
                                     <Link
-                                        href={`/services/${slugify(service.title)}`} className="services-btn text-decoration-none mb-0">
-                                        <p className="mb-0">Read more</p>
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-6 w-6"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                            strokeWidth="4"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M14 5l7 7m0 0l-7 7m7-7H3"
-                                            ></path>
-                                        </svg>
+                                        href={`/services/${slugify(service.title)}`}
+                                        className=" text-decoration-none d-inline-flex align-items-center gap-1"
+                                        style={{
+                                            color: "#2563eb",
+                                            fontWeight: 500,
+                                            fontSize: "0.95rem",
+                                        }}
+                                    >
+                                        <span>Read more</span>
                                     </Link>
                                 </div>
-
 
                             </div>
                         ))}
                     </div>
                 </div>
+
+
+
 
             </Container>
         </section>
