@@ -7,8 +7,9 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 
 import { FaSearch } from "react-icons/fa";
-import SearchCourses from "./SearchCourses";
-import { FaUser } from 'react-icons/fa';
+import dynamic from "next/dynamic";
+
+const SearchCourses = dynamic(() => import("./SearchCourses"), { ssr: false });
 
 interface Course {
   category: string;

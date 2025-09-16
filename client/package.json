@@ -45,6 +45,7 @@
     "firebase": "^11.9.0",
     "formik": "^2.4.6",
     "framer-motion": "^12.17.0",
+    "genkit": "^1.19.2",
     "jquery": "^3.7.1",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",

@@ -61,11 +61,12 @@ export function AiImproverForm() {
     }
 
     const response = await getImprovedContent({
-      courseTitle: selectedCourse.title,
+      courseTitle: selectedCourse.title ?? selectedCourse.name ?? "",
       courseContent: values.courseContent,
       studentFeedback: values.studentFeedback,
       performanceData: values.performanceData,
     });
+
 
     setIsLoading(false);
 

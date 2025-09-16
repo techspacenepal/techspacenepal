@@ -1,5 +1,3 @@
-import React from "react";
-import axios from "axios";
 import Link from "next/link";
 import { FaChevronRight } from "react-icons/fa";
 
@@ -14,23 +12,21 @@ interface Service {
 }
 
 function slugify(title: string) {
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)+/g, "");
+  return title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
 }
 
-export default async function ServiceDetailPage({ params }: { params: { slug: string } }) {
+// Use 'any' for now to satisfy Next.js types
+export default async function ServiceDetailPage({ params }: { params: any }) {
   const { slug } = params;
 
-  const res = await axios.get<Service[]>("http://localhost:5000/api/services");
+  const res = await fetch("http://localhost:5000/api/services");
+  const services: Service[] = await res.json();
 
-  const service = res.data.find((s) => slugify(s.title) === slug);
+  const service = services.find((s) => slugify(s.title) === slug);
 
   if (!service) {
     return <div className="p-5">Service not found</div>;
   }
-
   return (
     <>
       <section
@@ -88,7 +84,6 @@ export default async function ServiceDetailPage({ params }: { params: { slug: st
                   <li style={{ color: "#aaa" }}>{service.title}</li>
                 </ul>
               </nav>
-
             </div>
           </div>
         </div>
@@ -109,20 +104,17 @@ export default async function ServiceDetailPage({ params }: { params: { slug: st
                   src={`http://localhost:5000${service.imageUrl}`}
                   alt={service.heading || service.title}
                   className="img-fluid rounded shadow"
-                  style={{
-                    maxWidth: "100%",
-                  }}
+                  style={{ maxWidth: "100%" }}
                 />
               </div>
 
-              {service.content &&
+              {service.content && (
                 <p
                   className="text-muted"
-                  dangerouslySetInnerHTML={{
-                    __html: service.content || ""
-                  }}
+                  dangerouslySetInnerHTML={{ __html: service.content || "" }}
                 ></p>
-              }
+              )}
+
               <div className="row justify-content-center">
                 <div className="col-12 col-lg-9">
                   <h1
@@ -148,5 +140,4 @@ export default async function ServiceDetailPage({ params }: { params: { slug: st
       </section>
     </>
   );
-
 }

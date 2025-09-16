@@ -9,61 +9,107 @@ export const mockStudent: Student = {
   enrolledCoursesIds: ['course1', 'course2', 'course3', 'course4'],
 };
 
+
 export const mockCourses: Course[] = [
   {
-    id: 'course1',
-    name: 'Introduction to Web Development',
-    description: 'Learn the fundamentals of HTML, CSS, and JavaScript to build modern websites.',
-    instructor: 'Dr. Emily Carter',
+    id: "course1",
+    name: "Introduction to Web Development",
+    description:
+      "Learn the fundamentals of HTML, CSS, and JavaScript to build modern websites.",
+    instructor: "Dr. Emily Carter",
     progress: 75,
-    grade: 'A-',
-    imageUrl: 'https://placehold.co/600x400.png',
-    dataAiHint: 'web development',
+    grade: "A-",
+    imageUrl: "https://placehold.co/600x400.png",
+    dataAiHint: "web development",
+
+    // ⬇️ required fields add गरियो
+    content: "Full course content about HTML, CSS, and JavaScript basics.",
+    studentCount: 200,
+    status: "Published",
+    thumbnail: "https://placehold.co/300x200.png",
+
     modules: [
-      { id: 'm1c1', title: 'HTML Basics', content: 'Content for HTML Basics' },
-      { id: 'm2c1', title: 'CSS Fundamentals', content: 'Content for CSS Fundamentals' },
+      { id: "m1c1", title: "HTML Basics", content: "Content for HTML Basics" },
+      {
+        id: "m2c1",
+        title: "CSS Fundamentals",
+        content: "Content for CSS Fundamentals",
+      },
     ],
   },
   {
-    id: 'course2',
-    name: 'Advanced JavaScript Concepts',
-    description: 'Dive deep into closures, promises, async/await, and other advanced JS topics.',
-    instructor: 'Prof. John Smith',
+    id: "course2",
+    name: "Advanced JavaScript Concepts",
+    description:
+      "Dive deep into closures, promises, async/await, and other advanced JS topics.",
+    instructor: "Prof. John Smith",
     progress: 40,
-    grade: 'In Progress',
-    imageUrl: 'https://placehold.co/600x400.png',
-    dataAiHint: 'javascript programming',
+    grade: "In Progress",
+    imageUrl: "https://placehold.co/600x400.png",
+    dataAiHint: "javascript programming",
+
+    content: "Full course content on advanced JavaScript concepts.",
+    studentCount: 150,
+    status: "Draft",
+    thumbnail: "https://placehold.co/300x200.png",
+
     modules: [
-      { id: 'm1c2', title: 'Closures', content: 'Content for Closures' },
-      { id: 'm2c2', title: 'Async/Await', content: 'Content for Async/Await' },
+      { id: "m1c2", title: "Closures", content: "Content for Closures" },
+      { id: "m2c2", title: "Async/Await", content: "Content for Async/Await" },
     ],
   },
   {
-    id: 'course3',
-    name: 'Data Structures and Algorithms',
-    description: 'Understand common data structures and algorithms for efficient problem-solving.',
-    instructor: 'Dr. Sarah Lee',
+    id: "course3",
+    name: "Data Structures and Algorithms",
+    description:
+      "Understand common data structures and algorithms for efficient problem-solving.",
+    instructor: "Dr. Sarah Lee",
     progress: 90,
-    grade: 'A',
-    imageUrl: 'https://placehold.co/600x400.png',
-    dataAiHint: 'data structures',
+    grade: "A",
+    imageUrl: "https://placehold.co/600x400.png",
+    dataAiHint: "data structures",
+
+    content: "Full course content on data structures and algorithms.",
+    studentCount: 300,
+    status: "Published",
+    thumbnail: "https://placehold.co/300x200.png",
+
     modules: [
-      { id: 'm1c3', title: 'Arrays and Strings', content: 'Content for Arrays and Strings' },
-      { id: 'm2c3', title: 'Trees and Graphs', content: 'Content for Trees and Graphs' },
+      {
+        id: "m1c3",
+        title: "Arrays and Strings",
+        content: "Content for Arrays and Strings",
+      },
+      {
+        id: "m2c3",
+        title: "Trees and Graphs",
+        content: "Content for Trees and Graphs",
+      },
     ],
   },
-   {
-    id: 'course4',
-    name: 'Introduction to AI',
-    description: 'Explore the basics of Artificial Intelligence and Machine Learning.',
-    instructor: 'Dr. Alan Turing',
+  {
+    id: "course4",
+    name: "Introduction to AI",
+    description:
+      "Explore the basics of Artificial Intelligence and Machine Learning.",
+    instructor: "Dr. Alan Turing",
     progress: 25,
-    grade: 'In Progress',
-    imageUrl: 'https://placehold.co/600x400.png',
-    dataAiHint: 'artificial intelligence',
+    grade: "In Progress",
+    imageUrl: "https://placehold.co/600x400.png",
+    dataAiHint: "artificial intelligence",
+
+    content: "Full course content on AI and Machine Learning basics.",
+    studentCount: 120,
+    status: "Draft",
+    thumbnail: "https://placehold.co/300x200.png",
+
     modules: [
-      { id: 'm1c4', title: 'What is AI?', content: 'Content for What is AI?' },
-      { id: 'm2c4', title: 'Machine Learning Basics', content: 'Content for ML Basics' },
+      { id: "m1c4", title: "What is AI?", content: "Content for What is AI?" },
+      {
+        id: "m2c4",
+        title: "Machine Learning Basics",
+        content: "Content for ML Basics",
+      },
     ],
   },
 ];

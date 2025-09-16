@@ -75,15 +75,7 @@ export async function createCourse(
   const { title, description, content } = validatedFields.data;
 
   try {
-    // const newCourse: Course = {
-    //     id: `C${String(courses.length + 1).padStart(3, '0')}`,
-    //     title,
-    //     description,
-    //     content: content || '',
-    //     studentCount: 0,
-    //     status: 'Draft',
-    //     thumbnail: 'https://placehold.co/600x400',
-    // };
+   
 
     const newCourse: Course = {
       id: `C${String(courses.length + 1).padStart(3, "0")}`,

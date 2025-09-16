@@ -14,21 +14,31 @@ export type Student = {
   enrolledCoursesIds: string[];
 };
 
-export type Course = {
+export interface Course {
   id: string;
   name: string;
-  title: string;       
-  content?: string;
+  title?: string;   
   description: string;
+  content: string;
+  studentCount: number;
+  status: "Draft" | "Published" | "Archived";
+  thumbnail: string;
   instructor: string;
-  progress: number; // percentage, 0-100
-  grade?: string; // e.g., "A", "B+", "In Progress"
-  modules: Module[];
-  imageUrl?: string;
-   studentCount?: number; 
-     status?: string;  
-     thumbnail?: string;    
-};
+  progress: number;
+
+  // अतिरिक्त fields
+  grade?: string;       // ⬅️ अब error हट्छ
+  imageUrl?: string;    // ⬅️ mockCourses भित्र imageUrl मिल्छ
+  dataAiHint?: string;  // ⬅️ AI hint field support हुन्छ
+
+  modules: {
+    id: string;
+    title: string;
+    content: string;
+  }[];
+}
+
+
 
 export type Module = {
   id: string;
